@@ -119,18 +119,17 @@ clean_existing() {
 
 download_and_install() {
   local url="https://github.com/${REPO}/releases/download/${VERSION}/agentx-${PLATFORM}.tar.gz"
-  local tmpdir
-  tmpdir="$(mktemp -d)"
-  trap 'rm -rf "$tmpdir"' EXIT
+  TMPDIR_INSTALL="$(mktemp -d)"
+  trap 'rm -rf "$TMPDIR_INSTALL"' EXIT
 
   info "Downloading agentx-${PLATFORM}.tar.gz..."
-  if ! curl -fsSL "$url" -o "${tmpdir}/agentx.tar.gz"; then
+  if ! curl -fsSL "$url" -o "${TMPDIR_INSTALL}/agentx.tar.gz"; then
     die "Download failed. URL: $url"
   fi
 
   info "Installing to $INSTALL_DIR..."
   mkdir -p "$INSTALL_DIR"
-  tar -xzf "${tmpdir}/agentx.tar.gz" -C "$INSTALL_DIR"
+  tar -xzf "${TMPDIR_INSTALL}/agentx.tar.gz" -C "$INSTALL_DIR"
   ok "Extracted to $INSTALL_DIR"
 }
 
