@@ -34,27 +34,13 @@ function Test-NodeVersion {
         $winget = Get-Command winget -ErrorAction SilentlyContinue
         $nodeInstalled = $false
         if ($choco) {
-            Write-Info "Installing Node.js via Chocolatey... (timeout: 2 min)"
-            $job = Start-Job { choco install nodejs-lts -y 2>$null | Out-Null }
-            if (Wait-Job -Job $job -Timeout 120) {
-                Receive-Job $job | Out-Null
-            } else {
-                Write-Warn "Chocolatey install timed out."
-                Stop-Job $job | Out-Null
-            }
-            Remove-Job $job | Out-Null
+            Write-Info "Installing Node.js via Chocolatey..."
+            choco install nodejs-lts -y
             $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
             if ($nodeCmd) { $nodeInstalled = $true }
         } elseif ($winget) {
-            Write-Info "Installing Node.js via winget... (timeout: 2 min)"
-            $job = Start-Job { winget install OpenJS.NodeJS.LTS --silent 2>$null | Out-Null }
-            if (Wait-Job -Job $job -Timeout 120) {
-                Receive-Job $job | Out-Null
-            } else {
-                Write-Warn "winget install timed out."
-                Stop-Job $job | Out-Null
-            }
-            Remove-Job $job | Out-Null
+            Write-Info "Installing Node.js via winget..."
+            winget install OpenJS.NodeJS.LTS
             $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
             if ($nodeCmd) { $nodeInstalled = $true }
         }

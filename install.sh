@@ -100,39 +100,20 @@ check_command() {
 
 check_node() {
   if ! check_command node; then
-    printf "  ${YELLOW}Node.js not found. Attempting to install Node.js...${NC}\n" >&2
+    printf "  ${YELLOW}Node.js is required but not found.${NC}\n" >&2
+    printf "  Attempting to install Node.js now...\n"
     local installed=false
     if [ "$OS" = "darwin" ]; then
       if check_command brew; then
-        (brew install node >/dev/null 2>&1) &
-        pid=$!
-        timeout=120
-        while kill -0 $pid 2>/dev/null && [ $timeout -gt 0 ]; do sleep 1; timeout=$((timeout-1)); done
-        if kill -0 $pid 2>/dev/null; then kill $pid; wait $pid 2>/dev/null; fi
-        if check_command node; then installed=true; fi
+        brew install node && installed=true
       fi
     elif [ "$OS" = "linux" ]; then
       if check_command apt-get; then
-        (sudo apt-get update >/dev/null 2>&1 && sudo apt-get install -y nodejs npm >/dev/null 2>&1) &
-        pid=$!
-        timeout=120
-        while kill -0 $pid 2>/dev/null && [ $timeout -gt 0 ]; do sleep 1; timeout=$((timeout-1)); done
-        if kill -0 $pid 2>/dev/null; then kill $pid; wait $pid 2>/dev/null; fi
-        if check_command node; then installed=true; fi
+        sudo apt-get update && sudo apt-get install -y nodejs npm && installed=true
       elif check_command dnf; then
-        (sudo dnf install -y nodejs >/dev/null 2>&1) &
-        pid=$!
-        timeout=120
-        while kill -0 $pid 2>/dev/null && [ $timeout -gt 0 ]; do sleep 1; timeout=$((timeout-1)); done
-        if kill -0 $pid 2>/dev/null; then kill $pid; wait $pid 2>/dev/null; fi
-        if check_command node; then installed=true; fi
+        sudo dnf install -y nodejs && installed=true
       elif check_command pacman; then
-        (sudo pacman -S --noconfirm nodejs npm >/dev/null 2>&1) &
-        pid=$!
-        timeout=120
-        while kill -0 $pid 2>/dev/null && [ $timeout -gt 0 ]; do sleep 1; timeout=$((timeout-1)); done
-        if kill -0 $pid 2>/dev/null; then kill $pid; wait $pid 2>/dev/null; fi
-        if check_command node; then installed=true; fi
+        sudo pacman -S nodejs npm && installed=true
       fi
     fi
     if ! $installed && ! check_command node; then
