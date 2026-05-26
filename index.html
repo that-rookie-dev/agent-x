@@ -1481,7 +1481,7 @@
         <a href="https://slashpan.com" target="_blank" rel="noopener">Slashpan</a>
       </div>
       <div class="copyright">
-        Made in India <span class="sep">/</span> MIT License <span class="sep">/</span> v0.1.47
+        Made in India <span class="sep">/</span> MIT License <span class="sep">/</span> <span id="versionTag">v0.1.47</span>
       </div>
     </div>
   </footer>
@@ -1649,7 +1649,7 @@
       });
     }
 
-    // ===== GitHub Stars =====
+    // ===== GitHub Stars & Version =====
     (function() {
       const repo = 'SlashpanOrg/agent-x';
       fetch('https://api.github.com/repos/' + repo)
@@ -1657,6 +1657,14 @@
         .then(d => {
           if (d.stargazers_count !== undefined) {
             document.getElementById('ghStars').textContent = d.stargazers_count.toLocaleString('en-IN');
+          }
+        })
+        .catch(() => {});
+      fetch('https://api.github.com/repos/' + repo + '/releases/latest')
+        .then(r => r.json())
+        .then(d => {
+          if (d.tag_name) {
+            document.getElementById('versionTag').textContent = d.tag_name;
           }
         })
         .catch(() => {});
