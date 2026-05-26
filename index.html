@@ -480,9 +480,11 @@
     }
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 2px;
       background: #111;
+      max-width: 800px;
+      margin: 0 auto;
     }
     .stat-item {
       background: #000;
@@ -565,6 +567,176 @@
       border-bottom-color: #fff;
     }
 
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: 1px solid #333;
+      color: #555;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: all .2s ease;
+      vertical-align: middle;
+      font-family: 'JetBrains Mono', monospace;
+      position: relative;
+    }
+    .copy-btn:hover {
+      border-color: #888;
+      color: #fff;
+    }
+    .copy-btn.copied {
+      border-color: #888;
+      color: #999;
+    }
+    .copy-feedback {
+      position: absolute;
+      top: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #222;
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 3px 10px;
+      border-radius: 3px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity .2s ease;
+      pointer-events: none;
+    }
+    .copy-feedback.show {
+      opacity: 1;
+    }
+
+    /* ===== Remote Command ===== */
+    #remote {
+      border-top: 1px solid #1a1a1a;
+    }
+    .remote-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      margin-top: 48px;
+      align-items: start;
+    }
+    .remote-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .remote-card {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+      transition: border-color .3s ease;
+    }
+    .remote-card:hover {
+      border-color: #333;
+    }
+    .remote-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: #555;
+      flex-shrink: 0;
+      width: 28px;
+      padding-top: 2px;
+    }
+    .remote-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+    .remote-desc {
+      color: #777;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    /* ===== Chat Mockup ===== */
+    .remote-chat {
+      background: #0a0a0a;
+      border: 1px solid #1a1a1a;
+      border-radius: 14px;
+      overflow: hidden;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .chat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #555;
+    }
+    .chat-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 600;
+      flex: 1;
+    }
+    .chat-status {
+      font-size: 0.7rem;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .chat-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 85%;
+    }
+    .msg-left {
+      align-self: flex-start;
+    }
+    .msg-right {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+    .msg-bubble {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    .msg-left .msg-bubble {
+      background: #151515;
+      color: #ccc;
+      border-bottom-left-radius: 3px;
+    }
+    .msg-right .msg-bubble {
+      background: #fff;
+      color: #000;
+      border-bottom-right-radius: 3px;
+    }
+    .msg-right .msg-bubble.user {
+      background: #222;
+      color: #ddd;
+    }
+    .msg-time {
+      font-size: 0.6rem;
+      color: #444;
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+
     /* ===== Orbit animation for cap cards ===== */
     .cap-orbit {
       position: relative;
@@ -601,12 +773,13 @@
       .sauce-grid { grid-template-columns: 1fr; }
       .wingman-grid { grid-template-columns: 1fr; gap: 40px; }
       .install-layout { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .remote-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 640px) {
       .section { padding: 60px 0; }
       .caps-grid { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: 1fr; }
       .hero-logo { letter-spacing: 4px; }
       .hero-actions { flex-direction: column; align-items: center; }
       .btn { width: 100%; justify-content: center; }
@@ -679,7 +852,7 @@
             <button class="os-tab" data-os="windows" onclick="switchOS('windows')">Windows</button>
           </div>
           <div class="terminal-body" id="terminalBody">
-            <span class="prompt" id="termPrompt">$</span> <span class="cmd" id="termCmd">curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash</span><br />
+            <span class="prompt" id="termPrompt">$</span> <span class="cmd" id="termCmd">curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash</span><button class="copy-btn" id="copyBtn" onclick="copyCommand()" title="Copy command">⧉<span class="copy-feedback" id="copyFeedback">Copied!</span></button><br />
             <span class="output">&#x25B6; Running pre-flight diagnostics...</span><br />
             <span class="output">&#x25B6; Downloading payload from orbit...</span><br />
             <span class="output">&#x25B6; Calibrating neural pathways...</span><br />
@@ -713,7 +886,7 @@
       <div class="stats-grid">
         <div class="stat-item reveal"><div class="stat-number">90+</div><div class="stat-label">Tools</div></div>
         <div class="stat-item reveal reveal-delay-1"><div class="stat-number">5</div><div class="stat-label">Providers</div></div>
-        <div class="stat-item reveal reveal-delay-2"><div class="stat-number">14</div><div class="stat-label">Commands</div></div>
+
         <div class="stat-item reveal reveal-delay-3"><div class="stat-number">100%</div><div class="stat-label">Open Source</div></div>
         <div class="stat-item reveal reveal-delay-4"><div class="stat-number ">0</div><div class="stat-label">Vendor Lock-in</div></div>
       </div>
@@ -803,6 +976,83 @@
           <h3>Sub-Agent System</h3>
           <p>Decompose complex tasks into parallel sub-agents with isolated contexts, tools, and timeouts. Zero context-cost parallelism.</p>
           <span class="cap-highlight">parallel intelligence</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Remote Command (Telegram) ===== -->
+  <section class="section" id="remote">
+    <div class="container">
+      <div class="section-label reveal">Remote Command</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        Your Desktop. In Your Pocket.
+      </h2>
+      <p class="section-sub reveal reveal-delay-2" style="max-width:700px;">
+        Run AGENT-X headless on any machine. Command it from Telegram.
+        No remote desktop. No VPN. No friction. Your agent works while you move.
+      </p>
+
+      <div class="remote-grid">
+        <div class="remote-cards">
+          <div class="remote-card reveal">
+            <div class="remote-num">01</div>
+            <div class="remote-body">
+              <div class="remote-title">Fix production from the train</div>
+              <div class="remote-desc">Message your agent about a critical bug. It SSHes into your server, reads logs, identifies the root cause, applies the fix, and messages you back — before you reach the office.</div>
+            </div>
+          </div>
+          <div class="remote-card reveal reveal-delay-1">
+            <div class="remote-num">02</div>
+            <div class="remote-body">
+              <div class="remote-title">Automated end-of-day reports</div>
+              <div class="remote-desc">"Run the daily report." Your agent queries databases, generates charts, compiles insights, and sends a polished PDF to your Telegram. Every evening at 6 PM. Never ask twice.</div>
+            </div>
+          </div>
+          <div class="remote-card reveal reveal-delay-2">
+            <div class="remote-num">03</div>
+            <div class="remote-body">
+              <div class="remote-title">3 AM incident? Already handled</div>
+              <div class="remote-desc">Your agent monitors disk, CPU, and services 24/7. When something breaks at 3 AM, it alerts you on Telegram with root cause analysis — and the fix already running.</div>
+            </div>
+          </div>
+          <div class="remote-card reveal reveal-delay-3">
+            <div class="remote-num">04</div>
+            <div class="remote-body">
+              <div class="remote-title">Your files, anywhere in the world</div>
+              <div class="remote-desc">Traveling and need a file from your home desktop? Message your agent. It finds, compresses, and uploads it. No VPN. No remote desktop. No hassle.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="remote-chat reveal reveal-delay-2">
+          <div class="chat-header">
+            <span class="chat-dot"></span>
+            <span class="chat-name">AGENT-X</span>
+            <span class="chat-status">online</span>
+          </div>
+          <div class="chat-body">
+            <div class="msg msg-left">
+              <div class="msg-bubble">Good morning. Staging server is down — 502 errors. Logs show OOM in the Node process.</div>
+              <div class="msg-time">07:14</div>
+            </div>
+            <div class="msg msg-left">
+              <div class="msg-bubble">I've restarted with tuned memory limits and cleared the cache. Monitoring for 5 minutes to confirm stability.</div>
+              <div class="msg-time">07:15</div>
+            </div>
+            <div class="msg msg-left">
+              <div class="msg-bubble">Confirmed. Back to green. Root cause: memory leak in the worker pool. I've opened an issue with the stack trace.</div>
+              <div class="msg-time">07:20</div>
+            </div>
+            <div class="msg msg-right">
+              <div class="msg-bubble user">Merged. Deploying now.</div>
+              <div class="msg-time">07:22</div>
+            </div>
+            <div class="msg msg-left">
+              <div class="msg-bubble">Deployment complete. All services nominal. 🔥</div>
+              <div class="msg-time">07:23</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1034,6 +1284,21 @@
 
     // Auto-detect on load
     switchOS(detectOS());
+
+    // ===== Copy to Clipboard =====
+    function copyCommand() {
+      const cmd = document.getElementById('termCmd').textContent;
+      navigator.clipboard.writeText(cmd).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const feedback = document.getElementById('copyFeedback');
+        btn.classList.add('copied');
+        feedback.classList.add('show');
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          feedback.classList.remove('show');
+        }, 1500);
+      });
+    }
   </script>
 </body>
 </html>
