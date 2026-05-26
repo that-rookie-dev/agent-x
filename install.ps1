@@ -34,18 +34,36 @@ function Test-NodeVersion {
         $winget = Get-Command winget -ErrorAction SilentlyContinue
         $nodeInstalled = $false
         if ($choco) {
-            Write-Info "Installing Node.js via Chocolatey..."
-            choco install nodejs-lts -y 2>$null | Out-Null
+            Write-Info "Installing Node.js via Chocolatey... (timeout: 2 min)"
+            $job = Start-Job { choco install nodejs-lts -y 2>$null | Out-Null }
+            if (Wait-Job -Job $job -Timeout 120) {
+                Receive-Job $job | Out-Null
+            } else {
+                Write-Warn "Chocolatey install timed out."
+                Stop-Job $job | Out-Null
+            }
+            Remove-Job $job | Out-Null
             $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
             if ($nodeCmd) { $nodeInstalled = $true }
         } elseif ($winget) {
-            Write-Info "Installing Node.js via winget..."
-            winget install OpenJS.NodeJS.LTS --silent 2>$null | Out-Null
+            Write-Info "Installing Node.js via winget... (timeout: 2 min)"
+            $job = Start-Job { winget install OpenJS.NodeJS.LTS --silent 2>$null | Out-Null }
+            if (Wait-Job -Job $job -Timeout 120) {
+                Receive-Job $job | Out-Null
+            } else {
+                Write-Warn "winget install timed out."
+                Stop-Job $job | Out-Null
+            }
+            Remove-Job $job | Out-Null
             $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
             if ($nodeCmd) { $nodeInstalled = $true }
         }
         if (-not $nodeInstalled) {
-            Write-Warn "Automatic Node.js install failed. Please install Node.js >= $MinNodeVersion from https://nodejs.org and re-run the installer."
+            Write-Host "" -ForegroundColor Red
+            Write-Err "Node.js could not be installed automatically. Please install Node.js >= $MinNodeVersion manually:"
+            Write-Host "    choco install nodejs-lts" -ForegroundColor Cyan
+            Write-Host "    winget install OpenJS.NodeJS.LTS" -ForegroundColor Cyan
+            Write-Host "    Or download from: https://nodejs.org/en/download" -ForegroundColor Cyan
             exit 1
         }
     }
