@@ -898,6 +898,9 @@
       overflow: hidden;
       max-width: 380px;
       margin: 0 auto;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
     }
     .chat-header {
       display: flex;
@@ -929,6 +932,9 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
     }
     .msg {
       display: flex;
@@ -1092,10 +1098,6 @@
     .compare-table .check { color: #fff; }
     .compare-table .cross { color: #333; }
     .compare-table .partial { color: #666; }
-    .compare-table .highlight {
-      color: #fff;
-      font-weight: 700;
-    }
     .compare-footnote {
       text-align: center;
       font-family: 'JetBrains Mono', monospace;
@@ -1103,6 +1105,87 @@
       color: #555;
       margin-top: 20px;
       letter-spacing: 0.5px;
+    }
+
+    /* ===== Terminal Demo ===== */
+    #terminal-demo {
+      border-top: 1px solid #1a1a1a;
+    }
+    .terminal-wrap {
+      max-width: 780px;
+    }
+    .concept-grid {
+      display: grid;
+      grid-template-columns: 3fr 7fr;
+      gap: 24px;
+      align-items: start;
+      margin-top: 48px;
+    }
+    .terminal {
+      background: #050505;
+      border: 1px solid #1a1a1a;
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .terminal-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #222;
+      border: 1px solid #2a2a2a;
+    }
+    .terminal-title {
+      margin-left: 8px;
+      font-size: 0.65rem;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .terminal-body {
+      padding: 20px 24px;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+    .terminal-line {
+      opacity: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .terminal-line.visible {
+      opacity: 1;
+    }
+    .terminal-prompt { color: #666; }
+    .terminal-output { color: #aaa; }
+    .terminal-highlight { color: #eee; }
+    .terminal-success { color: #bbb; }
+    .terminal-error { color: #888; }
+    .terminal-info { color: #555; }
+    .terminal-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 14px;
+      background: #666;
+      animation: blink 1s step-end infinite;
+      vertical-align: text-bottom;
+      margin-left: 1px;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
     }
 
     /* ===== Roadmap ===== */
@@ -1181,6 +1264,7 @@
       .wingman-grid { grid-template-columns: 1fr; gap: 40px; }
       .install-layout { grid-template-columns: 1fr; }
       .remote-grid { grid-template-columns: 1fr; }
+      .concept-grid { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 640px) {
@@ -1245,7 +1329,7 @@
 
   </section>
 
-  <!-- ===== Install (right after hero) ===== -->
+  <!-- ===== Install ===== -->
   <section class="section" id="install" style="padding:80px 0 100px;border-top:1px solid #1a1a1a;">
     <div class="container">
       <div class="section-label reveal">Get Started</div>
@@ -1266,7 +1350,7 @@
             <button class="os-tab" data-os="linux" onclick="switchOS('linux')">Linux</button>
             <button class="os-tab" data-os="windows" onclick="switchOS('windows')">Windows</button>
           </div>
-          <div class="terminal-body" id="terminalBody">
+          <div class="terminal-body">
             <span class="prompt" id="termPrompt">$</span> <span class="cmd" id="termCmd">curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash</span><button class="copy-btn" id="copyBtn" onclick="copyCommand()" title="Copy command">⧉<span class="copy-feedback" id="copyFeedback">Copied!</span></button><br />
             <span class="output">&#x25B6; Running pre-flight diagnostics...</span><br />
             <span class="output">&#x25B6; Downloading payload from orbit...</span><br />
@@ -1595,6 +1679,67 @@
         </table>
       </div>
       <p class="compare-footnote reveal">Last updated May 2026 &middot; Based on publicly documented features</p>
+    </div>
+  </section>
+
+  <!-- ===== Live Terminal Demo ===== -->
+  <section class="section" id="terminal-demo">
+    <div class="container">
+      <div class="section-label reveal">Concept</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        Your Phone. Your Terminal. One Agent.
+      </h2>
+      <p class="section-sub reveal reveal-delay-2">
+        Run AGENT-X headless on any machine. Command it from Telegram. The agent receives your instructions, executes them in the terminal, and reports back — all while you move.
+      </p>
+
+      <div class="concept-grid reveal reveal-delay-3">
+        <div class="remote-chat" id="conceptChat" style="max-width:none;margin:0;">
+          <div class="chat-header">
+            <span class="chat-dot"></span>
+            <span class="chat-name">You</span>
+            <span class="chat-status">Telegram</span>
+          </div>
+          <div class="chat-body" id="conceptChatBody">
+            <div class="msg msg-right" data-step="0" style="display:none;">
+              <div class="msg-bubble user">check cluster status</div>
+              <div class="msg-time">14:02</div>
+            </div>
+            <div class="msg msg-left" data-step="1" style="display:none;">
+              <div class="msg-bubble">&#x2713; CPU: 23% &middot; Mem: 1.2/8 GB<br />&#x26a0; Disk: 87%<br />&#x2717; Service: web-app (502)</div>
+              <div class="msg-time">14:02</div>
+            </div>
+            <div class="msg msg-right" data-step="2" style="display:none;">
+              <div class="msg-bubble user">investigate web-app</div>
+              <div class="msg-time">14:03</div>
+            </div>
+            <div class="msg msg-left" data-step="3" style="display:none;">
+              <div class="msg-bubble">Found it — connection pool exhaustion in worker.js:47. Ready to patch.</div>
+              <div class="msg-time">14:04</div>
+            </div>
+            <div class="msg msg-right" data-step="4" style="display:none;">
+              <div class="msg-bubble user">apply fix</div>
+              <div class="msg-time">14:05</div>
+            </div>
+            <div class="msg msg-left" data-step="5" style="display:none;">
+              <div class="msg-bubble">&#x2713; Patch applied<br />&#x2713; Service restarted<br />&#x2713; Health check: passing<br />All systems nominal.</div>
+              <div class="msg-time">14:06</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal-wrap">
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+              <span class="terminal-title">AGENT-X Terminal</span>
+            </div>
+            <div class="terminal-body" id="terminalBody"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -2127,6 +2272,156 @@
 
     // Select first crew member on load
     selectCrew('engineer');
+
+    // ===== Terminal Demo — Coordinated Chat + Terminal =====
+    (function() {
+      var terminalBody = document.getElementById('terminalBody');
+      var chatBody = document.getElementById('conceptChatBody');
+      if (!terminalBody || !chatBody) return;
+
+      // Terminal line segments, one per conversation cycle
+      var segments = [
+        [ // Cycle 1: diagnostics
+          { t: '\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557', c: 'terminal-info', d: 10 },
+          { t: '\u2551        MISSION CONTROL ONLINE          \u2551', c: 'terminal-info', d: 10 },
+          { t: '\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d', c: 'terminal-info', d: 10 },
+          { t: '', c: '', d: 200 },
+          { t: '$ check cluster status', c: 'terminal-prompt', d: 25 },
+          { t: '', c: '', d: 120 },
+          { t: 'Running diagnostics...', c: 'terminal-output', d: 15 },
+          { t: '  \u2713 CPU: 23% (nominal)', c: 'terminal-success', d: 12 },
+          { t: '  \u2713 Memory: 1.2 GB / 8 GB (nominal)', c: 'terminal-success', d: 12 },
+          { t: '  \u26a0 Disk: 87% (near threshold)', c: 'terminal-output', d: 12 },
+          { t: '  \u2717 Service: web-app (502 errors)', c: 'terminal-error', d: 14 },
+          { t: '', c: '', d: 250 },
+        ],
+        [ // Cycle 2: investigation
+          { t: '$ investigate web-app', c: 'terminal-prompt', d: 25 },
+          { t: '', c: '', d: 120 },
+          { t: 'Reading logs...', c: 'terminal-output', d: 12 },
+          { t: 'Found 14 error entries in the last 5 minutes.', c: 'terminal-output', d: 12 },
+          { t: '', c: '', d: 120 },
+          { t: 'Root cause identified:', c: 'terminal-highlight', d: 15 },
+          { t: '  worker.js:47 \u2014 connection pool exhausted', c: 'terminal-output', d: 12 },
+          { t: '  pool.max = 10; // too low for current load', c: 'terminal-output', d: 12 },
+          { t: '', c: '', d: 200 },
+        ],
+        [ // Cycle 3: fix
+          { t: '$ apply fix', c: 'terminal-prompt', d: 20 },
+          { t: '', c: '', d: 100 },
+          { t: '  pool.max = 50;', c: 'terminal-output', d: 10 },
+          { t: '  \u2713 Patch applied', c: 'terminal-success', d: 12 },
+          { t: '  \u2713 Service restarted', c: 'terminal-success', d: 12 },
+          { t: '  \u2713 Health check: passing', c: 'terminal-success', d: 14 },
+          { t: '', c: '', d: 300 },
+          { t: 'All systems nominal.', c: 'terminal-highlight', d: 25 },
+          { t: '', c: '', d: 100 },
+          { t: '_', c: 'terminal-output', d: 50 },
+        ],
+      ];
+
+      // Auto-scroll an element to bottom
+      function scrollBottom(el) {
+        el.scrollTop = el.scrollHeight;
+      }
+
+      // Show a chat message by data-step
+      function showChat(step) {
+        var msgs = chatBody.querySelectorAll('[data-step="' + step + '"]');
+        msgs.forEach(function(el) { el.style.display = ''; });
+        scrollBottom(chatBody);
+      }
+
+      // Type a terminal segment, then call done()
+      function typeSegment(lines, done) {
+        var idx = 0, charIdx = 0, el = null;
+
+        function tick() {
+          if (idx >= lines.length) { if (done) done(); return; }
+          var line = lines[idx];
+
+          if (line.t === '') {
+            terminalBody.appendChild(document.createElement('br'));
+            idx++;
+            setTimeout(tick, line.d || 80);
+            return;
+          }
+
+          if (!el) {
+            el = document.createElement('div');
+            el.className = 'terminal-line' + (line.c ? ' ' + line.c : '');
+            el.style.opacity = '1';
+            terminalBody.appendChild(el);
+            charIdx = 0;
+          }
+
+          if (charIdx < line.t.length) {
+            el.textContent += line.t[charIdx];
+            charIdx++;
+            scrollBottom(terminalBody);
+            setTimeout(tick, (line.d || 15) + Math.random() * 8);
+          } else {
+            if (line.t === '_') {
+              var cursor = document.createElement('span');
+              cursor.className = 'terminal-cursor';
+              el.appendChild(cursor);
+            }
+            el = null;
+            idx++;
+            scrollBottom(terminalBody);
+            setTimeout(tick, 120);
+          }
+        }
+        tick();
+      }
+
+      // The coordinated script
+      var script = [
+        { action: 'chat', step: 0, delay: 400 },
+        { action: 'term', seg: 0, delay: 200 },
+        { action: 'chat', step: 1, delay: 300 },
+        { action: 'pause', delay: 600 },
+        { action: 'chat', step: 2, delay: 400 },
+        { action: 'term', seg: 1, delay: 200 },
+        { action: 'chat', step: 3, delay: 300 },
+        { action: 'pause', delay: 600 },
+        { action: 'chat', step: 4, delay: 400 },
+        { action: 'term', seg: 2, delay: 200 },
+        { action: 'chat', step: 5, delay: 300 },
+      ];
+
+      var scriptIdx = 0;
+      function runScript() {
+        if (scriptIdx >= script.length) return;
+        var s = script[scriptIdx];
+
+        if (s.action === 'chat') {
+          showChat(s.step);
+          scriptIdx++;
+          setTimeout(runScript, s.delay);
+        } else if (s.action === 'pause') {
+          scriptIdx++;
+          setTimeout(runScript, s.delay);
+        } else if (s.action === 'term') {
+          scriptIdx++;
+          typeSegment(segments[s.seg], function() {
+            setTimeout(runScript, s.delay);
+          });
+        }
+      }
+
+      var section = document.getElementById('terminal-demo');
+      if (section) {
+        var obs = new IntersectionObserver(function(entries) {
+          if (entries[0].isIntersecting) {
+            setTimeout(runScript, 300);
+            obs.disconnect();
+          }
+        }, { threshold: 0.3 });
+        obs.observe(section);
+      }
+    })();
+
   </script>
 </body>
 </html>
