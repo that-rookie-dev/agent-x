@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AGENT-X — Your AI Wingman</title>
-  <meta name="description" content="AGENT-X is an open-source AI agent with 90+ tools, 5 providers, Telegram bridge, cron scheduler, and persistent memory. Made in India." />
+  <meta name="description" content="AGENT-X is a free AI agent with 90+ tools, 5 providers, Telegram bridge, cron scheduler, and persistent memory. Made in India." />
   <meta property="og:title" content="AGENT-X — Your AI Wingman" />
-  <meta property="og:description" content="Open-source AI agent with 90+ tools, 5 providers, Telegram bridge, and persistent memory. Made in India." />
+  <meta property="og:description" content="Free AI agent with 90+ tools, 5 providers, Telegram bridge, and persistent memory. Made in India." />
   <meta property="og:image" content="https://slashpanorg.github.io/agent-x/social_preview.png" />
   <meta property="og:image:width" content="1280" />
   <meta property="og:image:height" content="640" />
@@ -983,9 +983,188 @@
       to { transform: rotate(360deg) translateX(20px) rotate(-360deg); }
     }
 
+    /* ===== Privacy & Trust ===== */
+    #trust {
+      border-top: 1px solid #1a1a1a;
+    }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      margin-top: 48px;
+      background: #111;
+    }
+    .trust-card {
+      background: #000;
+      padding: 40px 32px;
+      transition: background .3s ease;
+    }
+    .trust-card:hover {
+      background: #0a0a0a;
+    }
+    .trust-card .trust-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: #444;
+      margin-bottom: 12px;
+    }
+    .trust-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .trust-card p {
+      color: #777;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+    .trust-card .trust-tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #666;
+      border: 1px solid #222;
+      padding: 2px 10px;
+      border-radius: 3px;
+      margin-top: 14px;
+    }
+
+    /* ===== Comparison ===== */
+    #comparison {
+      border-top: 1px solid #1a1a1a;
+    }
+    .compare-table {
+      width: 100%;
+      margin-top: 48px;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .compare-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #888;
+      padding: 16px 14px;
+      border-bottom: 1px solid #1a1a1a;
+      text-align: left;
+      font-weight: 600;
+    }
+    .compare-table th:first-child { padding-left: 0; }
+    .compare-table th:not(:first-child) { text-align: center; }
+    .compare-table td {
+      padding: 14px 14px;
+      border-bottom: 1px solid #111;
+      color: #888;
+    }
+    .compare-table td:first-child {
+      color: #ccc;
+      font-weight: 500;
+      padding-left: 0;
+    }
+    .compare-table td:not(:first-child) {
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .compare-table tr:hover td {
+      color: #fff;
+    }
+    .compare-table tr:hover td:first-child {
+      color: #fff;
+    }
+    .compare-table .check { color: #fff; }
+    .compare-table .cross { color: #333; }
+    .compare-table .partial { color: #666; }
+    .compare-table .highlight {
+      color: #fff;
+      font-weight: 700;
+    }
+    .compare-footnote {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #555;
+      margin-top: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== Roadmap ===== */
+    #roadmap {
+      border-top: 1px solid #1a1a1a;
+    }
+    .roadmap-list {
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .roadmap-item {
+      position: relative;
+      padding: 20px 0 20px 32px;
+      border-bottom: 1px solid #0d0d0d;
+    }
+    .roadmap-item:last-child {
+      border-bottom: none;
+    }
+    .roadmap-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #222;
+      border: 1px solid #444;
+    }
+    .roadmap-item:hover::before {
+      background: #555;
+    }
+    .roadmap-item-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .roadmap-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .roadmap-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 10px;
+      border-radius: 3px;
+    }
+    .roadmap-status.in-orbit {
+      border: 1px solid #555;
+      color: #888;
+    }
+    .roadmap-status.on-radar {
+      border: 1px solid #222;
+      color: #555;
+    }
+    .roadmap-status.docking {
+      border: 1px solid #444;
+      color: #777;
+    }
+    .roadmap-desc {
+      color: #777;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
     /* ===== Responsive ===== */
     @media (max-width: 968px) {
       .caps-grid { grid-template-columns: repeat(2, 1fr); }
+      .trust-grid { grid-template-columns: 1fr; }
       .crew-selector { flex-wrap: wrap; }
       .crew-tab { flex: 0 0 calc(33.33% - 2px); }
       .sauce-grid { grid-template-columns: 1fr; }
@@ -1111,8 +1290,48 @@
         <div class="stat-item reveal"><div class="stat-number">90+</div><div class="stat-label">Tools</div></div>
         <div class="stat-item reveal reveal-delay-1"><div class="stat-number">5</div><div class="stat-label">Providers</div></div>
 
-        <div class="stat-item reveal reveal-delay-3"><div class="stat-number">100%</div><div class="stat-label">Open Source</div></div>
+        <div class="stat-item reveal reveal-delay-3"><div class="stat-number">100%</div><div class="stat-label">Free to Use</div></div>
         <div class="stat-item reveal reveal-delay-4"><div class="stat-number ">0</div><div class="stat-label">Vendor Lock-in</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Privacy & Trust ===== -->
+  <section class="section" id="trust">
+    <div class="container">
+      <div class="section-label reveal">Full Command</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        Your Data. Your Rules.
+      </h2>
+      <p class="section-sub reveal reveal-delay-2">
+        AGENT-X is built local-first and zero-trust. Your data never leaves your machine unless you command it. Every action is gated. Source code will be released at 1,000,000 GitHub stars.
+      </p>
+
+      <div class="trust-grid">
+        <div class="trust-card reveal">
+          <div class="trust-num">01</div>
+          <h3>Local-First Architecture</h3>
+          <p>Everything runs on your machine. No cloud accounts. No mandatory sync. Your data stays where it belongs — with you.</p>
+          <span class="trust-tag">no cloud required</span>
+        </div>
+        <div class="trust-card reveal reveal-delay-1">
+          <div class="trust-num">02</div>
+          <h3>No Telemetry</h3>
+          <p>Nothing phones home. No analytics SDK, no tracking pixels, no anonymous usage data. We don't collect what we can't see. Your terminal is your cockpit.</p>
+          <span class="trust-tag">zero telemetry</span>
+        </div>
+        <div class="trust-card reveal reveal-delay-2">
+          <div class="trust-num">03</div>
+          <h3>Source Code Locked</h3>
+          <p>The codebase is private until we reach 1,000,000 GitHub stars. Once unlocked, it will be released under MIT License — fully auditable, forkable, improvable. No black boxes. Just patience.</p>
+          <span class="trust-tag">1M stars to unlock</span>
+        </div>
+        <div class="trust-card reveal reveal-delay-3">
+          <div class="trust-num">04</div>
+          <h3>Permission Gates</h3>
+          <p>Every tool action is gated by risk level. Low-risk actions run free. Medium asks once. High and critical require explicit approval. You are always in command.</p>
+          <span class="trust-tag">you approve every shot</span>
+        </div>
       </div>
     </div>
   </section>
@@ -1155,7 +1374,7 @@
         Your Model. Our Machinery.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        AGENT-X is 100% free and open source. You only pay for the AI model you choose — or run one locally at no cost. We are the hands, legs, skills, and peripherals. You bring the brain.
+        AGENT-X is 100% free to use. You only pay for the AI model you choose — or run one locally at no cost. We are the hands, legs, skills, and peripherals. You bring the brain.
       </p>
 
       <div class="provider-row reveal reveal-delay-3">
@@ -1275,7 +1494,7 @@
         Everything at your command.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        90+ tools across 20 categories. 5 LLM providers. Full autonomic control. No other open-source agent comes close.
+        90+ tools across 20 categories. 5 LLM providers. Full autonomic control. No other free agent comes close.
       </p>
 
       <div class="caps-grid">
@@ -1324,6 +1543,8 @@
       </div>
     </div>
   </section>
+
+  <!-- ===== Comparison (hidden) ===== -->
 
   <!-- ===== Remote Command (Telegram) ===== -->
   <section class="section" id="remote">
@@ -1466,6 +1687,64 @@
     </div>
   </section>
 
+  <!-- ===== Roadmap ===== -->
+  <section class="section" id="roadmap">
+    <div class="container">
+      <div class="section-label reveal">Launch Calendar</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        What's Next.
+      </h2>
+      <p class="section-sub reveal reveal-delay-2">
+        AGENT-X is under active development. Here's what's on the horizon.
+      </p>
+
+      <div class="roadmap-list">
+        <div class="roadmap-item reveal">
+          <div class="roadmap-item-top">
+            <span class="roadmap-name">WhatsApp Bridge</span>
+            <span class="roadmap-status docking">Docking</span>
+          </div>
+          <div class="roadmap-desc">Full WhatsApp integration — send commands, receive reports, manage your agent from the world's most popular messaging platform.</div>
+        </div>
+        <div class="roadmap-item reveal reveal-delay-1">
+          <div class="roadmap-item-top">
+            <span class="roadmap-name">Email Gateway</span>
+            <span class="roadmap-status in-orbit">In Orbit</span>
+          </div>
+          <div class="roadmap-desc">Your agent gets an email address. Forward receipts, newsletters, and notifications. It reads, categorizes, and acts — automatically.</div>
+        </div>
+        <div class="roadmap-item reveal reveal-delay-2">
+          <div class="roadmap-item-top">
+            <span class="roadmap-name">Mobile Companion App</span>
+            <span class="roadmap-status docking">Docking</span>
+          </div>
+          <div class="roadmap-desc">Native iOS and Android app for push notifications, quick commands, and on-the-go monitoring. Your wingman in your pocket, no third-party bridge required.</div>
+        </div>
+        <div class="roadmap-item reveal reveal-delay-3">
+          <div class="roadmap-item-top">
+            <span class="roadmap-name">Custom Skill Marketplace</span>
+            <span class="roadmap-status on-radar">On Radar</span>
+          </div>
+          <div class="roadmap-desc">Community-driven marketplace for sharing and installing custom skills. Write once, share everywhere. Extend AGENT-X without touching core code.</div>
+        </div>
+        <div class="roadmap-item reveal reveal-delay-4">
+          <div class="roadmap-item-top">
+            <span class="roadmap-name">Voice Interface</span>
+            <span class="roadmap-status on-radar">On Radar</span>
+          </div>
+          <div class="roadmap-desc">Hands-free voice commands via wake word. Speak to your agent like a starship commander. Responses via TTS with customizable voice profiles.</div>
+        </div>
+        <div class="roadmap-item reveal reveal-delay-5">
+          <div class="roadmap-item-top">
+            <span class="roadmap-name">Multi-Machine Sync</span>
+            <span class="roadmap-status on-radar">On Radar</span>
+          </div>
+          <div class="roadmap-desc">Run one agent across multiple machines. Sessions, memories, and config sync seamlessly via your own infrastructure. Start on your desktop, pick up on your laptop.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== Footer ===== -->
   <footer>
     <div class="container">
@@ -1483,7 +1762,7 @@
         <a href="https://slashpan.com" target="_blank" rel="noopener">Slashpan</a>
       </div>
       <div class="copyright">
-        Made in India <span class="sep">/</span> MIT License <span class="sep">/</span> <span id="versionTag">v0.1.47</span>
+        Made in India <span class="sep">/</span> Free to Use <span class="sep">/</span> <span id="versionTag">v0.1.47</span>
       </div>
     </div>
   </footer>
@@ -1544,7 +1823,7 @@
         'Persistent Secret Sauce memory',
         'Parallel sub-agent system',
         'Zero vendor lock-in',
-        '100% open source',
+        '100% free to use',
         'Made in India',
       ];
       const el = document.getElementById('typewriter-text');
