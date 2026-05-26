@@ -217,6 +217,42 @@
       border-color: #fff;
       opacity: 1;
     }
+    #ghStars {
+      color: #ccc;
+      font-weight: 600;
+    }
+    #ghStars:not(:empty)::before {
+      content: '\2605 ';
+      color: #fff;
+    }
+    #ghStars:empty { display: none; }
+    .gh-announce {
+      text-align: center;
+      margin-top: 32px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .gh-announce-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #1a1a1a;
+      padding: 10px 24px;
+      border-radius: 6px;
+    }
+    .gh-announce .star-icon {
+      font-size: 1rem;
+      color: #555;
+    }
+    .gh-announce .msg {
+      font-size: 0.78rem;
+      color: #666;
+      letter-spacing: 1px;
+    }
+    .gh-announce .count-target {
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
     .hero-scroll {
       position: absolute;
       bottom: 32px;
@@ -506,15 +542,43 @@
 
     /* ===== Footer ===== */
     footer {
-      padding: 48px 0;
+      padding: 56px 0;
       text-align: center;
+      border-top: 1px solid #1a1a1a;
     }
     footer .brand {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.9rem;
       letter-spacing: 3px;
       color: #555;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    footer .company {
+      font-size: 0.82rem;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    footer .company a {
+      color: #888;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: #333;
+    }
+    footer .company a:hover {
+      color: #fff;
+      text-decoration-color: #666;
+    }
+    footer .email {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 24px;
+    }
+    footer .email a {
+      color: #777;
+    }
+    footer .email a:hover {
+      color: #fff;
     }
     footer .links {
       display: flex;
@@ -524,18 +588,19 @@
       margin-bottom: 24px;
     }
     footer .links a {
-      font-size: 0.85rem;
-      color: #666;
+      font-size: 0.82rem;
+      color: #555;
     }
     footer .links a:hover {
       color: #fff;
     }
     footer .copyright {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #444;
     }
-    footer .copyright .heart {
-      color: #666;
+    footer .copyright .sep {
+      color: #333;
+      margin: 0 8px;
     }
 
     /* ===== OS Tabs ===== */
@@ -971,15 +1036,20 @@
       <a href="#install" class="btn btn-primary">
         <span>&#x2193;</span> Install Now
       </a>
-      <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener" class="btn btn-secondary">
-        GitHub &nearr;
+      <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener" class="btn btn-secondary" id="githubBtn">
+        GitHub <span id="ghStars"></span> &nearr;
       </a>
     </div>
 
-    <div class="hero-scroll">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
+    <div class="gh-announce reveal reveal-delay-5">
+      <div class="gh-announce-inner">
+        <span class="star-icon">&#x2605;</span>
+        <span class="msg">Source code unlocks at</span>
+        <span class="count-target">1,00,000</span>
+        <span class="msg">GitHub stars</span>
+      </div>
     </div>
+
   </section>
 
   <!-- ===== Install (right after hero) ===== -->
@@ -1398,13 +1468,20 @@
   <footer>
     <div class="container">
       <div class="brand">AGENT-X</div>
+      <div class="company">
+        Built by <a href="https://slashpan.com" target="_blank" rel="noopener">Slashpan Technologies Private Limited</a>
+      </div>
+      <div class="email">
+        <a href="mailto:sr@slashpan.com">sr@slashpan.com</a>
+      </div>
       <div class="links">
         <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener">GitHub</a>
         <a href="https://github.com/SlashpanOrg/agent-x/releases" target="_blank" rel="noopener">Releases</a>
         <a href="https://github.com/SlashpanOrg/agent-x/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="https://slashpan.com" target="_blank" rel="noopener">Slashpan</a>
       </div>
       <div class="copyright">
-        <span class="heart">&#x2764;</span> Made in India &middot; MIT License &middot; v0.1.47
+        Made in India <span class="sep">/</span> MIT License <span class="sep">/</span> v0.1.47
       </div>
     </div>
   </footer>
@@ -1571,6 +1648,19 @@
         }, 1500);
       });
     }
+
+    // ===== GitHub Stars =====
+    (function() {
+      const repo = 'SlashpanOrg/agent-x';
+      fetch('https://api.github.com/repos/' + repo)
+        .then(r => r.json())
+        .then(d => {
+          if (d.stargazers_count !== undefined) {
+            document.getElementById('ghStars').textContent = d.stargazers_count.toLocaleString('en-IN');
+          }
+        })
+        .catch(() => {});
+    })();
 
     // ===== Crew =====
     const CREW_DATA = {
