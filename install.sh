@@ -251,10 +251,26 @@ ensure_path() {
   if [ -n "$shell_rc" ] && [ -f "$shell_rc" ]; then
     printf '\n# Agent-X\nexport PATH="%s:$PATH"\n' "$BIN_DIR" >> "$shell_rc"
     printf "  ${DIM}Added %s to PATH in %s${NC}\n" "$BIN_DIR" "$shell_rc"
+    # Try to source the profile if running interactively
+    if [[ $- == *i* ]]; then
+      case "$shell_rc" in
+        *.zshrc|*.bashrc)
+          printf "  ${CYAN}Reloading your shell profile...${NC}\n"
+          # shellcheck disable=SC1090
+          . "$shell_rc"
+          ;;
+        *.config/fish/config.fish)
+          printf "  ${CYAN}Reloading your fish config...${NC}\n"
+          source "$shell_rc"
+          ;;
+      esac
+    fi
+    printf "  ${DIM}If 'agentx' is still not found, restart your terminal or run: source %s${NC}\n" "$shell_rc"
   else
     echo ""
     printf "  ${DIM}Add this to your shell profile:${NC}\n"
     printf "  ${CYAN}export PATH=\"%s:\$PATH\"${NC}\n" "$BIN_DIR"
+    printf "  ${DIM}Then restart your terminal or run: source <profile>${NC}\n"
   fi
 }
 

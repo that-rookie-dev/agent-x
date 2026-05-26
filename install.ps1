@@ -115,7 +115,16 @@ function Add-ToPath {
     Write-Warn "$BinDir is not in your PATH"
     [Environment]::SetEnvironmentVariable("PATH", "$BinDir;$userPath", "User")
     $env:PATH = "$BinDir;$env:PATH"
-    Write-Ok "Added $BinDir to user PATH (restart terminal to take effect)"
+    Write-Ok "Added $BinDir to user PATH."
+    # Try to reload the environment for the current session
+    $shell = (Get-Process -Id $PID).Path
+    if ($shell -like "*powershell*") {
+        Write-Host "  Reloading PATH for this session..." -ForegroundColor Cyan
+        $env:PATH = [Environment]::GetEnvironmentVariable("PATH", "User")
+        Write-Host "  If 'agentx' is still not found, restart your terminal or run: `n    `$env:PATH = [Environment]::GetEnvironmentVariable(\"PATH\", \"User\")" -ForegroundColor Yellow
+    } else {
+        Write-Host "  Please restart your terminal to use 'agentx', or run: `n    `$env:PATH = [Environment]::GetEnvironmentVariable(\"PATH\", \"User\")" -ForegroundColor Yellow
+    }
 }
 
 # --- Verify ---
