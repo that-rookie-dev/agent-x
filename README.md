@@ -190,7 +190,7 @@ Agent-X is built on three principles:
 
 1. **Autonomy with accountability** — The agent acts independently but never bypasses your clearance. Every destructive or sensitive action requires explicit approval.
 
-2. **Local-first** — Your data stays on your machine. Sessions, memories, and configuration live in `~/.config/agentx` and `~/.local/share/agentx`. Nothing phones home.
+2. **Local-first** — Your data stays on your machine. Sessions, memories, and configuration never leave your system. Nothing phones home.
 
 3. **Provider-agnostic** — No lock-in. Swap between cloud and local models at will. The same tools and workflows work regardless of the AI backend.
 

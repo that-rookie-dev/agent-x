@@ -7,7 +7,7 @@
   <meta name="description" content="AGENT-X is a free AI agent with 90+ tools, 5 providers, Telegram bridge, cron scheduler, and persistent memory. Made in India." />
   <meta property="og:title" content="AGENT-X — Your AI Wingman" />
   <meta property="og:description" content="Free AI agent with 90+ tools, 5 providers, Telegram bridge, and persistent memory. Made in India." />
-  <meta property="og:image" content="https://slashpanorg.github.io/agent-x/social_preview.png" />
+  <meta property="og:image" content="https://slashpanorg.github.io/agent-x/assets/social_preview.png" />
   <meta property="og:image:width" content="1280" />
   <meta property="og:image:height" content="640" />
   <meta property="og:type" content="website" />
@@ -1097,33 +1097,27 @@
       margin-top: 48px;
       display: flex;
       flex-direction: column;
-      gap: 0;
-      position: relative;
-      padding-left: 32px;
+      gap: 16px;
     }
-
     .roadmap-item {
-      position: relative;
-      padding: 20px 0 20px 32px;
-      border-bottom: 1px solid #0d0d0d;
+      display: flex;
+      gap: 16px;
+      padding: 24px;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+      transition: border-color .3s ease;
     }
-    .roadmap-item:last-child {
-      border-bottom: none;
+    .roadmap-item:hover {
+      border-color: #333;
     }
-    .roadmap-item::before {
-      content: '';
-      position: absolute;
-      left: -24px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #222;
-      border: 1px solid #444;
-    }
-    .roadmap-item:hover::before {
-      background: #555;
+    .roadmap-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: #555;
+      flex-shrink: 0;
+      width: 28px;
+      padding-top: 2px;
     }
     .roadmap-item-top {
       display: flex;
@@ -1544,7 +1538,47 @@
     </div>
   </section>
 
-  <!-- ===== Comparison (hidden) ===== -->
+  <!-- ===== Comparison ===== -->
+  <section class="section" id="comparison">
+    <div class="container">
+      <div class="section-label reveal">The Field</div>
+      <h2 class="section-title reveal reveal-delay-1">
+        Nothing Else Comes Close.
+      </h2>
+      <p class="section-sub reveal reveal-delay-2">
+        We built AGENT-X for a simple reason — nothing out there did everything we needed. Compare for yourself.
+      </p>
+
+      <div class="compare-table-wrap reveal reveal-delay-3" style="overflow-x:auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>AGENT-X</th>
+              <th>OpenClaw</th>
+              <th>Hermes Agent</th>
+              <th>Claude Code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Free to Use</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span> Subscription</td></tr>
+            <tr><td>Built-in Tools</td><td><span class="check">90+ &amp; growing</span></td><td><span class="partial">~ 50+</span></td><td><span class="partial">~ 40&ndash;70</span></td><td><span class="partial">8 core</span></td></tr>
+            <tr><td>Native Multi-Provider</td><td><span class="check">5 &amp; docking more</span></td><td><span class="check">5+ providers</span></td><td><span class="check">20+ providers</span></td><td><span class="cross">&#x2717;</span> Proxy only</td></tr>
+            <tr><td>Local LLM (Ollama)</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="partial">~ Via proxy</span></td></tr>
+            <tr><td>Telegram Bridge</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
+            <tr><td>Cron Scheduler</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
+            <tr><td>Persistent Memory</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
+            <tr><td>Sub-Agent System</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
+            <tr><td>Crew Profiles</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
+            <tr><td>Permission System</td><td><span class="check">&#x2713;</span></td><td><span class="partial">~ Basic</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
+            <tr><td>Terminal UI (TUI)</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span> Web UI</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
+            <tr><td>Made in India</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="compare-footnote reveal">Last updated May 2026 &middot; Based on publicly documented features</p>
+    </div>
+  </section>
 
   <!-- ===== Remote Command (Telegram) ===== -->
   <section class="section" id="remote">
@@ -1700,46 +1734,64 @@
 
       <div class="roadmap-list">
         <div class="roadmap-item reveal">
-          <div class="roadmap-item-top">
-            <span class="roadmap-name">WhatsApp Bridge</span>
-            <span class="roadmap-status docking">Docking</span>
+          <div class="roadmap-num">01</div>
+          <div>
+            <div class="roadmap-item-top">
+              <span class="roadmap-name">WhatsApp Bridge</span>
+              <span class="roadmap-status docking">Docking</span>
+            </div>
+            <div class="roadmap-desc">Full WhatsApp integration — send commands, receive reports, manage your agent from the world's most popular messaging platform.</div>
           </div>
-          <div class="roadmap-desc">Full WhatsApp integration — send commands, receive reports, manage your agent from the world's most popular messaging platform.</div>
         </div>
         <div class="roadmap-item reveal reveal-delay-1">
-          <div class="roadmap-item-top">
-            <span class="roadmap-name">Email Gateway</span>
-            <span class="roadmap-status in-orbit">In Orbit</span>
+          <div class="roadmap-num">02</div>
+          <div>
+            <div class="roadmap-item-top">
+              <span class="roadmap-name">Email Gateway</span>
+              <span class="roadmap-status in-orbit">In Orbit</span>
+            </div>
+            <div class="roadmap-desc">Your agent gets an email address. Forward receipts, newsletters, and notifications. It reads, categorizes, and acts — automatically.</div>
           </div>
-          <div class="roadmap-desc">Your agent gets an email address. Forward receipts, newsletters, and notifications. It reads, categorizes, and acts — automatically.</div>
         </div>
         <div class="roadmap-item reveal reveal-delay-2">
-          <div class="roadmap-item-top">
-            <span class="roadmap-name">Mobile Companion App</span>
-            <span class="roadmap-status docking">Docking</span>
+          <div class="roadmap-num">03</div>
+          <div>
+            <div class="roadmap-item-top">
+              <span class="roadmap-name">Mobile Companion App</span>
+              <span class="roadmap-status docking">Docking</span>
+            </div>
+            <div class="roadmap-desc">Native iOS and Android app for push notifications, quick commands, and on-the-go monitoring. Your wingman in your pocket, no third-party bridge required.</div>
           </div>
-          <div class="roadmap-desc">Native iOS and Android app for push notifications, quick commands, and on-the-go monitoring. Your wingman in your pocket, no third-party bridge required.</div>
         </div>
         <div class="roadmap-item reveal reveal-delay-3">
-          <div class="roadmap-item-top">
-            <span class="roadmap-name">Custom Skill Marketplace</span>
-            <span class="roadmap-status on-radar">On Radar</span>
+          <div class="roadmap-num">04</div>
+          <div>
+            <div class="roadmap-item-top">
+              <span class="roadmap-name">Custom Skill Marketplace</span>
+              <span class="roadmap-status on-radar">On Radar</span>
+            </div>
+            <div class="roadmap-desc">Community-driven marketplace for sharing and installing custom skills. Write once, share everywhere. Extend AGENT-X without touching core code.</div>
           </div>
-          <div class="roadmap-desc">Community-driven marketplace for sharing and installing custom skills. Write once, share everywhere. Extend AGENT-X without touching core code.</div>
         </div>
         <div class="roadmap-item reveal reveal-delay-4">
-          <div class="roadmap-item-top">
-            <span class="roadmap-name">Voice Interface</span>
-            <span class="roadmap-status on-radar">On Radar</span>
+          <div class="roadmap-num">05</div>
+          <div>
+            <div class="roadmap-item-top">
+              <span class="roadmap-name">Voice Interface</span>
+              <span class="roadmap-status on-radar">On Radar</span>
+            </div>
+            <div class="roadmap-desc">Hands-free voice commands via wake word. Speak to your agent like a starship commander. Responses via TTS with customizable voice profiles.</div>
           </div>
-          <div class="roadmap-desc">Hands-free voice commands via wake word. Speak to your agent like a starship commander. Responses via TTS with customizable voice profiles.</div>
         </div>
         <div class="roadmap-item reveal reveal-delay-5">
-          <div class="roadmap-item-top">
-            <span class="roadmap-name">Multi-Machine Sync</span>
-            <span class="roadmap-status on-radar">On Radar</span>
+          <div class="roadmap-num">06</div>
+          <div>
+            <div class="roadmap-item-top">
+              <span class="roadmap-name">Multi-Machine Sync</span>
+              <span class="roadmap-status on-radar">On Radar</span>
+            </div>
+            <div class="roadmap-desc">Run one agent across multiple machines. Sessions, memories, and config sync seamlessly via your own infrastructure. Start on your desktop, pick up on your laptop.</div>
           </div>
-          <div class="roadmap-desc">Run one agent across multiple machines. Sessions, memories, and config sync seamlessly via your own infrastructure. Start on your desktop, pick up on your laptop.</div>
         </div>
       </div>
     </div>
