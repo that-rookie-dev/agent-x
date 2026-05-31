@@ -87,7 +87,13 @@ function Select-InstallMode {
     Write-Host "    2) TUI + Web-UI — Terminal + browser interface"
     Write-Host ""
 
-    $choice = Read-Host "  Select [1/2] (default: 2)"
+    $choice = ""
+    if ($env:AGENTX_INSTALL_MODE) {
+        $choice = $env:AGENTX_INSTALL_MODE
+    } elseif ($Host.UI.RawUI) {
+        $choice = Read-Host "  Select [1/2] (default: 2)"
+    }
+
     if ($choice -eq "1") {
         $script:INSTALL_MODE = "tui-only"
         Write-Host "  TUI-only mode selected." -ForegroundColor DarkGray
