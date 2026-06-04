@@ -23,32 +23,7 @@ info()  { printf "${CYAN}▸${NC} %s\n" "$1"; }
 ok()    { printf "${GREEN}✓${NC} %s\n" "$1"; }
 warn()  { printf "${YELLOW}⚠${NC} %s\n" "$1"; }
 
-# ─── Satellite dish ASCII ───────────────────────────────────────────
 
-satellite_banner() {
-  printf "\n"
-  printf "  ${DIM}               .${NC}\n"
-  printf "  ${DIM}              / \\${NC}\n"
-  printf "  ${DIM}             /   \\${NC}\n"
-  printf "  ${DIM}            /     \\${NC}\n"
-  printf "  ${DIM}           /_______\\${NC}\n"
-  printf "  ${DIM}              | |${NC}\n"
-  printf "  ${DIM}             /   \\${NC}\n"
-  printf "  ${DIM}            /     \\${NC}\n"
-  printf "  ${DIM}           /  ${RED}✕${NC}  \\${NC}\n"
-  printf "  ${DIM}          ${RED}/_______\\${NC}\n"
-  printf "  ${DIM}             |   |${NC}\n"
-  printf "  ${DIM}             |   |${NC}\n"
-  printf "  ${DIM}            /     \\${NC}\n"
-  printf "  ${DIM}           /       \\${NC}\n"
-  printf "  ${DIM}          /  ${DIM}~ ~ ~${NC}  \\${NC}\n"
-  printf "  ${DIM}         /  ${DIM}~ ~ ~ ~${NC}  \\${NC}\n"
-  printf "  ${DIM}        /  ${DIM}~ ~ ~ ~ ~${NC}  \\${NC}\n"
-  printf "  ${DIM}       /                 \\${NC}\n"
-  printf "  ${DIM}      /  ${RED}SIGNAL LOST${NC}    \\${NC}\n"
-  printf "  ${DIM}     /___________________\\${NC}\n"
-  printf "\n"
-}
 
 # ─── Removal ────────────────────────────────────────────────────────
 
@@ -121,11 +96,9 @@ clean_path_entries() {
 # ─── Main ───────────────────────────────────────────────────────────
 
 main() {
-  satellite_banner
-
   printf "  ${RED}╔═══════════════════════════════════════════════╗${NC}\n"
-  printf "  ${RED}║${NC}      ${BOLD}✧  DECOMMISSION SEQUENCE  ✧${NC}            ${RED}║${NC}\n"
-  printf "  ${RED}║${NC}      ${DIM}Agent-X recall and scrub${NC}               ${RED}║${NC}\n"
+  printf "  ${RED}║${NC}         ${BOLD}✧  DECOMMISSION SEQUENCE  ✧${NC}          ${RED}║${NC}\n"
+  printf "  ${RED}║${NC}           ${DIM}Agent-X recall and scrub${NC}            ${RED}║${NC}\n"
   printf "  ${RED}╚═══════════════════════════════════════════════╝${NC}\n"
   printf "\n"
 
@@ -164,8 +137,8 @@ main() {
   printf "\n"
   printf "  ${YELLOW}╔═══════════════════════════════════════════════╗${NC}\n"
   printf "  ${YELLOW}║${NC}                                               ${YELLOW}║${NC}\n"
-  printf "  ${YELLOW}║${NC}       ${BOLD}✧  DECOMMISSION COMPLETE  ✧${NC}           ${YELLOW}║${NC}\n"
-  printf "  ${YELLOW}║${NC}       ${DIM}Agent-X has left the building.${NC}         ${YELLOW}║${NC}\n"
+  printf "  ${YELLOW}║${NC}         ${BOLD}✧  DECOMMISSION COMPLETE  ✧${NC}          ${YELLOW}║${NC}\n"
+  printf "  ${YELLOW}║${NC}        ${DIM}Agent-X has left the building.${NC}         ${YELLOW}║${NC}\n"
   printf "  ${YELLOW}║${NC}                                               ${YELLOW}║${NC}\n"
   printf "  ${YELLOW}╚═══════════════════════════════════════════════╝${NC}\n"
   printf "\n"

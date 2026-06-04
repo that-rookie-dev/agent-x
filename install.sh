@@ -141,33 +141,7 @@ mission_phrase() {
   printf "  ${DIM}⟡ ${phrase}...${NC}"
 }
 
-# ─── Rocket art ──────────────────────────────────────────────────────
 
-rocket_banner() {
-  printf "  ${DIM}         _____${NC}\n"
-  printf "  ${DIM}      .-'     '-.${NC}\n"
-  printf "  ${DIM}    .'    ${CYAN}.-.${NC}    '.${NC}\n"
-  printf "  ${DIM}   /   ${CYAN}.-'   '-.${NC}    \\${NC}\n"
-  printf "  ${DIM}  : ${CYAN}:${NC}           ${CYAN}:${NC}   :${NC}\n"
-  printf "  ${DIM}  : ${CYAN}|${NC}  ${PURPLE}✦  ★  ✦${NC}  ${CYAN}|${NC}   :${NC}\n"
-  printf "  ${DIM}   \\ ${CYAN}'-._   _.-'${NC}  /${NC}\n"
-  printf "  ${DIM}    '. ${CYAN}  '-'  ${NC}  .'${NC}\n"
-  printf "  ${DIM}      '-._____.-'${NC}\n"
-  printf "  ${DIM}         ${YELLOW}|   |${NC}\n"
-  printf "  ${DIM}         ${YELLOW}|   |${NC}\n"
-  printf "  ${DIM}        ${YELLOW}/     \\${NC}\n"
-  printf "  ${DIM}       ${YELLOW}/       \\${NC}\n"
-  printf "  ${DIM}      ${YELLOW}/         \\${NC}\n"
-  printf "  ${DIM}     ${YELLOW}/  ${PURPLE}~ ~ ~${NC}  ${YELLOW}\\${NC}\n"
-  printf "  ${DIM}    ${YELLOW}/  ${PURPLE}~ ~ ~ ~${NC}  ${YELLOW}\\${NC}\n"
-  printf "  ${DIM}   ${YELLOW}/  ${PURPLE}~ ~ ~ ~ ~${NC}  ${YELLOW}\\${NC}\n"
-  printf "  ${DIM}  ${YELLOW}/  ${PURPLE}~ ~ ~ ~ ~${NC}   ${YELLOW}\\${NC}\n"
-  printf "  ${DIM} /                   \\${NC}\n"
-  printf "  ${DIM}|    ${CYAN}AGENT-X${NC}         |${NC}\n"
-  printf "  ${DIM}|  ${CYAN}GROUND CONTROL${NC}    |${NC}\n"
-  printf "  ${DIM}|  ${DIM}launch: $(date +%H:%M:%S)${NC}    |${NC}\n"
-  printf "  ${DIM} \\___________________/${NC}\n"
-}
 
 # ─── Signal meter ────────────────────────────────────────────────────
 
@@ -193,14 +167,12 @@ signal_meter() {
 telemetry_header() {
   local phase="$1"
   printf "\n"
-  rocket_banner
-  printf "\n"
   printf "  ${DIM}╔══════════════════════════════════════════════════╗${NC}\n"
-  printf "  ${DIM}║${NC}  ${CYAN}MISSION CONTROL${NC}  ${DIM}•${NC}  ${BOLD}AGENT-X DEPLOYMENT${NC}     ${DIM}║${NC}\n"
+  printf "  ${DIM}║${NC}      ${CYAN}MISSION CONTROL${NC}  ${DIM}•${NC}  ${BOLD}AGENT-X DEPLOYMENT${NC}      ${DIM}║${NC}\n"
   printf "  ${DIM}╠══════════════════════════════════════════════════╣${NC}\n"
-  printf "  ${DIM}║${NC}  $(signal_meter $(( RANDOM % 3 + 3 )))                          ${DIM}║${NC}\n"
-  printf "  ${DIM}║${NC}  ${DIM}STAT:${NC} ${CYAN}${phase}${NC}                         ${DIM}║${NC}\n"
-  printf "  ${DIM}║${NC}  ${DIM}T+$(date +%s):${NC} $(date '+%H:%M:%S UTC')                    ${DIM}║${NC}\n"
+  printf "  ${DIM}║${NC}  $(signal_meter $(( RANDOM % 3 + 3 )))                               ${DIM}║${NC}\n"
+  printf "  ${DIM}║${NC}  ${DIM}STAT:${NC} ${CYAN}${phase}${NC}                                ${DIM}║${NC}\n"
+  printf "  ${DIM}║${NC}  ${DIM}T+$(date +%s):${NC} $(date '+%H:%M:%S UTC')                     ${DIM}║${NC}\n"
   printf "  ${DIM}╚══════════════════════════════════════════════════╝${NC}\n"
   printf "\n"
 }
@@ -420,7 +392,7 @@ download_and_install() {
     die "Download failed. Check your internet connection."
   fi
 
-  printf "\r  ${DIM}RX:${NC} [${CYAN}████████████████████${NC}] ${BOLD}100%%${NC} ${GREEN}Payload received${NC}\n"
+  printf "\r  ${DIM}RX:${NC} [${CYAN}████████████████████${NC}] ${BOLD}100%%${NC} ${GREEN}Payload received${NC}\033[K\n"
   printf "  ${DIM}Unpacking payload...${NC}\n"
   tar -xzf "${TMPDIR_INSTALL}/agentx.tar.gz" -C "$INSTALL_DIR"
   printf "  ${GREEN}✓${NC} Payload extracted to ${CYAN}%s${NC}\n" "$INSTALL_DIR"
@@ -568,10 +540,10 @@ main() {
 
   echo ""
   printf "  ${GREEN}╔══════════════════════════════════════════════════╗${NC}\n"
-  printf "  ${GREEN}║${NC}                                                ${GREEN}║${NC}\n"
-  printf "  ${GREEN}║${NC}       ${BOLD}✦  DEPLOYMENT COMPLETE  ✦${NC}            ${GREEN}║${NC}\n"
-  printf "  ${GREEN}║${NC}       ${DIM}Agent-X is now operational.${NC}           ${GREEN}║${NC}\n"
-  printf "  ${GREEN}║${NC}                                                ${GREEN}║${NC}\n"
+  printf "  ${GREEN}║${NC}                                                  ${GREEN}║${NC}\n"
+  printf "  ${GREEN}║${NC}            ${BOLD}✦  DEPLOYMENT COMPLETE  ✦${NC}            ${GREEN}║${NC}\n"
+  printf "  ${GREEN}║${NC}           ${DIM}Agent-X is now operational.${NC}           ${GREEN}║${NC}\n"
+  printf "  ${GREEN}║${NC}                                                  ${GREEN}║${NC}\n"
   printf "  ${GREEN}╚══════════════════════════════════════════════════╝${NC}\n"
   echo ""
   if [ "${INSTALL_MODE:-full}" = "tui-only" ]; then
