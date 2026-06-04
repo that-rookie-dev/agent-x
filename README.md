@@ -4,7 +4,7 @@
   <br/>
   <em>Your AI Wingman</em>
   <br/><br/>
-  Multi-provider AI agent in your terminal. 80+ tools. Session persistence. Telegram remote control.
+  Multi-provider AI agent in your terminal. 80+ tools. Session persistence. Crew-based sub-agents.
   <br/>
   One command to launch. Zero configuration required.
   <br/><br/>
@@ -15,7 +15,7 @@
 
 ## Overview
 
-Agent-X is an autonomous AI agent that lives in your terminal. It connects to multiple AI providers, wields 80+ built-in tools, remembers context across sessions, and can be commanded remotely via Telegram — all wrapped in a deep-space-themed interface that makes every interaction feel like commanding a starship.
+Agent-X is an autonomous AI agent that lives in your terminal. It connects to multiple AI providers, wields 80+ built-in tools, remembers context across sessions, and supports crew-based sub-agents for delegated expertise — all wrapped in a deep-space-themed interface that makes every interaction feel like commanding a starship.
 
 No cloud accounts. No subscriptions. Bring your own API keys and launch.
 
@@ -41,7 +41,7 @@ After installation:
 agentx
 ```
 
-A guided setup wizard walks you through provider selection, API key configuration, and preferences on first run.
+A guided setup wizard walks you through root user creation, provider selection, and API key configuration on first run.
 
 ---
 
@@ -101,9 +101,22 @@ Every tool action passes through a clearance gate:
 - Token tracking and context management
 - Session compaction when context grows large
 
-### Telegram Integration
+### Crews (Sub-Agents)
 
-Run Agent-X as a background daemon and interact with it remotely through Telegram. Shared session context, permission prompts forwarded to your phone, and full command support — your agent is always reachable.
+Define specialized crew members with distinct personalities, expertise, and system prompts. Agent-X auto-delegates relevant tasks to the right crew member based on the conversation context.
+
+```bash
+/crew list                  # List all crew members
+/crew create                # Create a new crew member
+/crew switch <name>         # Switch active crew
+/crew show <name>           # View crew details
+```
+
+Crews can be @-mentioned by callsign during conversation to direct them explicitly. No default crew — zero crews is valid.
+
+### Daemon Mode & Web-UI
+
+Run Agent-X as a background daemon and interact via your browser or the terminal. The daemon starts without requiring any bridge configuration.
 
 ```bash
 agentx start      # launch the background daemon
@@ -111,13 +124,9 @@ agentx status     # check daemon health
 agentx stop       # terminate the daemon
 ```
 
-### Profiles
+The Web-UI is available at `http://localhost:3333` whenever the daemon is running — no separate setup needed.
 
-Create multiple agent personalities — each with its own system prompt, tone, and behavioral boundaries. Switch between a DevOps specialist, a writing assistant, and a code reviewer without reconfiguring anything.
-
-### Sub-Agents
-
-Delegate complex subtasks to lightweight satellite agents with isolated tool access. The main agent orchestrates; sub-agents execute and report back.
+Optional bridges (Telegram, Discord, Slack, Email) can be configured after startup via the Web-UI Channels panel or in-terminal commands.
 
 ---
 
@@ -130,16 +139,22 @@ All configuration and control happens inside the Agent-X terminal:
 | `/help` | Show all available commands |
 | `/model <name>` | Switch AI model |
 | `/provider <name>` | Switch provider |
-| `/config` | Manage settings and API keys |
-| `/profile` | Switch or create profiles |
-| `/session list` | List saved sessions |
-| `/session restore <id>` | Restore a previous session |
-| `/clear` | Clear message history |
-| `/compact` | Summarize and compress context |
+| `/crew` | Manage crews (sub-agents) |
+| `/tools` | Browse and search available tools |
 | `/permissions` | Review and manage tool permissions |
-| `/telegram setup` | Configure Telegram bot integration |
-| `/telegram status` | Check Telegram connection |
-| `/exit` | Enter cryo-sleep |
+| `/sessions` | List saved sessions and restore |
+| `/fork` | Fork the current session into a new one |
+| `/export` | Export session as markdown or JSONL |
+| `/remember` | Save a fact to long-term memory |
+| `/telegram start <token>` | Connect Telegram bot bridge |
+| `/telegram stop` | Disconnect Telegram bridge |
+| `/telegram status` | Check Telegram bridge status |
+| `/schedule` | Manage scheduled/cron tasks |
+| `/plan` | Toggle plan mode (approve steps before execution) |
+| `/search` | Semantic codebase search using RAG |
+| `/clear` | Clear message history |
+| `/theme` | Change or persist UI theme |
+| `/exit` | Exit Agent-X |
 
 ---
 
