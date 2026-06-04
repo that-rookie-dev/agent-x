@@ -171,7 +171,7 @@ telemetry_header() {
   printf "\n"
   printf "  ${CYAN}MISSION CONTROL${NC} ${DIM}•${NC} ${BOLD}AGENT-X DEPLOYMENT${NC}\n"
   printf "  ${DIM}───────────────────────────────────────────────────${NC}\n"
-  printf "  $(signal_meter $(( RANDOM % 3 + 3 )))\n"
+  printf "$(signal_meter $(( RANDOM % 3 + 3 )))\n"
   printf "  ${DIM}STAT:${NC} ${CYAN}${phase}${NC}\n"
   printf "  ${DIM}T+$(date +%s):${NC} $(date '+%H:%M:%S UTC')\n"
   printf "\n"
