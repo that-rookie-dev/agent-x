@@ -59,35 +59,7 @@ function Get-MissionPhrase {
   return $MissionPhrases[$idx]
 }
 
-# ─── Rocket ASCII ───────────────────────────────────────────────────
 
-function Show-Rocket {
-  Write-Host "  ╔═══════════════════════════════════════════════╗" -ForegroundColor DarkGray
-  Write-Host "  ║               A G E N T - X                  ║" -ForegroundColor Cyan
-  Write-Host "  ║          WINDOWS GROUND CONTROL              ║" -ForegroundColor DarkGray
-  Write-Host "  ╚═══════════════════════════════════════════════╝" -ForegroundColor DarkGray
-  Write-Host ""
-  Write-Host "           .  .  .  .  .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "       .  .  .  .  .  .  .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "     .  .  .  .  .  .  .  .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "   .  .  .  .  ╔═══╗  .  .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "  .  .  .  .  ║ A ║  .  .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "  .  .  .  .  ╚═══╝  .  .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "   .  .  .  .  . ██ .  .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "     .  .  .  .  ██ .  .  .  ." -ForegroundColor DarkGray
-  Write-Host "       .  .  .  /██\  .  .  ." -ForegroundColor DarkGray
-  Write-Host "         .  . /  ██  \  .  ." -ForegroundColor DarkGray
-  Write-Host "           . /   ██   \  ." -ForegroundColor DarkGray
-  Write-Host "            /    ██    \" -ForegroundColor DarkGray
-  Write-Host "           /  ~  ██  ~  \" -ForegroundColor DarkGray
-  Write-Host "          /  ~ ~ ██ ~ ~  \" -ForegroundColor DarkGray
-  Write-Host "         /  ~ ~ ~██~ ~ ~  \" -ForegroundColor DarkGray
-  Write-Host "        /                \" -ForegroundColor DarkGray
-  Write-Host "       /                  \" -ForegroundColor DarkGray
-  Write-Host "      /   AGENT-X READY   \" -ForegroundColor Cyan
-  Write-Host "     /____________________\" -ForegroundColor DarkGray
-  Write-Host ""
-}
 
 # ─── Countdown ──────────────────────────────────────────────────────
 
@@ -325,8 +297,8 @@ function Run-Step($msg, [ScriptBlock]$block) {
 # ─── Main ───────────────────────────────────────────────────────────
 
 Clear-Host
-Show-Rocket
-Write-Host "  PRE-LAUNCH SEQUENCE" -ForegroundColor DarkGray
+Write-Host "  MISSION CONTROL • AGENT-X DEPLOYMENT" -ForegroundColor Cyan
+Write-Host "  ------------------------------------" -ForegroundColor DarkGray
 Write-Host ""
 
 Run-Step "Running pre-flight diagnostics" {
@@ -355,12 +327,8 @@ Run-Step "Installing auxiliary sensors (OCR)" {
 }
 
 Write-Host ""
-Write-Host "  ╔═══════════════════════════════════════════════╗" -ForegroundColor Green
-Write-Host "  ║                                               ║" -ForegroundColor Green
-Write-Host "  ║       **  DEPLOYMENT COMPLETE  **             ║" -ForegroundColor Green
-Write-Host "  ║       Agent-X is now operational.             ║" -ForegroundColor Green
-Write-Host "  ║                                               ║" -ForegroundColor Green
-Write-Host "  ╚═══════════════════════════════════════════════╝" -ForegroundColor Green
+Write-Host "  ** DEPLOYMENT COMPLETE **" -ForegroundColor Green
+Write-Host "  Agent-X is now operational." -ForegroundColor DarkGray
 Write-Host ""
 if ($script:INSTALL_MODE -eq "tui-only") {
   Write-Host "  Payload:     TUI only" -ForegroundColor Cyan

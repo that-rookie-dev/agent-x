@@ -113,12 +113,8 @@ Write-Host ""
 Remove-FromPath
 Write-Host ""
 
-Write-Host "  ╔══════════════════════════════════════════════╗" -ForegroundColor Yellow
-Write-Host "  ║                                              ║" -ForegroundColor Yellow
-Write-Host "  ║       DECOMMISSION COMPLETE                  ║" -ForegroundColor Yellow
-Write-Host "  ║       Agent-X has left the building.         ║" -ForegroundColor Yellow
-Write-Host "  ║                                              ║" -ForegroundColor Yellow
-Write-Host "  ╚══════════════════════════════════════════════╝" -ForegroundColor Yellow
+Write-Host "  ** DECOMMISSION COMPLETE **" -ForegroundColor Yellow
+Write-Host "  Agent-X has left the building." -ForegroundColor DarkGray
 Write-Host ""
 Write-Host "  Open a new terminal for PATH changes to take effect." -ForegroundColor DarkGray
 Write-Host ""

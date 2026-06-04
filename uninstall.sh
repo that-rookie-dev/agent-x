@@ -96,10 +96,8 @@ clean_path_entries() {
 # ─── Main ───────────────────────────────────────────────────────────
 
 main() {
-  printf "  ${RED}╔═══════════════════════════════════════════════╗${NC}\n"
-  printf "  ${RED}║${NC}         ${BOLD}✧  DECOMMISSION SEQUENCE  ✧${NC}           ${RED}║${NC}\n"
-  printf "  ${RED}║${NC}           ${DIM}Agent-X recall and scrub${NC}            ${RED}║${NC}\n"
-  printf "  ${RED}╚═══════════════════════════════════════════════╝${NC}\n"
+  printf "  ${BOLD}✧  DECOMMISSION SEQUENCE  ✧${NC}\n"
+  printf "  ${DIM}Agent-X recall and scrub${NC}\n"
   printf "\n"
 
   info "Initiating decommission sequence..."
@@ -135,12 +133,8 @@ main() {
   clean_path_entries
 
   printf "\n"
-  printf "  ${YELLOW}╔═══════════════════════════════════════════════╗${NC}\n"
-  printf "  ${YELLOW}║${NC}                                               ${YELLOW}║${NC}\n"
-  printf "  ${YELLOW}║${NC}         ${BOLD}✧  DECOMMISSION COMPLETE  ✧${NC}           ${YELLOW}║${NC}\n"
-  printf "  ${YELLOW}║${NC}        ${DIM}Agent-X has left the building.${NC}         ${YELLOW}║${NC}\n"
-  printf "  ${YELLOW}║${NC}                                               ${YELLOW}║${NC}\n"
-  printf "  ${YELLOW}╚═══════════════════════════════════════════════╝${NC}\n"
+  printf "  ${BOLD}✧  DECOMMISSION COMPLETE  ✧${NC}\n"
+  printf "  ${DIM}Agent-X has left the building.${NC}\n"
   printf "\n"
   printf "  ${DIM}Open a new terminal for PATH changes to take effect.${NC}\n"
   printf "  ${DIM}Safe travels, commander.${NC}\n"

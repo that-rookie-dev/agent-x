@@ -169,13 +169,11 @@ signal_meter() {
 telemetry_header() {
   local phase="$1"
   printf "\n"
-  printf "  ${DIM}╔══════════════════════════════════════════════════╗${NC}\n"
-  printf "  ${DIM}║${NC}      ${CYAN}MISSION CONTROL${NC}  ${DIM}•${NC}  ${BOLD}AGENT-X DEPLOYMENT${NC}      ${DIM}║${NC}\n"
-  printf "  ${DIM}╠══════════════════════════════════════════════════╣${NC}\n"
-  printf "  ${DIM}║${NC}$(signal_meter $(( RANDOM % 3 + 3 )))                                 ${DIM}║${NC}\n"
-  printf "  ${DIM}║${NC}  ${DIM}STAT:${NC} ${CYAN}${phase}${NC}                                ${DIM}║${NC}\n"
-  printf "  ${DIM}║${NC}  ${DIM}T+$(date +%s):${NC} $(date '+%H:%M:%S UTC')                     ${DIM}║${NC}\n"
-  printf "  ${DIM}╚══════════════════════════════════════════════════╝${NC}\n"
+  printf "  ${CYAN}MISSION CONTROL${NC} ${DIM}•${NC} ${BOLD}AGENT-X DEPLOYMENT${NC}\n"
+  printf "  ${DIM}───────────────────────────────────────────────────${NC}\n"
+  printf "  $(signal_meter $(( RANDOM % 3 + 3 )))\n"
+  printf "  ${DIM}STAT:${NC} ${CYAN}${phase}${NC}\n"
+  printf "  ${DIM}T+$(date +%s):${NC} $(date '+%H:%M:%S UTC')\n"
   printf "\n"
 }
 
@@ -199,10 +197,8 @@ countdown() {
 die() {
   stop_spinner "false" "$1" 2>/dev/null || true
   stop_progress "false" "$1" 2>/dev/null || true
-  printf "\n  ${RED}╔═══════════════════════════════════════════╗${NC}\n" >&2
-  printf "  ${RED}║${NC}  ${RED}⚠  MISSION ABORT${NC}                        ${RED}║${NC}\n" >&2
-  printf "  ${RED}║${NC}  ${RED}${1}${NC}  ${RED}║${NC}\n" >&2
-  printf "  ${RED}╚═══════════════════════════════════════════╝${NC}\n" >&2
+  printf "\n  ${RED}⚠  MISSION ABORT${NC}\n" >&2
+  printf "  ${RED}${1}${NC}\n" >&2
   if [ -f "$LOG_FILE" ]; then
     printf "  ${DIM}Full telemetry log: %s${NC}\n" "$LOG_FILE" >&2
   fi
@@ -541,12 +537,8 @@ main() {
   ensure_path
 
   echo ""
-  printf "  ${GREEN}╔══════════════════════════════════════════════════╗${NC}\n"
-  printf "  ${GREEN}║${NC}                                                  ${GREEN}║${NC}\n"
-  printf "  ${GREEN}║${NC}            ${BOLD}✦  DEPLOYMENT COMPLETE  ✦${NC}             ${GREEN}║${NC}\n"
-  printf "  ${GREEN}║${NC}           ${DIM}Agent-X is now operational.${NC}           ${GREEN}║${NC}\n"
-  printf "  ${GREEN}║${NC}                                                  ${GREEN}║${NC}\n"
-  printf "  ${GREEN}╚══════════════════════════════════════════════════╝${NC}\n"
+  printf "  ${BOLD}✦  DEPLOYMENT COMPLETE  ✦${NC}\n"
+  printf "  ${DIM}Agent-X is now operational.${NC}\n"
   echo ""
   if [ "${INSTALL_MODE:-full}" = "tui-only" ]; then
     printf "  ${CYAN}Payload:${NC}  ${BOLD}TUI only${NC}\n"
