@@ -130,23 +130,36 @@ function Remove-FromPath {
 
 # ─── Main ───────────────────────────────────────────────────────────
 
-$mode = "package"
+$mode = ""
 
-if ($Host.UI.RawUI) {
-  Write-Host "  What would you like to do?" -ForegroundColor White
-  Write-Host ""
-  Write-Host "    1) Delete Agent-X (Tool only)" -ForegroundColor White
-  Write-Host "    2) Delete All (Tool + User Data)" -ForegroundColor White
-  Write-Host ""
-  $choice = Read-Host "  Enter choice [1/2]"
-  if ($choice -match "^2|full|wipe|all$") {
-    $mode = "full"
-  }
-  Write-Host ""
-} else {
+function Read-Choice {
+  param([string]$Prompt)
+  # Try interactive Read-Host first (works in most PowerShell hosts)
+  try {
+    $result = Read-Host $Prompt
+    if ($result) { return $result }
+  } catch { }
+  # Fallback: read from console directly
+  try {
+    $result = [Console]::In.ReadLine()
+    if ($result) { return $result }
+  } catch { }
   # Non-interactive — check env var
-  $mode = if ($env:AGENTX_UNINSTALL_MODE) { $env:AGENTX_UNINSTALL_MODE } else { "package" }
+  return $env:AGENTX_UNINSTALL_MODE
 }
+
+Write-Host "  What would you like to do?" -ForegroundColor White
+Write-Host ""
+Write-Host "    1) Delete Agent-X (Tool only)" -ForegroundColor White
+Write-Host "    2) Delete All (Tool + User Data)" -ForegroundColor White
+Write-Host ""
+$choice = Read-Choice "  Enter choice [1/2]"
+if ($choice -match "^2|full|wipe|all$") {
+  $mode = "full"
+} else {
+  $mode = "package"
+}
+Write-Host ""
 
 if ($mode -eq "full") {
   Write-Host "  Full wipe - removing Agent-X and all user data..." -ForegroundColor Cyan

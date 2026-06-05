@@ -128,23 +128,27 @@ main() {
 
   MODE=""
 
+  # Try to prompt interactively even when stdin is piped (curl | bash)
   if [ -t 0 ]; then
-    printf "  What would you like to do?\n"
-    printf "\n"
-    printf "    ${BOLD}1${NC}) Delete Agent-X (Tool only)\n"
-    printf "    ${BOLD}2${NC}) Delete All (Tool + User Data)\n"
-    printf "\n"
-    printf "  Enter choice [1/2]: "
-    read -r choice
-    case "$choice" in
-      2|full|wipe|all) MODE="full" ;;
-      *) MODE="package" ;;
-    esac
-    printf "\n"
+    choice_prompt() { read -r choice; }
+  elif [ -e /dev/tty ]; then
+    choice_prompt() { read -r choice < /dev/tty; }
   else
-    # Non-interactive — check AGENTX_UNINSTALL_MODE env var
-    MODE="${AGENTX_UNINSTALL_MODE:-package}"
+    choice_prompt() { choice="${AGENTX_UNINSTALL_MODE:-package}"; }
   fi
+
+  printf "  What would you like to do?\n"
+  printf "\n"
+  printf "    ${BOLD}1${NC}) Delete Agent-X (Tool only)\n"
+  printf "    ${BOLD}2${NC}) Delete All (Tool + User Data)\n"
+  printf "\n"
+  printf "  Enter choice [1/2]: "
+  choice_prompt
+  case "$choice" in
+    2|full|wipe|all) MODE="full" ;;
+    *) MODE="package" ;;
+  esac
+  printf "\n"
 
   if [ "$MODE" = "full" ]; then
     info "Full wipe — removing Agent-X and all user data..."
