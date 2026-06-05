@@ -59,7 +59,21 @@ function Get-MissionPhrase {
   return $MissionPhrases[$idx]
 }
 
+# ─── Signal meter ─────────────────────────────────────────────────────
 
+function Show-SignalMeter {
+  param([int]$level)
+  $bars = ""
+  1..5 | ForEach-Object {
+    if ($_ -le $level) {
+      $bars += "$([char]0x2588)"  # █
+    } else {
+      $bars += "$([char]0x2591)"  # ░
+    }
+  }
+  $status = if ($level -le 1) { @{Color="Red"; Text="POOR"} } elseif ($level -le 3) { @{Color="Yellow"; Text="FAIR"} } else { @{Color="Green"; Text="LOCK"} }
+  Write-Host "  SIG: $bars $($status.Text)" -ForegroundColor $status.Color
+}
 
 # ─── Countdown ──────────────────────────────────────────────────────
 
@@ -297,8 +311,12 @@ function Run-Step($msg, [ScriptBlock]$block) {
 # ─── Main ───────────────────────────────────────────────────────────
 
 Clear-Host
+Write-Host ""
 Write-Host "  MISSION CONTROL • AGENT-X DEPLOYMENT" -ForegroundColor Cyan
 Write-Host "  ------------------------------------" -ForegroundColor DarkGray
+Show-SignalMeter -level (Get-Random -Minimum 3 -Maximum 6)
+Write-Host "  STAT: PRE-LAUNCH" -ForegroundColor Cyan
+Write-Host "  T+$([DateTimeOffset]::Now.ToUnixTimeSeconds()): $(Get-Date -Format 'HH:mm:ss UTC')" -ForegroundColor DarkGray
 Write-Host ""
 
 Run-Step "Running pre-flight diagnostics" {

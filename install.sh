@@ -158,9 +158,9 @@ signal_meter() {
     fi
   done
   case "$level" in
-    0|1) printf "${DIM}SIG:${NC} ${bars} ${RED}POOR${NC}" ;;
-    2|3) printf "${DIM}SIG:${NC} ${bars} ${YELLOW}FAIR${NC}" ;;
-    4|5) printf "${DIM}SIG:${NC} ${bars} ${GREEN}LOCK${NC}" ;;
+    0|1) printf "  ${DIM}SIG:${NC} ${bars} ${RED}POOR${NC}" ;;
+    2|3) printf "  ${DIM}SIG:${NC} ${bars} ${YELLOW}FAIR${NC}" ;;
+    4|5) printf "  ${DIM}SIG:${NC} ${bars} ${GREEN}LOCK${NC}" ;;
   esac
 }
 
