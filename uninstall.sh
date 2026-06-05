@@ -86,9 +86,20 @@ remove_global_package() {
 remove_all_data() {
   local removed=false
 
+  # Core user directories
   [ -d "$CONFIG_DIR" ] && rm -rf "$CONFIG_DIR" && ok "Removed config: $CONFIG_DIR" && removed=true
   [ -d "$DATA_DIR" ]   && rm -rf "$DATA_DIR"   && ok "Removed data: $DATA_DIR"   && removed=true
-  [ -d "$CACHE_DIR" ]  && rm -rf "$CACHE_DIR"  && ok "Removed cache: $CACHE_DIR"  && removed=true
+  [ -d "$CACHE_DIR"  ] && rm -rf "$CACHE_DIR"  && ok "Removed cache: $CACHE_DIR"  && removed=true
+
+  # Scrub any leftover Agent-X artifacts in standard XDG paths
+  rm -f "$HOME/.local/bin/agentx" "$HOME/.local/bin/agentx.cmd" 2>/dev/null || true
+
+  # Clear shell history entries referencing agentx
+  if command -v sed >/dev/null 2>&1; then
+    for hist in "$HOME/.bash_history" "$HOME/.zsh_history"; do
+      [ -f "$hist" ] && sed -i '/agentx/d' "$hist" 2>/dev/null || true
+    done
+  fi
 
   if [ "$removed" = false ]; then
     info "No user data found (skipped)"
@@ -120,13 +131,13 @@ main() {
   if [ -t 0 ]; then
     printf "  What would you like to do?\n"
     printf "\n"
-    printf "    ${BOLD}1${NC}) Just uninstall Agent-X (keep config, data, credentials)\n"
-    printf "    ${BOLD}2${NC}) Full wipe — remove everything including config, credentials, and user data\n"
+    printf "    ${BOLD}1${NC}) Delete Agent-X (Tool only)\n"
+    printf "    ${BOLD}2${NC}) Delete All (Tool + User Data)\n"
     printf "\n"
     printf "  Enter choice [1/2]: "
     read -r choice
     case "$choice" in
-      2|full|wipe) MODE="full" ;;
+      2|full|wipe|all) MODE="full" ;;
       *) MODE="package" ;;
     esac
     printf "\n"
@@ -136,9 +147,9 @@ main() {
   fi
 
   if [ "$MODE" = "full" ]; then
-    info "Initiating full wipe sequence..."
+    info "Full wipe — removing Agent-X and all user data..."
   else
-    info "Initiating package removal (keeping user data)..."
+    info "Removing Agent-X (keeping config, credentials, and data)..."
   fi
   printf "\n"
 
@@ -153,10 +164,10 @@ main() {
   printf "\n"
 
   if [ "$MODE" = "full" ]; then
-    info "Proceeding with data removal..."
+    info "Scrubbing all user data..."
     remove_all_data
   else
-    info "Preserving user data at:"
+    info "Preserved user data:"
     [ -d "$CONFIG_DIR" ] && printf "    • Config:  $CONFIG_DIR\n"
     [ -d "$DATA_DIR" ]   && printf "    • Data:    $DATA_DIR\n"
     [ -d "$CACHE_DIR" ]  && printf "    • Cache:   $CACHE_DIR\n"
@@ -166,7 +177,9 @@ main() {
   printf "\n"
   printf "  ${BOLD}✧  DECOMMISSION COMPLETE  ✧${NC}\n"
   printf "  ${DIM}Open a new terminal for PATH changes to take effect.${NC}\n"
-  printf "  ${DIM}Safe travels, commander.${NC}\n"
+  if [ "$MODE" = "full" ]; then
+    printf "  ${DIM}All Agent-X artifacts have been removed from this system.${NC}\n"
+  fi
   printf "\n"
 }
 

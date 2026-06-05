@@ -80,6 +80,7 @@ function Remove-GlobalPackage {
 function Remove-AllData {
   $removed = $false
 
+  # Core user directories
   if (Test-Path $ConfigDir) {
     Remove-Item -Recurse -Force $ConfigDir
     Write-Host "  $([char]0x2713) Removed config: $ConfigDir" -ForegroundColor Green
@@ -94,6 +95,21 @@ function Remove-AllData {
     Remove-Item -Recurse -Force $CacheDir
     Write-Host "  $([char]0x2713) Removed cache: $CacheDir" -ForegroundColor Green
     $removed = $true
+  }
+
+  # Scrub lingering binary symlinks
+  $localBin = "$env:USERPROFILE\.local\bin"
+  if (Test-Path "$localBin\agentx")    { Remove-Item -Force "$localBin\agentx" }
+  if (Test-Path "$localBin\agentx.cmd"){ Remove-Item -Force "$localBin\agentx.cmd" }
+
+  # Clear PowerShell history entries referencing agentx
+  $historyPath = "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt"
+  if (Test-Path $historyPath) {
+    try {
+      $content = Get-Content $historyPath -Raw
+      $filtered = $content -split "`n" | Where-Object { $_ -notmatch 'agentx' }
+      $filtered -join "`n" | Out-File $historyPath -Encoding utf8NoBOM
+    } catch { }
   }
 
   if (-not $removed) {
@@ -119,11 +135,11 @@ $mode = "package"
 if ($Host.UI.RawUI) {
   Write-Host "  What would you like to do?" -ForegroundColor White
   Write-Host ""
-  Write-Host "    1) Just uninstall Agent-X (keep config, data, credentials)" -ForegroundColor White
-  Write-Host "    2) Full wipe - remove everything including config, credentials, and user data" -ForegroundColor White
+  Write-Host "    1) Delete Agent-X (Tool only)" -ForegroundColor White
+  Write-Host "    2) Delete All (Tool + User Data)" -ForegroundColor White
   Write-Host ""
   $choice = Read-Host "  Enter choice [1/2]"
-  if ($choice -match "^2|full|wipe$") {
+  if ($choice -match "^2|full|wipe|all$") {
     $mode = "full"
   }
   Write-Host ""
@@ -133,9 +149,9 @@ if ($Host.UI.RawUI) {
 }
 
 if ($mode -eq "full") {
-  Write-Host "  Initiating full wipe sequence..." -ForegroundColor Cyan
+  Write-Host "  Full wipe - removing Agent-X and all user data..." -ForegroundColor Cyan
 } else {
-  Write-Host "  Initiating package removal (keeping user data)..." -ForegroundColor Cyan
+  Write-Host "  Removing Agent-X (keeping config, credentials, and data)..." -ForegroundColor Cyan
 }
 Write-Host ""
 
@@ -149,10 +165,10 @@ Remove-FromPath
 Write-Host ""
 
 if ($mode -eq "full") {
-  Write-Host "  Proceeding with data removal..." -ForegroundColor Cyan
+  Write-Host "  Scrubbing all user data..." -ForegroundColor Cyan
   Remove-AllData
 } else {
-  Write-Host "  Preserving user data at:" -ForegroundColor Cyan
+  Write-Host "  Preserved user data:" -ForegroundColor Cyan
   $found = $false
   if (Test-Path $ConfigDir) { Write-Host "    - Config:  $ConfigDir"; $found = $true }
   if (Test-Path $DataDir)   { Write-Host "    - Data:    $DataDir"; $found = $true }
@@ -163,4 +179,7 @@ if ($mode -eq "full") {
 Write-Host ""
 Write-Host "  ** DECOMMISSION COMPLETE **" -ForegroundColor Yellow
 Write-Host "  Open a new terminal for PATH changes to take effect." -ForegroundColor DarkGray
+if ($mode -eq "full") {
+  Write-Host "  All Agent-X artifacts have been removed from this system." -ForegroundColor DarkGray
+}
 Write-Host ""
