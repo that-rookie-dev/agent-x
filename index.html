@@ -820,18 +820,43 @@
     }
     .crew-msg {
       display: flex;
-      gap: 12px;
-      padding: 10px 14px;
+      gap: 10px;
+      padding: 6px 14px;
       border-radius: 8px;
       opacity: 0;
+      align-items: flex-start;
     }
     .crew-msg.revealed {
       animation: msgIn 0.5s ease forwards;
+    }
+    .crew-msg.user {
+      flex-direction: row-reverse;
+    }
+    .crew-msg.user .crew-body {
+      text-align: right;
+    }
+    .crew-msg.user .byline {
+      text-align: right;
     }
     @keyframes msgIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .crew-bubble {
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.035);
+      max-width: 60%;
+    }
+    .crew-msg.user .crew-bubble {
+      margin-left: auto;
+    }
+    .crew-msg.agent .crew-bubble { background: rgba(255,255,255,0.035); }
+    .crew-msg.architect .crew-bubble { background: rgba(240,192,64,0.06); }
+    .crew-msg.designer .crew-bubble { background: rgba(64,196,255,0.06); }
+    .crew-msg.dev .crew-bubble { background: rgba(105,240,174,0.06); }
+    .crew-msg.devops .crew-bubble { background: rgba(179,136,255,0.06); }
+    .crew-msg.user .crew-bubble { background: rgba(255,255,255,0.07); }
     .crew-avatar {
       width: 32px;
       height: 32px;
@@ -896,7 +921,7 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      padding: 6px 14px 6px 58px;
+      padding: 6px 14px 6px 56px;
       opacity: 0;
     }
     .crew-typing.revealed {
@@ -4216,11 +4241,11 @@
     const CREW_SCRIPT = [
       { role: 'user', name: 'You', text: '<b>@agentx</b> I want to build a professional networking platform like LinkedIn. Can you plan the full microservice architecture?', avatar: 'user', byline: 'user' },
       { role: 'agent', name: 'Agent-X', text: 'Absolutely. This needs multiple specialists. Let me assemble the crew.', avatar: 'agent', byline: 'agent' },
-      { role: 'agent', name: 'Agent-X', text: '<span style="color:#888;">Calling in:</span><br><b style="color:#f0c040;">@harvy</b> · <b style="color:#40c4ff;">@mike</b> · <b style="color:#69f0ae;">@johnsnow</b> · <b style="color:#b388ff;">@arya</b><br><br><span style="color:#888;">All four, working in parallel. Here\'s what they report:</span>', avatar: 'agent', byline: 'agent' },
-      { role: 'architect', name: 'Harvy', text: 'I\'ve analyzed the domain model. Recommending 7 microservices coupled via event-driven architecture. Each service owns its data store. API gateway at the edge for auth and routing. Let me know your throughput expectations — I\'ll size the clusters accordingly.', avatar: 'architect', byline: 'architect' },
-      { role: 'designer', name: 'Mike', text: 'Starting the design system. Profile pages, connection graphs, feed layouts, messaging UI, job boards — I\'ll have a component library ready. I\'ll focus on the profile experience first since it\'s the core identity touchpoint.', avatar: 'designer', byline: 'designer' },
+      { role: 'agent', name: 'Agent-X', text: '<span style="color:#888;">Calling in:</span><br><b style="color:#f0c040;">@harvey_specter</b> · <b style="color:#40c4ff;">@mike_ross</b> · <b style="color:#69f0ae;">@john_snow</b> · <b style="color:#b388ff;">@arya_stark</b><br><br><span style="color:#888;">All four, working in parallel. Here\'s what they report:</span>', avatar: 'agent', byline: 'agent' },
+      { role: 'architect', name: 'Harvey Specter', text: 'I\'ve analyzed the domain model. Recommending 7 microservices coupled via event-driven architecture. Each service owns its data store. API gateway at the edge for auth and routing. Let me know your throughput expectations — I\'ll size the clusters accordingly.', avatar: 'architect', byline: 'architect' },
+      { role: 'designer', name: 'Mike Ross', text: 'Starting the design system. Profile pages, connection graphs, feed layouts, messaging UI, job boards — I\'ll have a component library ready. I\'ll focus on the profile experience first since it\'s the core identity touchpoint.', avatar: 'designer', byline: 'designer' },
       { role: 'dev', name: 'John Snow', text: 'Spinning up the backend and frontend scaffolds. Node services with PostgreSQL and some document stores for feed content. React frontend with TypeScript. I\'ll begin with user registration and feed — those unlock the rest of the flow.', avatar: 'dev', byline: 'dev' },
-      { role: 'devops', name: 'Arya', text: 'Setting up the infra pipeline. Docker images, K8s manifests, CI/CD per service, monitoring stack. Blue-green deploys with auto-rollback. I\'ll have the first environment ready before the first service needs deployment.', avatar: 'devops', byline: 'devops' },
+      { role: 'devops', name: 'Arya Stark', text: 'Setting up the infra pipeline. Docker images, K8s manifests, CI/CD per service, monitoring stack. Blue-green deploys with auto-rollback. I\'ll have the first environment ready before the first service needs deployment.', avatar: 'devops', byline: 'devops' },
       { role: 'agent', name: 'Agent-X', text: 'All crew members are working in parallel. <b>Timeline:</b> Architecture in 2 days · Design system in 4 days · MVP services in 2 weeks · Pipeline in 3 days — all simultaneous. I\'ll coordinate and keep you updated. <span style="color:#888;">Ready to start?</span>', avatar: 'agent', byline: 'agent' },
     ];
 
@@ -4231,7 +4256,7 @@
       function buildMessages() {
         CREW_SCRIPT.forEach((msg, i) => {
           const m = document.createElement('div');
-          m.className = 'crew-msg';
+          m.className = 'crew-msg ' + msg.avatar;
           m.dataset.idx = i;
 
           const a = document.createElement('div');
@@ -4245,12 +4270,12 @@
           bl.className = 'byline ' + msg.byline;
           bl.textContent = msg.name;
 
-          const t = document.createElement('div');
-          t.className = 'text';
-          t.innerHTML = msg.text;
+          const bubble = document.createElement('div');
+          bubble.className = 'crew-bubble';
+          bubble.innerHTML = msg.text;
 
           b.appendChild(bl);
-          b.appendChild(t);
+          b.appendChild(bubble);
           m.appendChild(a);
           m.appendChild(b);
           body.appendChild(m);
