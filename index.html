@@ -272,6 +272,40 @@
     .gh-announce .gh-stars-text #ghCurrent {
       font-weight: 700;
     }
+    .news-chip {
+      text-align: center;
+      margin-top: 20px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .news-chip-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+    }
+    .news-chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #58a6ff;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .news-chip-text {
+      color: #aaa;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+    .news-chip-text strong {
+      color: #fff;
+      font-weight: 600;
+    }
     .hero-scroll {
       position: absolute;
       bottom: 32px;
@@ -700,46 +734,47 @@
       border-top: 1px solid #1a1a1a;
     }
     .provider-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
       gap: 0;
       margin-top: 48px;
-      padding: 40px 24px;
+      padding: 32px 16px;
       border: 1px solid #1a1a1a;
       border-radius: 8px;
-      flex-wrap: wrap;
+      text-align: center;
     }
     .provider-card {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
-      padding: 8px 20px;
-      transition: opacity .2s ease;
+      gap: 10px;
+      padding: 16px 12px;
+      transition: opacity .2s ease, transform .2s ease;
     }
     .provider-card:hover {
-      opacity: .7;
+      opacity: .8;
+      transform: translateY(-2px);
     }
     .provider-icon {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
+    .provider-icon svg {
+      width: 40px;
+      height: 40px;
+    }
     .provider-name {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.65rem;
       letter-spacing: 1px;
       text-transform: uppercase;
       color: #888;
     }
     .provider-divider {
-      width: 1px;
-      height: 60px;
-      background: #1a1a1a;
-      flex-shrink: 0;
+      display: none;
     }
     .provider-footer {
       text-align: center;
@@ -748,10 +783,16 @@
       color: #666;
       margin-top: 24px;
     }
-    @media (max-width: 768px) {
-      .provider-divider { display: none; }
-      .provider-row { gap: 24px; padding: 32px 20px; }
-      .provider-card { flex: 0 0 calc(33% - 24px); }
+    @media (max-width: 1024px) {
+      .provider-row {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .provider-row {
+        grid-template-columns: repeat(3, 1fr);
+        padding: 24px 8px;
+      }
     }
 
     /* ===== Crew ===== */
@@ -2569,9 +2610,7 @@
             </svg>
           </div>
           <div class="provider-name">OpenAI</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <path d="M24 8 L42 40 H6 Z" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2579,9 +2618,7 @@
             </svg>
           </div>
           <div class="provider-name">Claude</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <path d="M24 6 L42 24 L24 42 L6 24 Z" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2589,18 +2626,14 @@
             </svg>
           </div>
           <div class="provider-name">Gemini</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <path d="M4 36 L12 22 L20 30 L28 14 L36 24 L44 16 V36 H4 Z" fill="none" stroke="#fff" stroke-width="1.2"/>
             </svg>
           </div>
           <div class="provider-name">Ollama</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <rect x="6" y="6" width="36" height="36" rx="8" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2608,9 +2641,7 @@
             </svg>
           </div>
           <div class="provider-name">LM Studio</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <circle cx="24" cy="24" r="20" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2619,9 +2650,7 @@
             </svg>
           </div>
           <div class="provider-name">Moonshot</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <rect x="8" y="8" width="32" height="32" rx="4" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2629,9 +2658,7 @@
             </svg>
           </div>
           <div class="provider-name">DeepSeek</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <path d="M12 12 L36 12 L36 36 L12 36 Z" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2639,9 +2666,7 @@
             </svg>
           </div>
           <div class="provider-name">Groq</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <path d="M24 8 L40 38 L8 38 Z" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2649,9 +2674,7 @@
             </svg>
           </div>
           <div class="provider-name">Mistral</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <circle cx="24" cy="24" r="18" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2659,9 +2682,7 @@
             </svg>
           </div>
           <div class="provider-name">Together</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <path d="M12 36 L24 12 L36 36" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2669,9 +2690,7 @@
             </svg>
           </div>
           <div class="provider-name">xAI</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <circle cx="24" cy="24" r="18" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2679,9 +2698,7 @@
             </svg>
           </div>
           <div class="provider-name">Fireworks</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <circle cx="24" cy="24" r="18" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2690,9 +2707,7 @@
             </svg>
           </div>
           <div class="provider-name">Perplexity</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <rect x="6" y="6" width="36" height="36" rx="6" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2700,9 +2715,7 @@
             </svg>
           </div>
           <div class="provider-name">Cohere</div>
-        </div>
-        <div class="provider-divider"></div>
-        <div class="provider-card">
+        </div>        <div class="provider-card">
           <div class="provider-icon">
             <svg width="48" height="48" viewBox="0 0 48 48">
               <path d="M8 36 L24 8 L40 36 Z" fill="none" stroke="#fff" stroke-width="1.2"/>
@@ -2711,6 +2724,20 @@
           </div>
           <div class="provider-name">Azure</div>
         </div>
+        <div class="provider-card">
+          <div class="provider-icon">
+            <svg width="40" height="40" viewBox="0 0 48 48">
+              <rect x="5" y="8" width="38" height="32" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/>
+              <rect x="5" y="8" width="38" height="8" rx="4" fill="#58a6ff" opacity="0.15"/>
+              <circle cx="11" cy="12" r="2" fill="#f85149"/>
+              <circle cx="19" cy="12" r="2" fill="#d29922"/>
+              <circle cx="27" cy="12" r="2" fill="#3fb950"/>
+              <text x="24" y="32" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#58a6ff" font-weight="700">$ cmd</text>
+            </svg>
+          </div>
+          <div class="provider-name">CmdCode</div>
+        </div>
+
       </div>
 
       <p class="provider-footer reveal">Bring any provider. Switch mid-conversation. No subscription. No lock-in.<span class="cursor-blink" style="margin-left:6px;"></span></p>
