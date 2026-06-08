@@ -2347,6 +2347,9 @@
       <a href="#install" class="btn btn-primary">
         <span>&#x2193;</span> Install Now
       </a>
+      <a href="#" class="btn btn-secondary" id="downloadBtn">
+        <span>&#x2193;</span> Download
+      </a>
       <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener" class="btn btn-secondary" id="githubBtn">
         Star on GitHub
       </a>
@@ -4527,6 +4530,46 @@
       emailBtn.addEventListener('click', function() {
         window.location.href = 'mailto:sr@slashpan.com?subject=Joining%20AGENT-X%20Crew';
       });
+    })();
+
+    // ===== Download Button — fetch latest release and match OS =====
+    (function() {
+      var btn = document.getElementById('downloadBtn');
+      if (!btn) return;
+
+      // Fallback: link to releases page
+      btn.href = 'https://github.com/SlashpanOrg/agent-x/releases/latest';
+      btn.target = '_blank';
+
+      var ua = navigator.userAgent || navigator.platform || '';
+
+      function matchOS(asset) {
+        var n = asset.name.toLowerCase();
+        if (/Mac|iPhone|iPad|iPod/.test(ua)) {
+          return n.endsWith('.dmg');
+        } else if (/Win/.test(ua)) {
+          return n.includes('setup') && n.endsWith('.exe');
+        } else {
+          return n.endsWith('.appimage');
+        }
+      }
+
+      function setButton(asset) {
+        btn.href = asset.browser_download_url;
+        btn.target = '_self';
+        var label = /Mac|iPhone|iPad|iPod/.test(ua) ? 'Download for macOS' :
+                    /Win/.test(ua) ? 'Download for Windows' : 'Download for Linux';
+        btn.innerHTML = '<span>&#x2193;</span> ' + label;
+      }
+
+      fetch('https://api.github.com/repos/SlashpanOrg/agent-x/releases/latest')
+        .then(function(r) { return r.json(); })
+        .then(function(release) {
+          if (!release || !release.assets) return;
+          var matched = release.assets.find(matchOS);
+          if (matched) setButton(matched);
+        })
+        .catch(function() {});
     })();
 
   </script>
