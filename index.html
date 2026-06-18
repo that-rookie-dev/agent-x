@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AGENT-X : Your AI Wingman</title>
-  <meta name="description" content="AGENT-X is a free AI agent with 183+ tools, 16 providers, 4 messaging bridges, 22 MCP servers, multi-agent mesh, space-themed Web-UI, and persistent memory. Made in India." />
+  <meta name="description" content="AGENT-X is a free AI agent with 183+ tools, 16 providers, 4 messaging bridges, 22 MCP servers, multi-agent mesh, native desktop app, space-themed Web-UI, and persistent memory. Made in India." />
   <meta property="og:title" content="AGENT-X — Your AI Wingman" />
-  <meta property="og:description" content="Free AI agent with 183+ tools, 16 providers, 4 bridges, 22 MCP servers, and persistent memory. Made in India." />
+  <meta property="og:description" content="Free AI agent with 183+ tools, 16 providers, 4 bridges, 22 MCP servers, native desktop app, and persistent memory. Made in India." />
   <meta property="og:image" content="https://slashpanorg.github.io/agent-x/assets/social_preview.png" />
   <meta property="og:image:width" content="1280" />
   <meta property="og:image:height" content="640" />
@@ -2344,11 +2344,8 @@
     </div>
 
     <div class="hero-actions reveal reveal-delay-4">
-      <a href="#install" class="btn btn-primary">
-        <span>&#x2193;</span> Install Now
-      </a>
-      <a href="#" class="btn btn-secondary" id="downloadBtn">
-        <span>&#x2193;</span> Download
+      <a href="https://github.com/SlashpanOrg/agent-x/releases/latest" class="btn btn-primary" id="downloadBtn">
+        <span>&#x2193;</span> Download Now
       </a>
       <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener" class="btn btn-secondary" id="githubBtn">
         Star on GitHub
@@ -2368,7 +2365,7 @@
     <div class="container">
       <div class="section-label reveal">Get Started</div>
       <h2 class="section-title reveal reveal-delay-1">
-        Launch in 10 seconds.
+        Download &amp; Launch.
       </h2>
 
       <div class="install-layout">
@@ -2385,28 +2382,30 @@
             <button class="os-tab" data-os="windows" onclick="switchOS('windows')">Windows</button>
           </div>
           <div class="terminal-body">
-            <span class="prompt" id="termPrompt">$</span> <span class="cmd" id="termCmd">curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash</span><button class="copy-btn" id="copyBtn" onclick="copyCommand()" title="Copy command">⧉<span class="copy-feedback" id="copyFeedback">Copied!</span></button><br />
-            <span class="output">&#x25B6; Running pre-flight diagnostics...</span><br />
-            <span class="output">&#x25B6; Downloading payload from orbit...</span><br />
-            <span class="output">&#x25B6; Calibrating neural pathways...</span><br />
-            <span class="success">&#x2713; Agent-X v0.7.3 installed</span><br />
+            <span class="output">&#x25B6; Downloading Agent-X Desktop...</span><br />
+            <span class="output">&#x25B6; Verifying package integrity...</span><br />
+            <span class="output">&#x25B6; Installing native modules...</span><br />
+            <span class="success">&#x2713; Agent-X Desktop installed</span><br />
             <br />
-            <span class="prompt">$</span> <span class="cmd">agentx</span><br />
-            <span class="success">&#x25B6; Launching Mission Control...</span><span class="cursor-blink"></span>
+            <span class="prompt">$</span> <span class="cmd">launch</span><br />
+            <span class="output">&#x25B6; Initializing engine...</span><br />
+            <span class="output">&#x25B6; Loading 183 tools across 23 categories...</span><br />
+            <span class="output">&#x25B6; Establishing persistent memory...</span><br />
+            <span class="success">&#x2713; Mission Control Online</span><span class="cursor-blink"></span>
           </div>
         </div>
 
         <div class="install-info reveal reveal-delay-1">
-          <h3>One command. Zero config.</h3>
+          <h3>Native Desktop App</h3>
           <p>
-            AGENT-X is a single binary. No Docker required (though we have one). No cloud account. No data leaving your machine unless you want it to.
+            Download, install, launch. No account. No cloud. Your data stays on your machine — always.
           </p>
           <p>
-            Works on macOS and Linux natively. Windows via PowerShell. Compatible with all major LLM providers — or none at all if you run local models.
+            Available for macOS, Windows, and Linux. Bring your own API key for any LLM provider, or run a local model with zero subscription.
           </p>
           <p class="small">
             <span style="color:#888;">Detected your system as</span> <span id="detectedOS" style="font-family:'JetBrains Mono',monospace;color:#fff;text-transform:uppercase;">macOS</span><br />
-            Already have it? Run <code style="font-family:'JetBrains Mono',monospace;color:#888;">agentx update</code> to get the latest.
+            <a href="https://github.com/SlashpanOrg/agent-x/releases/latest" target="_blank" rel="noopener" style="font-family:'JetBrains Mono',monospace;color:#888;text-decoration:underline;text-underline-offset:3px;">Download for <span id="downloadOSLabel">macOS</span> &rarr;</a>
           </p>
         </div>
       </div>
@@ -2585,7 +2584,7 @@
         <div class="wingman-col">
           <h3 class="reveal reveal-delay-3">AGENT-X</h3>
           <div class="wingman-item reveal"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">16 providers, local &amp; cloud</div><div class="wingman-desc">OpenAI, Anthropic, Google, Ollama, LM Studio — bring your own or run free</div></div></div>
-          <div class="wingman-item reveal reveal-delay-1"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Terminal + Telegram + more</div><div class="wingman-desc">Full TUI, CLI, Telegram bridge, and an extensible integration layer</div></div></div>
+          <div class="wingman-item reveal reveal-delay-1"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Desktop + Web + Telegram</div><div class="wingman-desc">Native desktop app, browser dashboard, and Telegram on your phone</div></div></div>
           <div class="wingman-item reveal reveal-delay-2"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Cron-scheduled automation</div><div class="wingman-desc">Natural language scheduling. Backups, reports, briefings — on autopilot</div></div></div>
           <div class="wingman-item reveal reveal-delay-3"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Persistent Secret Sauce memory</div><div class="wingman-desc">Soul, identity, diary, crew memories — it remembers who you are</div></div></div>
         </div>
@@ -2772,7 +2771,7 @@
         </div>
       </div>
 
-      <p class="crew-footer reveal">Summon any specialist mid-conversation. @mentions work everywhere — TUI, Web-UI, Telegram.</p>
+      <p class="crew-footer reveal">Summon any specialist mid-conversation. @mentions work everywhere — Desktop, Web-UI, Telegram.</p>
     </div>
   </section>
 
@@ -2863,7 +2862,7 @@
             <tr><td>Local LLM (Ollama)</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="partial">~ Via proxy</span></td></tr>
             <tr><td>Crew Profiles</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
             <tr><td>Permission System</td><td><span class="check">&#x2713;</span></td><td><span class="partial">~ Basic</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
-            <tr><td>Terminal UI (TUI)</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span> Web UI</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
+            <tr><td>Desktop App</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
             <tr><td>Web UI</td><td><span class="check">&#x2713;</span> <span style="color:#888;font-size:0.7rem;">New</span></td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
             <tr><td>Made in India</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
           </tbody>
@@ -3128,11 +3127,11 @@
     <div class="container">
       <div class="section-label reveal">Web UI</div>
       <h2 class="section-title reveal reveal-delay-1">
-        Terminal Power.<br class="hide-desktop" /><span class="accent"> Browser&nbsp;Ease.</span>
+        Engine Power.<br class="hide-desktop" /><span class="accent"> Browser&nbsp;Ease.</span>
       </h2>
       <p class="section-sub reveal reveal-delay-2">
         Same engine. Same privacy. Zero cloud. AGENT-X Web gives you the full power of our AI agent
-        through a beautiful browser interface &mdash; no terminal skills required.
+        through a beautiful browser interface &mdash; no setup required.
       </p>
 
       <div class="web-mockup reveal reveal-delay-3">
@@ -3307,7 +3306,7 @@
               <span class="terminal-dot"></span>
               <span class="terminal-dot"></span>
               <span class="terminal-dot"></span>
-              <span class="terminal-title">AGENT-X Terminal</span>
+              <span class="terminal-title">AGENT-X Engine</span>
             </div>
             <div class="terminal-body" id="terminalBody"></div>
           </div>
@@ -4133,9 +4132,9 @@
     (function() {
       const phrases = [
         'Plotting trajectory...',
-        '180+ tools at your command',
+        '183+ tools at your command',
         '16 AI providers — local & cloud',
-        'Full Telegram Bridge',
+        'Native Desktop App + Web Dashboard',
         'Cron-powered scheduler',
         'Persistent Secret Sauce memory',
         'Parallel sub-agent system',
@@ -4191,21 +4190,9 @@
 
     // ===== OS Detection & Tab Switching =====
     const OS_CONFIG = {
-      macos: {
-        prompt: '$',
-        cmd: 'curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash',
-        label: 'macOS',
-      },
-      linux: {
-        prompt: '$',
-        cmd: 'curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash',
-        label: 'Linux',
-      },
-      windows: {
-        prompt: '>',
-        cmd: 'powershell -c "irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.ps1 | iex"',
-        label: 'Windows',
-      },
+      macos: { label: 'macOS' },
+      linux: { label: 'Linux' },
+      windows: { label: 'Windows' },
     };
 
     function detectOS() {
@@ -4220,32 +4207,15 @@
       const config = OS_CONFIG[os];
       if (!config) return;
 
-      document.getElementById('termPrompt').textContent = config.prompt;
-      document.getElementById('termCmd').textContent = config.cmd;
-
       document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
       document.querySelector(`.os-tab[data-os="${os}"]`).classList.add('active');
 
       document.getElementById('detectedOS').textContent = config.label;
+      document.getElementById('downloadOSLabel').textContent = config.label;
     }
 
     // Auto-detect on load
     switchOS(detectOS());
-
-    // ===== Copy to Clipboard =====
-    function copyCommand() {
-      const cmd = document.getElementById('termCmd').textContent;
-      navigator.clipboard.writeText(cmd).then(() => {
-        const btn = document.getElementById('copyBtn');
-        const feedback = document.getElementById('copyFeedback');
-        btn.classList.add('copied');
-        feedback.classList.add('show');
-        setTimeout(() => {
-          btn.classList.remove('copied');
-          feedback.classList.remove('show');
-        }, 1500);
-      });
-    }
 
     // ===== GitHub Stars & Version =====
     (function() {
@@ -4537,26 +4507,17 @@
       var btn = document.getElementById('downloadBtn');
       if (!btn) return;
 
-      // Fallback: link to releases page
-      btn.href = 'https://github.com/SlashpanOrg/agent-x/releases/latest';
-      btn.target = '_blank';
-
       var ua = navigator.userAgent || navigator.platform || '';
 
       function matchOS(asset) {
         var n = asset.name.toLowerCase();
-        if (/Mac|iPhone|iPad|iPod/.test(ua)) {
-          return n.endsWith('.dmg');
-        } else if (/Win/.test(ua)) {
-          return n.includes('setup') && n.endsWith('.exe');
-        } else {
-          return n.endsWith('.appimage');
-        }
+        if (/Mac|iPhone|iPad|iPod/.test(ua)) return n.endsWith('.dmg');
+        if (/Win/.test(ua)) return n.includes('setup') && n.endsWith('.exe');
+        return n.endsWith('.appimage');
       }
 
       function setButton(asset) {
         btn.href = asset.browser_download_url;
-        btn.target = '_self';
         var label = /Mac|iPhone|iPad|iPod/.test(ua) ? 'Download for macOS' :
                     /Win/.test(ua) ? 'Download for Windows' : 'Download for Linux';
         btn.innerHTML = '<span>&#x2193;</span> ' + label;
