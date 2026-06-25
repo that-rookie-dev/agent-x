@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AGENT-X : Your AI Wingman</title>
-  <meta name="description" content="AGENT-X is a free AI agent with 183+ tools, 16 providers, 4 messaging bridges, 22 MCP servers, multi-agent mesh, native desktop app, space-themed Web-UI, and persistent memory. Made in India." />
+  <title>AGENT-X — Your AI Wingman | 4,900 Crew · 183 Tools · Local-First Agent</title>
+  <meta name="description" content="Free local-first AI agent with 4,900 Crew Hub specialists, 183 tools, Plan/Hyperdrive modes, 6 messaging bridges, AES-256 encrypted storage, and native desktop for macOS, Windows, and Linux. Made in India." />
   <meta property="og:title" content="AGENT-X — Your AI Wingman" />
-  <meta property="og:description" content="Free AI agent with 183+ tools, 16 providers, 4 bridges, 22 MCP servers, native desktop app, and persistent memory. Made in India." />
+  <meta property="og:description" content="4,900 crew specialists, 183 tools, Mission Control console, Plan to Hyperdrive autonomy, encrypted vault — desktop for macOS, Windows, and Linux. Made in India." />
   <meta property="og:image" content="https://slashpanorg.github.io/agent-x/assets/social_preview.png" />
   <meta property="og:image:width" content="1280" />
   <meta property="og:image:height" content="640" />
@@ -40,35 +40,6 @@
       width: 100%; height: 100%;
       z-index: -1;
       pointer-events: none;
-    }
-
-    /* ===== Scan line overlay ===== */
-    #scanlines {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -2;
-      pointer-events: none;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.015) 2px,
-        rgba(255,255,255,0.015) 4px
-      );
-    }
-
-    /* ===== Grid overlay ===== */
-    #grid-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
     }
 
     /* ===== Utility ===== */
@@ -136,33 +107,74 @@
     }
 
     /* ===== Hero ===== */
-    .beta-banner {
+    /* ===== Top Band (nav + version) ===== */
+    .top-band {
       position: sticky;
       top: 0;
       z-index: 100;
-      width: 100%;
-      padding: 8px 24px;
-      background: #0a0a0a;
+      display: flex;
+      align-items: stretch;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(8px);
       border-bottom: 1px solid #1a1a1a;
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      color: #fff;
-      font-weight: 600;
-      text-transform: uppercase;
+    }
+    .section-nav {
+      flex: 1;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 32px;
+      flex-wrap: nowrap;
+      gap: 4px 20px;
+      padding: 10px 16px 10px 24px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
-    .beta-banner a {
-      font-size: 0.65rem;
+    .section-nav::-webkit-scrollbar { display: none; }
+    .section-nav a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       color: #555;
-      letter-spacing: 1px;
       transition: color .2s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .beta-banner a:hover { color: #fff; opacity: 1; }
+    .section-nav a:hover { color: #fff; opacity: 1; }
+    .section-nav a.active { color: #ccc; }
+    .top-band-meta {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px 10px 16px;
+      border-left: 1px solid #1a1a1a;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #888;
+    }
+    .top-band-meta #betaVersion {
+      color: #ccc;
+      font-weight: 600;
+    }
+    .beta-tag {
+      font-size: 0.58rem;
+      letter-spacing: 1.5px;
+      color: #000;
+      background: #fff;
+      border: 1px solid #fff;
+      padding: 3px 10px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .flag-in {
+      display: inline-block;
+      vertical-align: middle;
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
     .hero {
       min-height: 100vh;
       display: flex;
@@ -252,26 +264,33 @@
       border-color: #fff;
       opacity: 1;
     }
-    .gh-announce {
-      text-align: center;
-      margin-top: 32px;
+    .gh-counter {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
       font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
     }
-    .gh-announce-inner {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 24px;
-      border-radius: 8px;
-      border: 1px solid #333;
+    .gh-counter-icon {
+      color: #555;
+      font-size: 1.1rem;
+      line-height: 1;
     }
-    .gh-announce .gh-stars-text {
-      color: #fff;
-      font-size: 0.9rem;
-      letter-spacing: 0.5px;
-    }
-    .gh-announce .gh-stars-text #ghCurrent {
+    .gh-counter-num {
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(1.4rem, 3.5vw, 2.2rem);
       font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .gh-counter-label {
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #555;
     }
     .news-chip {
       text-align: center;
@@ -284,14 +303,14 @@
       gap: 8px;
       padding: 8px 18px;
       border-radius: 8px;
-      border: 1px solid #3a3a3a;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid #333;
+      background: #0a0a0a;
     }
     .news-chip-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #58a6ff;
+      background: #aaa;
       animation: pulse-dot 2s ease-in-out infinite;
     }
     @keyframes pulse-dot {
@@ -307,29 +326,516 @@
       color: #fff;
       font-weight: 600;
     }
-    .hero-scroll {
-      position: absolute;
-      bottom: 32px;
+    .hero-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 20px;
+      max-width: 920px;
+      margin: 0 auto 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(0.62rem, 1.2vw, 0.72rem);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #666;
+    }
+    .hero-strip span { white-space: nowrap; }
+    .hero-strip .dot { color: #333; }
+
+    /* ===== Docking Station ===== */
+    #docking {
+      border-top: 1px solid #1a1a1a;
+      padding: 100px 0;
+    }
+    .docking-wrap {
+      max-width: 820px;
+      margin: 48px auto 0;
+      border: 1px solid #1a1a1a;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #050505;
+    }
+    .docking-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #0a0a0a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .docking-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: #222; border: 1px solid #2a2a2a; }
+    .docking-title {
+      margin-left: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: #555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .docking-body {
+      padding: 24px 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.75;
+      min-height: 320px;
+    }
+    .docking-line { opacity: 0; white-space: pre-wrap; word-break: break-word; transition: opacity 0.35s ease; margin: 0; }
+    .docking-line.show { opacity: 1; }
+    .docking-banner-art {
+      color: #ccc;
+      font-size: 0.62rem;
+      line-height: 1;
+      margin: 0;
+      padding: 0;
+      white-space: pre;
+      overflow-x: auto;
+      font-family: inherit;
+      background: transparent;
+      border: none;
+    }
+    .docking-line.heading { color: #888; margin-top: 8px; }
+    .docking-line.success { color: #aaa; }
+    .docking-line.dim { color: #555; }
+    .docking-line.info { color: #777; }
+    .docking-launch {
+      display: flex;
+      justify-content: center;
+      margin-top: 32px;
+    }
+    .docking-launch-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 14px 40px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background .25s, transform .15s;
+    }
+    .docking-launch-btn:hover {
+      background: #ccc;
+    }
+    .docking-launch-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ===== Execution Modes Carousel ===== */
+    #modes {
+      border-top: 1px solid #1a1a1a;
+      overflow: visible;
+    }
+    #modes .container {
+      text-align: center;
+    }
+    #modes .section-label {
+      display: inline-block;
+    }
+    .modes-stage {
+      margin-top: 40px;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      color: #444;
+      width: 100%;
+    }
+    .modes-glass-card {
+      position: relative;
+      width: 100%;
+      max-width: 840px;
+      padding: clamp(40px, 5vw, 56px) clamp(28px, 4vw, 44px);
+      border-radius: 28px;
+      isolation: isolate;
+    }
+    /* Clear-glass body: see-through, barely any tint, just a whisper of blur
+       so the starfield stays visible through the pane. */
+    .modes-glass-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      background: linear-gradient(
+        160deg,
+        rgba(255,255,255,0.05) 0%,
+        rgba(255,255,255,0.015) 30%,
+        rgba(255,255,255,0.0) 55%,
+        rgba(255,255,255,0.02) 100%
+      );
+      backdrop-filter: blur(0.6px) brightness(1.04);
+      -webkit-backdrop-filter: blur(0.6px) brightness(1.04);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.18),
+        inset 0 0 0 1px rgba(255,255,255,0.06),
+        inset 0 -1px 2px rgba(255,255,255,0.04),
+        0 30px 60px rgba(0,0,0,0.45);
+      z-index: 0;
+      transition: box-shadow 0.6s ease;
+    }
+    /* Refraction rim: the SVG displacement filter bends the starfield behind
+       the glass, concentrated in the edge band to read as thick-glass refraction. */
+    .modes-glass-refract {
+      position: absolute;
+      inset: 5px;
+      border-radius: 23px;
+      overflow: hidden;
+      backdrop-filter: blur(0.5px) url(#glassRefraction);
+      -webkit-backdrop-filter: blur(0.5px) url(#glassRefraction);
+      /* Feathered edge frame: refraction is strongest right at the rim and
+         fades smoothly toward the centre, so there is no hard cut line. */
+      -webkit-mask:
+        linear-gradient(to top,    #000, transparent 34%),
+        linear-gradient(to bottom, #000, transparent 34%),
+        linear-gradient(to left,   #000, transparent 34%),
+        linear-gradient(to right,  #000, transparent 34%);
+      mask:
+        linear-gradient(to top,    #000, transparent 34%),
+        linear-gradient(to bottom, #000, transparent 34%),
+        linear-gradient(to left,   #000, transparent 34%),
+        linear-gradient(to right,  #000, transparent 34%);
+      -webkit-mask-composite: source-over;
+      mask-composite: add;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      animation: glassLayerIn 0.6s ease 0.25s forwards;
+    }
+    @keyframes glassLayerIn {
+      0%, 30% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    /* Thin specular edge highlight — the lit rim of a clear glass pane. */
+    .modes-glass-edge {
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      padding: 1px;
+      opacity: 0;
+      animation: glassLayerIn 0.6s ease 0.25s forwards;
+      background: linear-gradient(
+        140deg,
+        rgba(255,255,255,0.65) 0%,
+        rgba(255,255,255,0.05) 22%,
+        rgba(255,255,255,0.0) 50%,
+        rgba(255,255,255,0.08) 78%,
+        rgba(255,255,255,0.5) 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 1;
+      transition: background 0.6s ease;
+    }
+    .modes-glass-card--agent .modes-glass-edge {
+      background: linear-gradient(140deg,
+        rgba(225,190,120,0.6) 0%, rgba(225,190,120,0.05) 24%,
+        rgba(255,255,255,0.0) 50%, rgba(225,190,120,0.08) 76%,
+        rgba(225,190,120,0.5) 100%);
+    }
+    .modes-glass-card--hyper .modes-glass-edge {
+      background: linear-gradient(140deg,
+        rgba(200,165,235,0.62) 0%, rgba(160,200,255,0.06) 24%,
+        rgba(255,255,255,0.0) 50%, rgba(160,200,255,0.08) 76%,
+        rgba(200,165,235,0.55) 100%);
+    }
+    .modes-glass-card--agent::after { box-shadow:
+        inset 0 1px 1px rgba(255,240,210,0.18),
+        inset 0 0 0 1px rgba(225,190,120,0.07),
+        0 30px 60px rgba(0,0,0,0.45); }
+    .modes-glass-card--hyper::after { box-shadow:
+        inset 0 1px 1px rgba(230,215,255,0.2),
+        inset 0 0 0 1px rgba(180,150,230,0.08),
+        0 30px 60px rgba(0,0,0,0.5),
+        0 0 70px rgba(150,110,200,0.12); }
+    /* Faint mirrored reflection of the mode title on the glass surface. */
+    .mode-banner-title::after {
+      content: attr(data-title);
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 96%;
+      transform: scaleY(-1);
+      opacity: 0.05;
+      filter: blur(1.5px);
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 55%);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent 55%);
+    }
+    .modes-glass-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .modes-hero,
+    .modes-body {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+    }
+    .modes-hero {
+      min-height: clamp(96px, 15vw, 140px);
+    }
+    .modes-body {
+      min-height: 220px;
+      margin-top: 8px;
+    }
+    .mode-hero-slide,
+    .mode-body-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.5s ease, visibility 0.5s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .mode-hero-slide.active,
+    .mode-body-slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      position: relative;
+    }
+    .mode-hero-slide.active .mode-banner-codename {
+      animation: modeCodenameIn 0.55s ease forwards;
+    }
+    .mode-hero-slide.active .mode-banner-title {
+      animation: modeTitleBlast 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .mode-hero-slide.mode-hero-slide--hyper.active .mode-banner-title {
+      animation: modeTitleBlast 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+                 modeGlitch 4s ease-in-out 0.7s infinite;
+    }
+    .mode-banner-codename {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 5px;
+      text-indent: 5px;
+      margin-bottom: 16px;
+      opacity: 0;
+    }
+    .mode-banner-title {
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      text-transform: uppercase;
+      opacity: 0;
+      position: relative;
+    }
+    .mode-body-slide .mode-banner-desc {
+      color: #888;
+      font-size: 1rem;
+      line-height: 1.75;
+      margin: 0 auto 24px;
+      max-width: 540px;
+      animation: modeBodyIn 0.6s ease 0.1s both;
+    }
+    .mode-body-slide .mode-banner-specs {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      max-width: 520px;
+      margin: 0 auto;
+      animation: modeBodyIn 0.6s ease 0.2s both;
+    }
+    .mode-body-slide .mode-banner-specs li {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      color: #666;
+    }
+    .mode-body-slide .mode-banner-specs li::before {
+      content: '· ';
+      opacity: 0.45;
+    }
+    @keyframes modeCodenameIn {
+      from { opacity: 0; letter-spacing: 12px; }
+      to { opacity: 1; letter-spacing: 5px; }
+    }
+    @keyframes modeTitleBlast {
+      0% { opacity: 0; transform: scale(1.12) translateY(12px); filter: blur(10px); }
+      60% { opacity: 1; transform: scale(1.02) translateY(0); filter: blur(0); }
+      100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+    }
+    @keyframes modeBodyIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes modeGlitch {
+      0%, 92%, 100% { text-shadow: 0 0 48px rgba(160,120,200,0.25); transform: translate(0); }
+      93% { text-shadow: -2px 0 rgba(180,140,255,0.5), 2px 0 rgba(100,180,255,0.4); transform: translate(-1px, 0); }
+      94% { text-shadow: 2px 0 rgba(180,140,255,0.5), -2px 0 rgba(100,180,255,0.4); transform: translate(1px, 0); }
+      95% { text-shadow: 0 0 60px rgba(200,160,255,0.4); transform: translate(0); }
+    }
+    .mode-hero-slide--plan .mode-banner-codename { color: #666; }
+    .mode-hero-slide--plan .mode-banner-title { color: #ccc; }
+    .mode-hero-slide--agent .mode-banner-codename { color: #9a7a40; }
+    .mode-hero-slide--agent .mode-banner-title { color: #e8d8b8; }
+    .mode-hero-slide--hyper .mode-banner-codename { color: #a080c8; }
+    .mode-hero-slide--hyper .mode-banner-title {
+      color: #fff;
+      text-shadow: 0 0 48px rgba(160,120,200,0.25);
+    }
+    .mode-body-slide--agent .mode-banner-specs li { color: #887858; }
+    .mode-body-slide--hyper .mode-banner-specs li { color: #8070a0; }
+    .modes-tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-top: 12px;
+      position: relative;
+    }
+    .modes-tabs::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 1px;
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      z-index: 0;
+    }
+    .modes-tab {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
       letter-spacing: 2px;
       text-transform: uppercase;
-      animation: float 2s ease-in-out infinite;
+      color: #555;
+      background: transparent;
+      border: none;
+      padding: 12px 0;
+      min-width: 130px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.25s;
+      z-index: 1;
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(8px); }
+    .modes-tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: #888;
+      transition: width 0.35s ease, left 0.35s ease, background 0.25s;
+      transform: translateX(-50%);
     }
-    .scroll-line {
-      width: 1px;
-      height: 40px;
-      background: linear-gradient(to bottom, #555, transparent);
+    .modes-tab.active { color: #ddd; }
+    .modes-tab.active::after { width: 100%; }
+    .modes-tab[data-mode="1"].active { color: #e8d8b8; }
+    .modes-tab[data-mode="1"].active::after { background: #9a7a40; }
+    .modes-tab[data-mode="2"].active { color: #fff; }
+    .modes-tab[data-mode="2"].active::after { background: #b090d0; box-shadow: 0 0 12px rgba(176,144,208,0.4); }
+    .modes-clearance {
+      position: relative;
+      min-height: 3.2em;
+      margin-top: 20px;
+      max-width: 640px;
+      width: 100%;
     }
+    .modes-clearance-line {
+      position: absolute;
+      inset: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      line-height: 1.6;
+      color: #666;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
+      transform: translateY(6px);
+      margin: 0;
+      padding: 0 16px;
+    }
+    .modes-clearance-line.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      position: relative;
+    }
+    .modes-clearance-line[data-mode="1"] { color: #9a7a40; }
+    .modes-clearance-line[data-mode="2"] { color: #a080c8; }
+    @media (max-width: 640px) {
+      .top-band { flex-direction: column; }
+      .top-band-meta {
+        border-left: none;
+        border-top: 1px solid #1a1a1a;
+        justify-content: center;
+        padding: 8px 24px;
+        width: 100%;
+      }
+      .modes-tab { padding: 10px 0; min-width: 33%; font-size: 0.6rem; }
+      .modes-glass-card { padding: 32px 20px; border-radius: 20px; }
+      .modes-glass-card::after,
+      .modes-glass-edge { border-radius: 20px; }
+      .modes-glass-refract { border-radius: 15px; padding: 16px; }
+    }
+    /* ===== Crew Hub ticker ===== */
+    .crew-stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px 48px;
+      margin: 32px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .crew-stat-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .crew-stat-label {
+      font-size: 0.7rem;
+      color: #666;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .category-ticker {
+      overflow: hidden;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+      padding: 14px 0;
+      margin-top: 40px;
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+    .category-ticker-track {
+      display: flex;
+      gap: 32px;
+      width: max-content;
+      animation: ticker 60s linear infinite;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 1px;
+      color: #555;
+      text-transform: uppercase;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .category-ticker-track span { flex-shrink: 0; white-space: nowrap; }
+
+    /* ===== Consolidated sections (hidden — content merged elsewhere) ===== */
+    #why, #reasoning, #remote, #terminal-demo, #capabilities, #agent-mesh { display: none; }
+    #marketplace .mp-grid + .mp-grid { display: none; }
 
     /* ===== Wingman Difference ===== */
     #wingman {
@@ -570,11 +1076,17 @@
     }
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 2px;
       background: #111;
-      max-width: 800px;
+      max-width: 1100px;
       margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
     .stat-item {
       background: #000;
@@ -849,7 +1361,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #69f0ae;
+      background: #aaa;
       animation: pulse-dot 2s ease-in-out infinite;
     }
     .crew-chat-body {
@@ -894,10 +1406,11 @@
       margin-left: auto;
     }
     .crew-msg.agent .crew-bubble { background: rgba(255,255,255,0.035); }
-    .crew-msg.architect .crew-bubble { background: rgba(240,192,64,0.06); }
-    .crew-msg.designer .crew-bubble { background: rgba(64,196,255,0.06); }
-    .crew-msg.dev .crew-bubble { background: rgba(105,240,174,0.06); }
-    .crew-msg.devops .crew-bubble { background: rgba(179,136,255,0.06); }
+    .crew-msg.architect .crew-bubble { background: rgba(255,255,255,0.04); }
+    .crew-msg.designer .crew-bubble { background: rgba(255,255,255,0.04); }
+    .crew-msg.dev .crew-bubble { background: rgba(255,255,255,0.04); }
+    .crew-msg.devops .crew-bubble { background: rgba(255,255,255,0.04); }
+    .crew-msg.specialist .crew-bubble { background: rgba(255,255,255,0.045); }
     .crew-msg.user .crew-bubble { background: rgba(255,255,255,0.07); }
     .crew-avatar {
       width: 32px;
@@ -921,10 +1434,11 @@
       background: #222;
       color: #fff;
     }
-    .crew-avatar.architect { background: rgba(240,192,64,0.2); color: #f0c040; }
-    .crew-avatar.designer  { background: rgba(64,196,255,0.2); color: #40c4ff; }
-    .crew-avatar.dev      { background: rgba(105,240,174,0.2); color: #69f0ae; }
-    .crew-avatar.devops   { background: rgba(179,136,255,0.2); color: #b388ff; }
+    .crew-avatar.architect { background: rgba(255,255,255,0.12); color: #ccc; }
+    .crew-avatar.designer  { background: rgba(255,255,255,0.1); color: #bbb; }
+    .crew-avatar.dev      { background: rgba(255,255,255,0.1); color: #bbb; }
+    .crew-avatar.devops   { background: rgba(255,255,255,0.1); color: #bbb; }
+    .crew-avatar.specialist { background: rgba(255,255,255,0.14); color: #ddd; }
     .crew-body {
       flex: 1;
       min-width: 0;
@@ -937,10 +1451,11 @@
     }
     .crew-body .byline.agent { color: #999; }
     .crew-body .byline.user { color: #777; }
-    .crew-body .byline.architect { color: #f0c040; }
-    .crew-body .byline.designer  { color: #40c4ff; }
-    .crew-body .byline.dev      { color: #69f0ae; }
-    .crew-body .byline.devops   { color: #b388ff; }
+    .crew-body .byline.architect { color: #aaa; }
+    .crew-body .byline.designer  { color: #999; }
+    .crew-body .byline.dev      { color: #999; }
+    .crew-body .byline.devops   { color: #999; }
+    .crew-body .byline.specialist { color: #ccc; }
     .crew-body .text {
       font-size: 0.82rem;
       line-height: 1.7;
@@ -1890,6 +2405,33 @@
       margin-top: 20px;
       letter-spacing: 0.5px;
     }
+    .compare-honest {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: #111;
+      margin-top: 40px;
+    }
+    .compare-honest-card {
+      background: #000;
+      padding: 24px 20px;
+    }
+    .compare-honest-card h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .compare-honest-card p {
+      font-size: 0.82rem;
+      color: #777;
+      line-height: 1.65;
+    }
+    @media (max-width: 768px) {
+      .compare-honest { grid-template-columns: 1fr; }
+    }
 
     /* ===== Terminal Demo ===== */
     #terminal-demo {
@@ -2269,7 +2811,8 @@
 
     /* ===== Responsive ===== */
     @media (max-width: 968px) {
-      .caps-grid { grid-template-columns: repeat(2, 1fr); }
+      /* !important overrides per-section inline grid-template-columns */
+      .caps-grid { grid-template-columns: repeat(2, 1fr) !important; }
       .trust-grid { grid-template-columns: 1fr; }
       .crew-container { max-width: 100%; }
       .sauce-grid { grid-template-columns: 1fr; }
@@ -2282,14 +2825,25 @@
     }
     @media (max-width: 640px) {
       .section { padding: 60px 0; }
-      .caps-grid { grid-template-columns: 1fr; }
+      .container { padding: 0 18px; }
+      .caps-grid { grid-template-columns: 1fr !important; }
       .sectors-grid { grid-template-columns: 1fr; }
       .crew-chat-body { padding: 12px 14px; }
       .crew-msg { padding: 8px 10px; }
-      .stats-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero { padding: 110px 18px 60px; }
       .hero-logo { letter-spacing: 4px; }
+      .hero-tagline { font-size: 1.15rem; }
       .hero-actions { flex-direction: column; align-items: center; }
       .btn { width: 100%; justify-content: center; }
+      .section-title { font-size: clamp(1.7rem, 8vw, 2.4rem); }
+      .compare-table { font-size: 0.74rem; }
+      .compare-table th, .compare-table td { padding: 10px 8px; }
+      .modes-clearance { min-height: 4.5em; }
+    }
+    @media (max-width: 380px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .mode-banner-title { font-size: 2.2rem; }
     }
   </style>
 </head>
@@ -2315,18 +2869,29 @@
 
   <!-- ===== Canvas Starfield ===== -->
   <canvas id="starfield"></canvas>
-  <div id="grid-overlay"></div>
-  <div id="scanlines"></div>
-
-  <div class="beta-banner">Still in Beta</div>
+  <header class="top-band" id="topBand">
+    <nav class="section-nav" id="sectionNav" aria-label="Page sections">
+      <a href="#docking">Dock</a>
+      <a href="#install">Install</a>
+      <a href="#modes">Modes</a>
+      <a href="#trust">Vault</a>
+      <a href="#crew-hub">Crew Hub</a>
+      <a href="#bridges">Channels</a>
+      <a href="#web-ui">Console</a>
+    </nav>
+    <div class="top-band-meta">
+      <span id="betaVersion">v0.8.0</span>
+      <span class="beta-tag">Still in Beta</span>
+    </div>
+  </header>
 
   <!-- ===== Hero ===== -->
   <section class="hero" id="hero">
     <div class="hero-badge reveal">
       <span class="badge-india">
-        <span class="flag">&#x1F1EE;&#x1F1F3;</span>
+        <svg class="flag-in" width="20" height="13" viewBox="0 0 20 13" aria-label="India" role="img"><rect width="20" height="4.33" fill="#FF9933"/><rect y="4.33" width="20" height="4.34" fill="#FFFFFF"/><rect y="8.67" width="20" height="4.33" fill="#138808"/><circle cx="10" cy="6.5" r="1.8" fill="none" stroke="#000080" stroke-width="0.35"/><g stroke="#000080" stroke-width="0.2" fill="none"><line x1="10" y1="4.7" x2="10" y2="8.3"/><line x1="8.2" y1="6.5" x2="11.8" y2="6.5"/><line x1="8.6" y1="5.1" x2="11.4" y2="7.9"/><line x1="8.6" y1="7.9" x2="11.4" y2="5.1"/></g></svg>
         Made in India
-        <span class="flag">&#x1F1EE;&#x1F1F3;</span>
+        <svg class="flag-in" width="20" height="13" viewBox="0 0 20 13" aria-hidden="true"><rect width="20" height="4.33" fill="#FF9933"/><rect y="4.33" width="20" height="4.34" fill="#FFFFFF"/><rect y="8.67" width="20" height="4.33" fill="#138808"/><circle cx="10" cy="6.5" r="1.8" fill="none" stroke="#000080" stroke-width="0.35"/></svg>
       </span>
     </div>
 
@@ -2335,8 +2900,17 @@
     </div>
 
     <p class="hero-tagline reveal reveal-delay-2">
-      Your AI Wingman
+      Your AI Wingman.
     </p>
+
+    <div class="hero-strip reveal reveal-delay-2">
+      <span>183 tools</span><span class="dot">·</span>
+      <span>18 providers</span><span class="dot">·</span>
+      <span>22 MCP</span><span class="dot">·</span>
+      <span>6 channels</span><span class="dot">·</span>
+      <span>4,900 crew</span><span class="dot">·</span>
+      <span>AES-256 vault</span>
+    </div>
 
     <div class="hero-typewriter reveal reveal-delay-3">
       <span id="typewriter-text">Plotting trajectory...</span>
@@ -2345,19 +2919,40 @@
 
     <div class="hero-actions reveal reveal-delay-4">
       <a href="https://github.com/SlashpanOrg/agent-x/releases/latest" class="btn btn-primary" id="downloadBtn">
-        <span>&#x2193;</span> Download Now
+        <span>&#x2193;</span> Download Desktop
       </a>
       <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener" class="btn btn-secondary" id="githubBtn">
-        Star on GitHub
+        View on GitHub
       </a>
     </div>
 
-    <div class="gh-announce reveal reveal-delay-5">
-      <div class="gh-announce-inner">
-        <span class="gh-stars-text"><span id="ghCurrent">0</span> GitHub stars</span>
-      </div>
+    <div class="gh-counter reveal reveal-delay-5">
+      <span class="gh-counter-icon" aria-hidden="true">&#9733;</span>
+      <span class="gh-counter-num" id="ghCurrent">0</span>
+      <span class="gh-counter-label">GitHub stars</span>
     </div>
 
+  </section>
+
+  <!-- ===== Docking Station ===== -->
+  <section class="section" id="docking">
+    <div class="container">
+      <div class="section-label reveal">Docking Station</div>
+      <h2 class="section-title reveal reveal-delay-1">Every mission starts here.</h2>
+      <p class="section-sub reveal reveal-delay-2">
+        Boot into the Docking Station. Index your crew catalog. Confirm provider, sessions, and vault status. Launch into Mission Control when all systems are nominal.
+      </p>
+      <div class="docking-wrap reveal reveal-delay-3">
+        <div class="docking-bar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="docking-title">agent-x — docking station</span>
+        </div>
+        <div class="docking-body" id="dockingBody"></div>
+      </div>
+      <div class="docking-launch reveal reveal-delay-4">
+        <span class="docking-launch-btn" id="dockingLaunchBtn">LAUNCH</span>
+      </div>
+    </div>
   </section>
 
   <!-- ===== Install ===== -->
@@ -2390,7 +2985,8 @@
             <span class="prompt">$</span> <span class="cmd">launch</span><br />
             <span class="output">&#x25B6; Initializing engine...</span><br />
             <span class="output">&#x25B6; Loading 183 tools across 23 categories...</span><br />
-            <span class="output">&#x25B6; Establishing persistent memory...</span><br />
+            <span class="output">&#x25B6; Indexing 4,900 crew catalog entries...</span><br />
+            <span class="output">&#x25B6; AES-256-GCM vault online...</span><br />
             <span class="success">&#x2713; Mission Control Online</span><span class="cursor-blink"></span>
           </div>
         </div>
@@ -2401,7 +2997,10 @@
             Download, install, launch. No account. No cloud. Your data stays on your machine — always.
           </p>
           <p>
-            Available for macOS, Windows, and Linux. Bring your own API key for any LLM provider, or run a local model with zero subscription.
+            macOS (Apple Silicon), Windows, and Linux — AppImage, .deb, and NSIS installer. System tray, <strong style="color:#ccc;">Alt+A</strong> global hotkey, bundled Python runtime, and auto-update from GitHub releases.
+          </p>
+          <p>
+            Bring your own API key for any LLM provider, or run a local model with Ollama or LM Studio — zero subscription for the platform itself.
           </p>
           <p class="small">
             <span style="color:#888;">Detected your system as</span> <span id="detectedOS" style="font-family:'JetBrains Mono',monospace;color:#fff;text-transform:uppercase;">macOS</span><br />
@@ -2460,7 +3059,7 @@
     <div class="container reveal">
       <div class="section-label">183 TOOLS · 23 CATEGORIES</div>
       <div class="section-title">The Arsenal</div>
-      <div class="section-sub">The most comprehensive tool catalog of any AI agent. Every tool has a complete JSON schema, risk level, and composability flag. Zero stubs.</div>
+      <div class="section-sub">183 tools across 23 categories — filesystem, shell, git, browser, docker, documents, security, and more. Every tool ships with a JSON schema, risk level, and composability flag.</div>
     </div>
     <div class="container" style="margin-top:48px;">
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:2px;background:#111;">
@@ -2511,14 +3110,88 @@
     </div>
   </section>
 
+  <!-- ===== Execution Modes ===== -->
+  <section class="section" id="modes">
+    <div class="container">
+      <div class="section-label reveal">Execution Modes</div>
+      <div class="modes-stage reveal reveal-delay-1">
+        <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
+          <filter id="glassRefraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="2" seed="11" result="noise" />
+            <feGaussianBlur in="noise" stdDeviation="1.6" result="softNoise" />
+            <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="16" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </svg>
+        <div class="modes-glass-card modes-glass-card--plan" id="modesGlassCard">
+          <div class="modes-glass-refract" aria-hidden="true"></div>
+          <div class="modes-glass-edge" aria-hidden="true"></div>
+          <div class="modes-glass-inner">
+        <div class="modes-hero" id="modesHero">
+          <article class="mode-hero-slide mode-hero-slide--plan active" data-mode="0">
+            <div class="mode-banner-codename">RECON</div>
+            <h3 class="mode-banner-title" data-title="Plan">Plan</h3>
+          </article>
+          <article class="mode-hero-slide mode-hero-slide--agent" data-mode="1">
+            <div class="mode-banner-codename">ENGAGE</div>
+            <h3 class="mode-banner-title" data-title="Agent">Agent</h3>
+          </article>
+          <article class="mode-hero-slide mode-hero-slide--hyper" data-mode="2">
+            <div class="mode-banner-codename">WARP</div>
+            <h3 class="mode-banner-title" data-title="Hyperdrive">Hyperdrive</h3>
+          </article>
+        </div>
+
+        <div class="modes-tabs" id="modesTabs" role="tablist" aria-label="Execution modes">
+          <button type="button" class="modes-tab active" data-mode="0" role="tab" aria-selected="true">Plan</button>
+          <button type="button" class="modes-tab" data-mode="1" role="tab" aria-selected="false">Agent</button>
+          <button type="button" class="modes-tab" data-mode="2" role="tab" aria-selected="false">Hyperdrive</button>
+        </div>
+
+        <div class="modes-clearance" id="modesClearance">
+          <p class="modes-clearance-line active" data-mode="0">Clearance: Observation · Read-only recon · Write tools blocked at engine level</p>
+          <p class="modes-clearance-line" data-mode="1">Clearance: Tactical · Risk-tiered permission gates · You approve every high-risk operation</p>
+          <p class="modes-clearance-line" data-mode="2">Clearance: Unrestricted · Full arsenal pre-cleared · Parallel execution · Restores prior mode on exit</p>
+        </div>
+
+        <div class="modes-body" id="modesBody">
+          <article class="mode-body-slide mode-body-slide--plan active" data-mode="0">
+            <p class="mode-banner-desc">Read-only reconnaissance before you commit. Explore code, run RAG queries, check git status, and map the battlefield — disk stays untouched until you approve.</p>
+            <ul class="mode-banner-specs">
+              <li>Search, read, diff, and status probes only</li>
+              <li>Battle plans delivered in chat — zero filesystem mutations</li>
+            </ul>
+          </article>
+          <article class="mode-body-slide mode-body-slide--agent" data-mode="1">
+            <p class="mode-banner-desc">Full arsenal with permission gates. Low-risk probes execute instantly. Medium-risk actions ask once. High and critical operations require your explicit clearance.</p>
+            <ul class="mode-banner-specs">
+              <li>183 tools with risk-tiered gates</li>
+              <li>Crew delegation, file writes, shell exec, git commits</li>
+            </ul>
+          </article>
+          <article class="mode-body-slide mode-body-slide--hyper" data-mode="2">
+            <p class="mode-banner-desc">Maximum autonomy when the mission is clear and speed is everything. Pre-cleared clearance across the full arsenal with parallel sub-agent emphasis.</p>
+            <ul class="mode-banner-specs">
+              <li>Permission gates bypassed — full auto execution</li>
+              <li>For trusted workflows where hesitation costs time</li>
+            </ul>
+          </article>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== Stats Bar ===== -->
   <section id="stats">
     <div class="container">
       <div class="stats-grid">
         <div class="stat-item reveal"><div class="stat-number">183</div><div class="stat-label">Tools</div></div>
-        <div class="stat-item reveal reveal-delay-1"><div class="stat-number">16</div><div class="stat-label">Providers</div></div>
-        <div class="stat-item reveal reveal-delay-3"><div class="stat-number">4</div><div class="stat-label">Messaging Bridges</div></div>
-        <div class="stat-item reveal reveal-delay-4"><div class="stat-number">22</div><div class="stat-label">MCP Servers</div></div>
+        <div class="stat-item reveal reveal-delay-1"><div class="stat-number">18</div><div class="stat-label">Providers</div></div>
+        <div class="stat-item reveal reveal-delay-2"><div class="stat-number">4,900</div><div class="stat-label">Crew Hub</div></div>
+        <div class="stat-item reveal reveal-delay-3"><div class="stat-number">227</div><div class="stat-label">Sectors</div></div>
+        <div class="stat-item reveal reveal-delay-4"><div class="stat-number">6</div><div class="stat-label">Channels</div></div>
+        <div class="stat-item reveal reveal-delay-5"><div class="stat-number">22</div><div class="stat-label">MCP Servers</div></div>
       </div>
     </div>
   </section>
@@ -2531,32 +3204,45 @@
         Your Data. Your Rules.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        AGENT-X is built local-first and zero-trust. Your data never leaves your machine unless you command it. Every action is gated.
+        AGENT-X is built local-first and zero-trust. Your data never leaves your machine unless you command it. Every action is gated. Credentials encrypted at rest with tamper-triggered self-destruct.
       </p>
 
       <div class="trust-grid">
         <div class="trust-card reveal">
           <div class="trust-num">01</div>
-          <h3>Local-First Architecture</h3>
-          <p>Everything runs on your machine. No cloud accounts. No mandatory sync. Your data stays where it belongs — with you.</p>
-          <span class="trust-tag">no cloud required</span>
+          <h3>Onboard Vault</h3>
+          <p>Local SQLite by default. Zero config. Your machine is the datacenter. Sessions, crew catalog, and memories stay on disk you control.</p>
+          <span class="trust-tag">local-first</span>
         </div>
         <div class="trust-card reveal reveal-delay-1">
           <div class="trust-num">02</div>
-          <h3>No Telemetry</h3>
-          <p>Nothing phones home. No analytics SDK, no tracking pixels, no anonymous usage data. We don't collect what we can't see. Your terminal is your cockpit.</p>
-          <span class="trust-tag">zero telemetry</span>
+          <h3>AES-256-GCM Encryption</h3>
+          <p>Config, bridge credentials, and sensitive fields encrypted at rest with a data encryption key derived from your auth — never stored in plaintext.</p>
+          <span class="trust-tag">encrypted vault</span>
         </div>
         <div class="trust-card reveal reveal-delay-2">
           <div class="trust-num">03</div>
-          <h3>Source Code Locked</h3>
-          <p>The codebase is private and will be released under MIT License — fully auditable, forkable, improvable. No black boxes. Just patience.</p>
+          <h3>Tamper Self-Destruct</h3>
+          <p>Modified ciphertext or corrupted auth bundles become permanently unreadable. GCM authentication tags verify integrity on every unlock.</p>
+          <span class="trust-tag">zero-trust</span>
         </div>
         <div class="trust-card reveal reveal-delay-3">
           <div class="trust-num">04</div>
-          <h3>Permission Gates</h3>
-          <p>Every tool action is gated by risk level. Low-risk actions run free. Medium asks once. High and critical require explicit approval. You are always in command.</p>
+          <h3>Clearance Gates</h3>
+          <p>Every tool action is rated low → critical. You approve every shot. Hyperdrive is explicit opt-in with full autonomy disclaimer.</p>
           <span class="trust-tag">you approve every shot</span>
+        </div>
+        <div class="trust-card reveal">
+          <div class="trust-num">05</div>
+          <h3>No Telemetry</h3>
+          <p>Nothing phones home. No analytics SDK, no tracking pixels. Your terminal is your cockpit — we don't collect what we can't see.</p>
+          <span class="trust-tag">zero telemetry</span>
+        </div>
+        <div class="trust-card reveal reveal-delay-1">
+          <div class="trust-num">06</div>
+          <h3>Starfleet Relay</h3>
+          <p>Scale to PostgreSQL when teams need concurrent access. Same APIs — from solo Onboard Vault to fleet-grade Starfleet Relay.</p>
+          <span class="trust-tag">sqlite → postgres</span>
         </div>
       </div>
     </div>
@@ -2583,10 +3269,11 @@
         </div>
         <div class="wingman-col">
           <h3 class="reveal reveal-delay-3">AGENT-X</h3>
-          <div class="wingman-item reveal"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">16 providers, local &amp; cloud</div><div class="wingman-desc">OpenAI, Anthropic, Google, Ollama, LM Studio — bring your own or run free</div></div></div>
-          <div class="wingman-item reveal reveal-delay-1"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Desktop + Web + Telegram</div><div class="wingman-desc">Native desktop app, browser dashboard, and Telegram on your phone</div></div></div>
-          <div class="wingman-item reveal reveal-delay-2"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Cron-scheduled automation</div><div class="wingman-desc">Natural language scheduling. Backups, reports, briefings — on autopilot</div></div></div>
-          <div class="wingman-item reveal reveal-delay-3"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Persistent Secret Sauce memory</div><div class="wingman-desc">Soul, identity, diary, crew memories — it remembers who you are</div></div></div>
+          <div class="wingman-item reveal"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">18 providers, local &amp; cloud</div><div class="wingman-desc">OpenAI, Anthropic, Google, Ollama, LM Studio — bring your own or run free</div></div></div>
+          <div class="wingman-item reveal reveal-delay-1"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Desktop + Web + 6 channels</div><div class="wingman-desc">Native desktop, Mission Control console, Telegram, Discord, Slack, and more</div></div></div>
+          <div class="wingman-item reveal reveal-delay-2"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">4,900 Crew Hub specialists</div><div class="wingman-desc">227 domain sectors — import, delegate, or open Crew Private 1:1 chats</div></div></div>
+          <div class="wingman-item reveal reveal-delay-3"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">Plan → Agent → Hyperdrive</div><div class="wingman-desc">Recon, engage, or warp — progressive autonomy with permission gates</div></div></div>
+          <div class="wingman-item reveal reveal-delay-4"><div class="wingman-icon" style="color:#999;">&#x2713;</div><div><div class="wingman-label">AES-256 vault + Secret Sauce</div><div class="wingman-desc">Encrypted storage, soul, diary, crew memories — it remembers who you are</div></div></div>
         </div>
       </div>
     </div>
@@ -2731,11 +3418,11 @@
           <div class="provider-icon">
             <svg width="40" height="40" viewBox="0 0 48 48">
               <rect x="5" y="8" width="38" height="32" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/>
-              <rect x="5" y="8" width="38" height="8" rx="4" fill="#58a6ff" opacity="0.15"/>
-              <circle cx="11" cy="12" r="2" fill="#f85149"/>
-              <circle cx="19" cy="12" r="2" fill="#d29922"/>
-              <circle cx="27" cy="12" r="2" fill="#3fb950"/>
-              <text x="24" y="32" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#58a6ff" font-weight="700">$ cmd</text>
+              <rect x="5" y="8" width="38" height="8" rx="4" fill="#888" opacity="0.12"/>
+              <circle cx="11" cy="12" r="2" fill="#888"/>
+              <circle cx="19" cy="12" r="2" fill="#888"/>
+              <circle cx="27" cy="12" r="2" fill="#888"/>
+              <text x="24" y="32" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="8" fill="#888" font-weight="700">$ cmd</text>
             </svg>
           </div>
           <div class="provider-name">CmdCode</div>
@@ -2747,33 +3434,46 @@
     </div>
   </section>
 
-  <!-- ===== Crew ===== -->
-  <section class="section" id="crew">
+  <!-- ===== Crew Hub ===== -->
+  <section class="section" id="crew-hub">
     <div class="container">
-      <div class="section-label reveal">Your Crew</div>
+      <div class="section-label reveal">Crew Hub</div>
       <h2 class="section-title reveal reveal-delay-1">
-        One Agent.<br />Infinite Personalities.
+        4,900 Specialists.<br />227 Sectors. One Roster.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        Agent-X can summon multiple crew members — each with distinct skills, personalities, and expertise. Build a team that adapts to any task. No limits.
+        Import domain experts from the Crew Hub catalog. Search by skill, cert, or sector. Delegate with @callsign. Or open Crew Private for a dedicated 1:1 conversation where the specialist speaks as themselves.
       </p>
+
+      <div class="crew-stats reveal reveal-delay-2">
+        <div style="text-align:center"><div class="crew-stat-num">4,900</div><div class="crew-stat-label">Hub Crew</div></div>
+        <div style="text-align:center"><div class="crew-stat-num">227</div><div class="crew-stat-label">Sectors</div></div>
+        <div style="text-align:center"><div class="crew-stat-num">1:1</div><div class="crew-stat-label">Crew Private</div></div>
+      </div>
 
       <div class="crew-container reveal reveal-delay-3">
         <div class="crew-chat">
           <div class="crew-chat-header">
             <div class="crew-chat-dots"><span></span><span></span><span></span></div>
-            <div class="crew-chat-title"><strong>Agent-X</strong> &middot; Chat &middot; <span style="color:#666;">microservice-planner</span></div>
+            <div class="crew-chat-title"><strong>Agent-X</strong> &middot; Crew Mission &middot; <span style="color:#666;">tax-planning</span></div>
             <div class="crew-chat-status">
-              <span class="dot"></span> 4 crew active
+              <span class="dot"></span> 2 crew active
             </div>
           </div>
           <div class="crew-chat-body" id="crewChatBody"></div>
         </div>
       </div>
 
-      <p class="crew-footer reveal">Summon any specialist mid-conversation. @mentions work everywhere — Desktop, Web-UI, Telegram.</p>
+      <p class="crew-footer reveal">Auto-compose suggests crews when your mission needs domain expertise. @mentions work everywhere — Desktop, Web-UI, Telegram, Discord, Slack.</p>
+
+      <div class="category-ticker reveal">
+        <div class="category-ticker-track" id="categoryTicker"></div>
+      </div>
     </div>
   </section>
+
+  <!-- legacy id for scripts -->
+  <section class="section" id="crew" style="display:none" aria-hidden="true"></section>
 
   <!-- ===== Capabilities ===== -->
   <section class="section" id="capabilities">
@@ -2838,10 +3538,10 @@
     <div class="container">
       <div class="section-label reveal">The Field</div>
       <h2 class="section-title reveal reveal-delay-1">
-        Nothing Else Comes Close.
+        How We Stack Up.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        We built AGENT-X for a simple reason — nothing out there did everything we needed. Compare for yourself.
+        Honest comparison against publicly documented features as of June 2026. Every product has strengths — here's where each one leads.
       </p>
 
       <div class="compare-table-wrap reveal reveal-delay-3" style="overflow-x:auto;">
@@ -2856,19 +3556,38 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>Free to Use</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span> Subscription</td></tr>
-            <tr><td>Built-in Tools</td><td><span class="check">183 &amp; growing</span></td><td><span class="partial">~ 50+</span></td><td><span class="partial">~ 40&ndash;70</span></td><td><span class="partial">8 core</span></td></tr>
-            <tr><td>Native Multi-Provider</td><td><span class="check">16 &amp; growing</span></td><td><span class="check">5+ providers</span></td><td><span class="check">20+ providers</span></td><td><span class="cross">&#x2717;</span> Proxy only</td></tr>
-            <tr><td>Local LLM (Ollama)</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="partial">~ Via proxy</span></td></tr>
-            <tr><td>Crew Profiles</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
-            <tr><td>Permission System</td><td><span class="check">&#x2713;</span></td><td><span class="partial">~ Basic</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
-            <tr><td>Desktop App</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
-            <tr><td>Web UI</td><td><span class="check">&#x2713;</span> <span style="color:#888;font-size:0.7rem;">New</span></td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
+            <tr><td>Free &amp; Self-Hostable</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713; MIT</span></td><td><span class="check">&#x2713; open-core</span></td><td><span class="cross">&#x2717;</span> subscription</td></tr>
+            <tr><td>Built-in Tool Arsenal</td><td><span class="check">183 tools</span></td><td><span class="partial">skills via ClawHub</span></td><td><span class="partial">self-generated skills</span></td><td><span class="partial">~12 tools</span></td></tr>
+            <tr><td>Crew Hub (4,900+)</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
+            <tr><td>Plan / Agent / Hyperdrive</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="partial">guardrails only</span></td><td><span class="partial">plan mode</span></td></tr>
+            <tr><td>Messaging Channels</td><td><span class="check">6 channels</span></td><td><span class="check">24+ platforms</span></td><td><span class="partial">~6 platforms</span></td><td><span class="cross">&#x2717;</span></td></tr>
+            <tr><td>Native Desktop (3 OS)</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span> CLI/gateway</td><td><span class="cross">&#x2717;</span> CLI-first</td><td><span class="cross">&#x2717;</span> terminal/IDE</td></tr>
+            <tr><td>Multi-Provider LLMs</td><td><span class="check">18 providers</span></td><td><span class="partial">5+ providers</span></td><td><span class="check">20+ w/ fallback</span></td><td><span class="cross">&#x2717;</span> Claude only</td></tr>
+            <tr><td>Local LLM (Ollama)</td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td><td><span class="partial">via proxy</span></td></tr>
+            <tr><td>AES-256 Credential Vault</td><td><span class="check">&#x2713; GCM + tamper</span></td><td><span class="partial">partial</span></td><td><span class="partial">container isolation</span></td><td><span class="cross">&#x2717;</span></td></tr>
+            <tr><td>Web Dashboard</td><td><span class="check">Mission Control</span></td><td><span class="check">Canvas UI</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
+            <tr><td>Skill / Plugin Ecosystem</td><td><span class="partial">22 MCP + plugins</span></td><td><span class="check">13k+ ClawHub</span></td><td><span class="check">auto-learns skills</span></td><td><span class="partial">MCP plugins</span></td></tr>
+            <tr><td>Permission Gates</td><td><span class="check">risk-tiered</span></td><td><span class="partial">basic</span></td><td><span class="check">&#x2713;</span></td><td><span class="check">&#x2713;</span></td></tr>
             <tr><td>Made in India</td><td><span class="check">&#x2713;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td><td><span class="cross">&#x2717;</span></td></tr>
           </tbody>
         </table>
       </div>
-      <p class="compare-footnote reveal">Last updated May 2026 &middot; Based on publicly documented features</p>
+
+      <div class="compare-honest reveal">
+        <div class="compare-honest-card">
+          <h4>Where OpenClaw leads</h4>
+          <p>Widest messaging reach (24+ platforms including WhatsApp, Signal, Teams) and the largest skill marketplace via ClawHub — best if channel breadth is your priority.</p>
+        </div>
+        <div class="compare-honest-card">
+          <h4>Where Hermes leads</h4>
+          <p>Self-improving skills written by the agent from experience, container-level isolation by default, and strong security posture for single-operator deployments.</p>
+        </div>
+        <div class="compare-honest-card">
+          <h4>Where AGENT-X leads</h4>
+          <p>183 built-in tools, 4,900 Crew Hub specialists, native desktop on 3 OS, Plan→Hyperdrive clearance tiers, AES-256 vault, and Mission Control — one wingman, fully loaded.</p>
+        </div>
+      </div>
+      <p class="compare-footnote reveal">Sources: OpenClaw docs &amp; ClawHub (2026), Hermes Agent release notes (Nous Research), Anthropic Claude Code docs · Last verified June 2026</p>
     </div>
   </section>
 
@@ -2880,7 +3599,7 @@
         Thinks. Learns. Delegates.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        AGENT-X doesn't just respond — it reasons, researches, delegates to sub-agents, generates skills from experience, and reflects on every task to improve. All behind the scenes. All automatic.
+        AGENT-X doesn't just respond — it reasons, researches, delegates to crew specialists, and reflects on every task. Plan mode for recon. Hyperdrive when speed matters. All behind the scenes. All under your clearance.
       </p>
 
       <div class="caps-grid" style="margin-top:48px;grid-template-columns:repeat(3,1fr);">
@@ -3011,40 +3730,54 @@
     <div class="container">
       <div class="section-label reveal">Lives Where You Do</div>
       <h2 class="section-title reveal reveal-delay-1">
-        4 Bridges. One Agent.<br class="hide-desktop" /> Infinite Reach.
+        6 Channels. One Agent.<br class="hide-desktop" /> Infinite Reach.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        Start a conversation on Telegram, continue on Discord, get notified on Slack, reply via Email. AGENT-X follows you across platforms with session continuity and per-user isolation.
+        Web-UI console, Telegram, Discord, Slack, Email, and WebSocket gateway. Start on your phone, continue on desktop. Session continuity and encrypted bridge credentials across every channel.
       </p>
 
       <div class="caps-grid" style="margin-top:48px;">
         <div class="cap-card cap-orbit reveal">
           <div class="cap-number">01</div>
-          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg></div>
-          <h3>Telegram</h3>
-          <p>Full bot with commands, inline keyboards, file uploads, persistent sessions. Your wingman on your phone. Heartbeats, notifications, proactive check-ins.</p>
-          <span class="cap-highlight">production-ready</span>
+          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <h3>Mission Control</h3>
+          <p>Full console in the desktop app and browser. Chat, crews, health HUD, knowledge base, and built-in TASKS panel — one local daemon, zero cloud dependency.</p>
+          <span class="cap-highlight">command center</span>
         </div>
         <div class="cap-card cap-orbit reveal">
           <div class="cap-number">02</div>
-          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="6" width="12" height="12" rx="2"/><line x1="10" y1="10" x2="10" y2="10.01"/><line x1="14" y1="10" x2="14" y2="10.01"/></svg></div>
-          <h3>Discord</h3>
-          <p>Slash commands (/ask, /status, /crew), threaded DMs, file attachments, per-user session isolation. Connect your community.</p>
-          <span class="cap-highlight">discord.js</span>
+          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg></div>
+          <h3>Telegram</h3>
+          <p>Full bot with commands, inline keyboards, file uploads, persistent sessions. Your wingman on your phone — fix production from the train.</p>
+          <span class="cap-highlight">production-ready</span>
         </div>
         <div class="cap-card cap-orbit reveal">
           <div class="cap-number">03</div>
-          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-          <h3>Slack</h3>
-          <p>Socket Mode bot with @mentions, thread replies, file sharing, interactive blocks. No public URL needed — works behind firewalls.</p>
-          <span class="cap-highlight">Bolt SDK</span>
+          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></div>
+          <h3>Discord</h3>
+          <p>Slash commands, threaded DMs, file attachments, per-user session isolation. Connect your community to the same agent brain.</p>
+          <span class="cap-highlight">discord.js</span>
         </div>
         <div class="cap-card cap-orbit reveal">
           <div class="cap-number">04</div>
+          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>Slack</h3>
+          <p>Socket Mode with @mentions, thread replies, file sharing, interactive blocks. Works behind firewalls — no public URL required.</p>
+          <span class="cap-highlight">Bolt SDK</span>
+        </div>
+        <div class="cap-card cap-orbit reveal reveal-delay-1">
+          <div class="cap-number">05</div>
           <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg></div>
           <h3>Email</h3>
-          <p>IMAP polling + SMTP sending with thread detection (In-Reply-To). Attachments supported. Per-sender session isolation.</p>
-          <span class="cap-highlight">nodemailer</span>
+          <p>IMAP polling + SMTP with thread detection and per-sender isolation. Backend shipped — configure UI arriving soon.</p>
+          <span class="cap-highlight">backend ready</span>
+        </div>
+        <div class="cap-card cap-orbit reveal reveal-delay-1">
+          <div class="cap-number">06</div>
+          <div class="cap-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <h3>Gateway</h3>
+          <p>WebSocket routing layer ties channels together. Focus follows last activity — reply on the channel where you left off.</p>
+          <span class="cap-highlight">unified routing</span>
         </div>
       </div>
     </div>
@@ -3058,7 +3791,7 @@
         Zero Context Cost.<br class="hide-desktop" /> Infinite Compute.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        Sub-agents can execute Python scripts in isolated subprocesses. Data processing, computations, ML pipelines — run without consuming LLM context tokens. Pure Python. Pure speed.
+        Desktop ships a bundled Python runtime — no system install required. Sub-agents execute Python, Node, and Bash scripts in isolated subprocesses. Data processing and ML pipelines without burning LLM context tokens.
       </p>
       <div class="trust-grid" style="margin-top:48px;">
         <div class="trust-card reveal">
@@ -3122,16 +3855,15 @@
       </div>
     </div>
   </section>
-  <!-- ===== Web UI ===== -->
+  <!-- ===== Mission Control Console ===== -->
   <section class="section" id="web-ui">
     <div class="container">
-      <div class="section-label reveal">Web UI</div>
+      <div class="section-label reveal">Mission Control</div>
       <h2 class="section-title reveal reveal-delay-1">
-        Engine Power.<br class="hide-desktop" /><span class="accent"> Browser&nbsp;Ease.</span>
+        Engine Power.<br class="hide-desktop" /><span class="accent"> Console Ease.</span>
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        Same engine. Same privacy. Zero cloud. AGENT-X Web gives you the full power of our AI agent
-        through a beautiful browser interface &mdash; no setup required.
+        Docking Station, session grid, streaming chat with Plan/Hyperdrive chips, Crew Hub browser, Health HUD, and a built-in TASKS panel — all in Mission Control.
       </p>
 
       <div class="web-mockup reveal reveal-delay-3">
@@ -3140,34 +3872,37 @@
             <span></span><span></span><span></span>
           </div>
           <div class="mockup-url">
-            <span class="url-dim">http://</span><span class="url-highlight">localhost:3000</span><span class="url-dim">/dashboard</span>
+            <span class="url-dim">agent-x</span><span class="url-highlight"> /console/chat</span>
           </div>
         </div>
         <div class="mockup-body">
           <div class="mockup-sidebar">
+            <div class="mockup-sidebar-item">
+              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/></svg></span> Docking
+            </div>
             <div class="mockup-sidebar-item active">
-              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></span> Dashboard
+              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h10M8 4l4 4-4 4"/></svg></span> Chat
             </div>
             <div class="mockup-sidebar-item">
-              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="5.5" r="3.5"/><circle cx="10.5" cy="10.5" r="3.5"/><path d="M3 13l3-3M10 6l3-3"/></svg></span> Agents
+              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="2.5"/><circle cx="11" cy="10" r="2.5"/></svg></span> Crews
             </div>
             <div class="mockup-sidebar-item">
-              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 2v12M2 8h12"/></svg></span> Tools
+              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/></svg></span> Crew Hub
             </div>
             <div class="mockup-sidebar-item">
-              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h10M8 4l4 4-4 4"/></svg></span> Workflows
+              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V4l6-2 6 2v8"/></svg></span> Health
             </div>
             <div class="mockup-sidebar-item">
-              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="12" height="10" rx="2"/><path d="M5 3v10M11 3v10"/></svg></span> Memory
+              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10v8H3z"/></svg></span> Knowledge
             </div>
             <div class="mockup-sidebar-item">
-              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3" stroke-linecap="round"/></svg></span> Settings
+              <span class="s-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2"/></svg></span> Channels
             </div>
           </div>
           <div class="mockup-main">
             <div class="mockup-topbar">
               <div class="mockup-greeting">
-                <strong>Good morning, Captain.</strong> &middot; All systems nominal
+                <strong>Welcome back, Commander.</strong> &middot; <span style="color:#666;font-size:0.7rem;">Agent</span> <span style="color:#555;margin:0 4px;">|</span> <span style="color:#666;font-size:0.7rem;">Plan</span>
               </div>
               <div class="mockup-status">
                 <span class="dot"></span> Engine Online
@@ -3175,40 +3910,39 @@
             </div>
             <div class="mockup-cards">
               <div class="mockup-card">
-                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 17v-2a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v2"/><circle cx="10" cy="6" r="3"/></svg></div>
-                <div class="mc-label">Active Agents</div>
+                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="7" r="3"/><path d="M4 17v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg></div>
+                <div class="mc-label">Active Crew</div>
                 <div class="mc-stat">3</div>
-                <div class="mc-desc">Engineer &middot; Advisor &middot; Trainer</div>
+                <div class="mc-desc">Tax · Legal · Research</div>
               </div>
               <div class="mockup-card">
-                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="7" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="11" width="7" height="7" rx="1"/></svg></div>
-                <div class="mc-label">Tools Loaded</div>
-                <div class="mc-stat">183</div>
-                <div class="mc-desc">Across 23 categories</div>
+                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="14" height="10" rx="1"/><path d="M7 5V3h6v2"/></svg></div>
+                <div class="mc-label">TASKS Panel</div>
+                <div class="mc-stat">5</div>
+                <div class="mc-desc">2 in progress · live sync</div>
               </div>
               <div class="mockup-card">
-                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="13" width="3" height="5" rx=".5"/><rect x="8.5" y="8" width="3" height="10" rx=".5"/><rect x="14" y="4" width="3" height="14" rx=".5"/></svg></div>
-                <div class="mc-label">Today&rsquo;s Tokens</div>
+                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 14l3-8h6l3 8"/></svg></div>
+                <div class="mc-label">Tokens Today</div>
                 <div class="mc-stat">12.4K</div>
-                <div class="mc-desc">~ 7% of daily budget</div>
+                <div class="mc-desc">Health HUD · circuit OK</div>
                 <div class="mc-bar"><div class="mc-bar-fill" style="width:7%"></div></div>
               </div>
               <div class="mockup-card">
-                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7.5"/><path d="M10 5.5V10l3 3"/></svg></div>
-                <div class="mc-label">Response Time</div>
-                <div class="mc-stat">340ms</div>
-                <div class="mc-desc">p95 latency &middot; Local LLM</div>
-                <div class="mc-bar"><div class="mc-bar-fill" style="width:34%"></div></div>
+                <div class="mc-icon"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3v14M3 10h14"/></svg></div>
+                <div class="mc-label">Crew Hub</div>
+                <div class="mc-stat">4,900</div>
+                <div class="mc-desc">227 sectors indexed</div>
               </div>
             </div>
             <div class="mockup-chat">
               <div class="chat-msg">
-                <div class="chat-avatar user"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12v-1a2.5 2.5 0 0 0-2.5-2.5h-3A2.5 2.5 0 0 0 3 11v1"/><circle cx="7" cy="4.5" r="2.5"/></svg></div>
-                <div class="chat-bubble">Schedule a daily market brief at 8 AM with the Advisor agent</div>
+                <div class="chat-avatar user"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="5" r="2.5"/><path d="M3 12v-1a3 3 0 0 1 3-3h2"/></svg></div>
+                <div class="chat-bubble">Help me plan freelance tax filing for this financial year</div>
               </div>
               <div class="chat-msg">
-                <div class="chat-avatar ai"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 2.5v9M9.5 4.5l-5 5"/></svg></div>
-                <div class="chat-bubble"><strong>Done.</strong> Advisor will pull pre-market data, summarize key movers, and deliver a 2-min briefing to your dashboard every morning at 8:00. Shall I also set a Telegram alert?</div>
+                <div class="chat-avatar ai"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/></svg></div>
+                <div class="chat-bubble"><strong>Routing to crew.</strong> I've summoned an Income Tax specialist from Crew Hub and added 4 tasks to the right panel. Open Crew Private for a 1:1 consult.</div>
               </div>
               <div class="chat-input">
                 <span>Ask your agents anything&hellip;</span>
@@ -3221,34 +3955,34 @@
 
       <div class="web-features reveal reveal-delay-4">
         <div class="web-feature">
-          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span>
-          <h4>Visual Dashboard</h4>
-          <p>Monitor agents, tools, and system health from a single pane. Real-time metrics, usage graphs, and status at a glance.</p>
+          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7"/></svg></span>
+          <h4>Streaming Chat</h4>
+          <p>Plan, Agent, and Hyperdrive mode chips. Crew-attributed messages, scroll-up pagination, and turn feedback on every mission.</p>
         </div>
         <div class="web-feature">
-          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
-          <h4>Chat Interface</h4>
-          <p>Interact with your AI agents through a familiar messaging UI. Rich responses, file uploads, and thread history included.</p>
+          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>
+          <h4>Crew Hub Browser</h4>
+          <p>Search 4,900 specialists across 227 sectors. Import to roster with one click. Medical disclaimers where required.</p>
         </div>
         <div class="web-feature">
-          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg></span>
-          <h4>Tool Browser</h4>
-          <p>Discover, configure, and chain all 180+ tools with visual controls. No command syntax to remember &mdash; just point and connect.</p>
+          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+          <h4>TASKS Panel</h4>
+          <p>Built-in task tracker synced from agent todo_write. No Jira dependency — tasks appear in the right sidebar live.</p>
         </div>
         <div class="web-feature">
-          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 12h7M15.5 8.5l2.5-2.5M15.5 15.5l2.5 2.5"/></svg></span>
-          <h4>Workflow Builder</h4>
-          <p>Drag, drop, and connect automation pipelines. Build complex multi-agent routines without writing a single line of code.</p>
+          <span class="wf-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+          <h4>Health HUD</h4>
+          <p>Uptime, tokens, cost, compaction, sub-agents, circuit breakers, and DB status — full vitals at a glance.</p>
         </div>
       </div>
 
       <div class="web-cta-wrap reveal reveal-delay-5">
-        <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener" class="web-cta-btn">
-          <span>Explore the Web UI</span>
-          <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h12M8 2l6 6-6 6"/></svg></span>
+        <a href="https://github.com/SlashpanOrg/agent-x/releases/latest" class="web-cta-btn">
+          <span>Download &amp; Launch</span>
+          <span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h12M8 2l6 6-6 6"/></svg></span>
         </a>
         <p style="color:#555; font-size:0.75rem; margin-top:14px; font-family:'JetBrains Mono',monospace;">
-          Ships with every AGENT-X installation &middot; <span style="color:#888;">localhost:3000</span>
+          Ships with every AGENT-X installation &middot; <span style="color:#888;">local-first</span>
         </p>
       </div>
     </div>
@@ -3461,20 +4195,49 @@
     <div class="container">
       <div class="section-label reveal">Plugin Marketplace</div>
       <h2 class="section-title reveal reveal-delay-1">
-        Your Tools. Your Rules.
+        Shipped. Shipping. Scanning.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        AGENT-X has a pluggable architecture designed for community-driven extension.
-        Drop in a plugin, unlock a superpower. No core changes. No forks. No limits.
+        Honest roadmap — what's live today, what's configuring, and what's on long-range sensors.
       </p>
 
       <div class="mp-header reveal reveal-delay-3">
-        <span style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:600;">Upcoming Milestones</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:600;">Roadmap</span>
         <span class="mp-header-tag">Phased releases</span>
       </div>
 
       <div class="mp-grid">
         <div class="mp-card reveal">
+          <div class="mp-card-top">
+            <div class="mp-card-icon">&#x2713;</div>
+            <span class="mp-card-name">Slack &amp; Discord Bridges</span>
+          </div>
+          <div class="mp-card-desc">Socket Mode Slack and Discord.js bots — shipped. Configure from the Channels panel in Mission Control.</div>
+          <div class="mp-card-tags">
+            <span class="mp-card-tag orbit">Shipped</span>
+          </div>
+        </div>
+        <div class="mp-card reveal reveal-delay-1">
+          <div class="mp-card-top">
+            <div class="mp-card-icon">&#x2713;</div>
+            <span class="mp-card-name">Desktop — 3 Platforms</span>
+          </div>
+          <div class="mp-card-desc">macOS, Windows, and Linux builds with tray, hotkey, bundled Python, and auto-update.</div>
+          <div class="mp-card-tags">
+            <span class="mp-card-tag orbit">Shipped</span>
+          </div>
+        </div>
+        <div class="mp-card reveal reveal-delay-2">
+          <div class="mp-card-top">
+            <div class="mp-card-icon">&#x25CB;</div>
+            <span class="mp-card-name">Email Gateway UI</span>
+          </div>
+          <div class="mp-card-desc">IMAP/SMTP backend is live. Configure-from-UI panel arriving in a future orbit.</div>
+          <div class="mp-card-tags">
+            <span class="mp-card-tag docking">UI Soon</span>
+          </div>
+        </div>
+        <div class="mp-card reveal reveal-delay-3">
           <div class="mp-card-top">
             <div class="mp-card-icon">&#x25CB;</div>
             <span class="mp-card-name">WhatsApp Bridge</span>
@@ -3484,59 +4247,29 @@
             <span class="mp-card-tag docking">Docking</span>
           </div>
         </div>
-        <div class="mp-card reveal reveal-delay-1">
-          <div class="mp-card-top">
-            <div class="mp-card-icon">&#x2709;</div>
-            <span class="mp-card-name">Email Gateway</span>
-          </div>
-          <div class="mp-card-desc">Your agent gets an email address. Forward receipts, newsletters, and notifications. It reads, categorizes, and acts — automatically.</div>
-          <div class="mp-card-tags">
-            <span class="mp-card-tag orbit">In Orbit</span>
-          </div>
-        </div>
-        <div class="mp-card reveal reveal-delay-2">
+        <div class="mp-card reveal reveal-delay-4">
           <div class="mp-card-top">
             <div class="mp-card-icon">&#x25C6;</div>
             <span class="mp-card-name">Mobile Companion App</span>
           </div>
-          <div class="mp-card-desc">Native iOS and Android app for push notifications, quick commands, and on-the-go monitoring. Your wingman in your pocket, no third-party bridge required.</div>
+          <div class="mp-card-desc">Native iOS and Android for push notifications and quick commands — your wingman without a third-party bridge.</div>
           <div class="mp-card-tags">
             <span class="mp-card-tag docking">Docking</span>
           </div>
         </div>
-        <div class="mp-card reveal reveal-delay-3">
-          <div class="mp-card-top">
-            <div class="mp-card-icon">&#x2699;</div>
-            <span class="mp-card-name">Custom Skill Marketplace</span>
-          </div>
-          <div class="mp-card-desc">Community-driven marketplace for sharing and installing custom skills. Write once, share everywhere. Extend AGENT-X without touching core code.</div>
-          <div class="mp-card-tags">
-            <span class="mp-card-tag radar">On Radar</span>
-          </div>
-        </div>
-        <div class="mp-card reveal reveal-delay-4">
+        <div class="mp-card reveal reveal-delay-5">
           <div class="mp-card-top">
             <div class="mp-card-icon">&#x266A;</div>
             <span class="mp-card-name">Voice Interface</span>
           </div>
-          <div class="mp-card-desc">Hands-free voice commands via wake word. Speak to your agent like a starship commander. Responses via TTS with customizable voice profiles.</div>
-          <div class="mp-card-tags">
-            <span class="mp-card-tag radar">On Radar</span>
-          </div>
-        </div>
-        <div class="mp-card reveal reveal-delay-5">
-          <div class="mp-card-top">
-            <div class="mp-card-icon">&#x21C4;</div>
-            <span class="mp-card-name">Multi-Machine Sync</span>
-          </div>
-          <div class="mp-card-desc">Run one agent across multiple machines. Sessions, memories, and config sync seamlessly via your own infrastructure. Start on your desktop, pick up on your laptop.</div>
+          <div class="mp-card-desc">Hands-free voice commands via wake word. Speak to your agent like a starship commander.</div>
           <div class="mp-card-tags">
             <span class="mp-card-tag radar">On Radar</span>
           </div>
         </div>
       </div>
 
-      <div class="mp-header reveal reveal-delay-3" style="margin-top:48px;">
+      <div class="mp-header reveal reveal-delay-3" style="margin-top:48px;display:none;">
         <span style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:600;">Example Plugins</span>
         <span class="mp-header-tag">Community-driven</span>
       </div>
@@ -3622,8 +4355,8 @@
         One Agent.<br />Every Sector.
       </h2>
       <p class="section-sub reveal reveal-delay-2">
-        Finance, healthcare, logistics, media, defense &mdash; AGENT-X is domain-agnostic by design.
-        180+ tools adapt to any frontline. No retraining. No custom builds. Just one wingman for every sector.
+        Finance, healthcare, logistics, legal, defense — every sector already has crews aboard the hub.
+        4,900 specialists across 227 sectors. Import the expert. Delegate the mission.
       </p>
 
       <div class="sectors-grid">
@@ -4078,7 +4811,7 @@
         <a href="https://slashpan.com" target="_blank" rel="noopener">Slashpan</a>
       </div>
       <div class="copyright">
-        Made in India <span class="sep">/</span> Free to Use <span class="sep">/</span> <span id="versionTag">v0.7.3</span>
+        Made in India <span class="sep">/</span> Free to Use <span class="sep">/</span> <span id="versionTag">v0.8.0</span>
       </div>
     </div>
   </footer>
@@ -4132,12 +4865,15 @@
     (function() {
       const phrases = [
         'Plotting trajectory...',
+        '4,900 crew specialists on standby',
+        'Plan. Execute. Hyperdrive.',
+        'Dock at Mission Control',
         '183+ tools at your command',
-        '16 AI providers — local & cloud',
-        'Native Desktop App + Web Dashboard',
-        'Cron-powered scheduler',
+        '18 AI providers — local & cloud',
+        '6 channels · one agent brain',
+        'Crew Private — talk to the expert',
+        'AES-256 vault · tamper self-destruct',
         'Persistent Secret Sauce memory',
-        'Parallel sub-agent system',
         'Zero vendor lock-in',
         '100% free to use',
         'Made in India',
@@ -4224,7 +4960,7 @@
         .then(r => r.json())
         .then(d => {
           if (d.stargazers_count !== undefined) {
-            document.getElementById('ghCurrent').textContent = d.stargazers_count.toLocaleString('en-IN');
+            document.getElementById('ghCurrent').textContent = d.stargazers_count.toLocaleString('en-US');
           }
         })
         .catch(() => {});
@@ -4233,6 +4969,8 @@
         .then(d => {
           if (d.tag_name) {
             document.getElementById('versionTag').textContent = d.tag_name;
+            const betaVer = document.getElementById('betaVersion');
+            if (betaVer) betaVer.textContent = d.tag_name;
           }
         })
         .catch(() => {});
@@ -4240,14 +4978,13 @@
 
     // ===== Crew =====
     const CREW_SCRIPT = [
-      { role: 'user', name: 'You', text: '<b>@agentx</b> I want to build a professional networking platform like LinkedIn. Can you plan the full microservice architecture?', avatar: 'user', byline: 'user' },
-      { role: 'agent', name: 'Agent-X', text: 'Absolutely. This needs multiple specialists. Let me assemble the crew.', avatar: 'agent', byline: 'agent' },
-      { role: 'agent', name: 'Agent-X', text: '<span style="color:#888;">Calling in:</span><br><b style="color:#f0c040;">@harvey_specter</b> · <b style="color:#40c4ff;">@mike_ross</b> · <b style="color:#69f0ae;">@john_snow</b> · <b style="color:#b388ff;">@arya_stark</b><br><br><span style="color:#888;">All four, working in parallel. Here\'s what they report:</span>', avatar: 'agent', byline: 'agent' },
-      { role: 'architect', name: 'Harvey Specter', text: 'I\'ve analyzed the domain model. Recommending 7 microservices coupled via event-driven architecture. Each service owns its data store. API gateway at the edge for auth and routing. Let me know your throughput expectations — I\'ll size the clusters accordingly.', avatar: 'architect', byline: 'architect' },
-      { role: 'designer', name: 'Mike Ross', text: 'Starting the design system. Profile pages, connection graphs, feed layouts, messaging UI, job boards — I\'ll have a component library ready. I\'ll focus on the profile experience first since it\'s the core identity touchpoint.', avatar: 'designer', byline: 'designer' },
-      { role: 'dev', name: 'John Snow', text: 'Spinning up the backend and frontend scaffolds. Node services with PostgreSQL and some document stores for feed content. React frontend with TypeScript. I\'ll begin with user registration and feed — those unlock the rest of the flow.', avatar: 'dev', byline: 'dev' },
-      { role: 'devops', name: 'Arya Stark', text: 'Setting up the infra pipeline. Docker images, K8s manifests, CI/CD per service, monitoring stack. Blue-green deploys with auto-rollback. I\'ll have the first environment ready before the first service needs deployment.', avatar: 'devops', byline: 'devops' },
-      { role: 'agent', name: 'Agent-X', text: 'All crew members are working in parallel. <b>Timeline:</b> Architecture in 2 days · Design system in 4 days · MVP services in 2 weeks · Pipeline in 3 days — all simultaneous. I\'ll coordinate and keep you updated. <span style="color:#888;">Ready to start?</span>', avatar: 'agent', byline: 'agent' },
+      { role: 'user', name: 'You', text: 'I need help filing freelance income tax for this financial year in India.', avatar: 'user', byline: 'user' },
+      { role: 'agent', name: 'Agent-X', text: 'Scanning Crew Hub for tax and compliance specialists…', avatar: 'agent', byline: 'agent' },
+      { role: 'agent', name: 'Agent-X', text: '<span style="color:#888;">Match found:</span><br><b style="color:#ccc;">@income_tax_advisor</b> · Income Tax Return Filing Coach<br><br>Import to roster and delegate, or open <b style="color:#aaa;">Crew Private</b> for a 1:1 consult.', avatar: 'agent', byline: 'agent' },
+      { role: 'specialist', name: 'Income Tax Advisor', text: 'I\'ll walk you through ITR filing for freelance income — deductions under Section 80C/80D, advance tax timelines, and Form 26AS reconciliation. What\'s your approximate annual freelance revenue?', avatar: 'specialist', byline: 'specialist' },
+      { role: 'user', name: 'You', text: 'Around 18 lakhs. Also have home loan interest.', avatar: 'user', byline: 'user' },
+      { role: 'specialist', name: 'Income Tax Advisor', text: 'Under the new regime vs old regime comparison, with HRA and home loan interest, old regime likely wins here. I\'ve added 4 filing tasks to your TASKS panel. Shall I draft a quarterly advance-tax schedule?', avatar: 'specialist', byline: 'specialist' },
+      { role: 'agent', name: 'Agent-X', text: 'Crew mission active. Specialist is leading the tax plan — I\'ll coordinate document prep and deadline reminders. <span style="color:#888;">Clearance: Agent mode.</span>', avatar: 'agent', byline: 'agent' },
     ];
 
     (function() {
@@ -4310,7 +5047,7 @@
         setTimeout(showNext, delay);
       }
 
-      const section = document.getElementById('crew');
+      const section = document.getElementById('crew-hub');
       const obs = new IntersectionObserver(function(entries) {
         if (entries[0].isIntersecting) {
           setTimeout(showNext, 600);
@@ -4318,6 +5055,169 @@
         }
       }, { threshold: 0.3 });
       if (section) obs.observe(section);
+    })();
+
+    // ===== Category ticker =====
+    (function() {
+      const el = document.getElementById('categoryTicker');
+      if (!el) return;
+      const cats = [
+        'Backend Engineering', 'Tax & Compliance', 'Cybersecurity', 'Medical & Nursing',
+        'Legal & Compliance', 'DevOps & SRE', 'Data Engineering', 'Machine Learning',
+        'Certification Prep', 'Real Estate', 'Healthcare', 'Finance & Banking',
+        'Logistics & Transport', 'Education', 'Sales & Marketing', 'Actuarial Risk',
+        'Immigration Law', 'Travel & Tourism', 'Insurance', 'Manufacturing',
+        'Aerospace & Defense', 'Pharmaceutical', 'HR & Recruiting', 'E-Commerce',
+      ];
+      const track = cats.concat(cats).map(c => '<span>' + c + '</span>').join('');
+      el.innerHTML = track;
+    })();
+
+    // ===== Docking Station boot animation =====
+    (function() {
+      const body = document.getElementById('dockingBody');
+      if (!body) return;
+      const lines = [
+        { t: ' █████╗  ██████╗ ███████╗███╗   ██╗████████╗    ██╗  ██╗', c: 'banner' },
+        { t: '██╔══██╗██╔════╝ ██╔════╝████╗  ██║╚══██╔══╝    ╚██╗██╔╝', c: 'banner' },
+        { t: '███████║██║  ███╗█████╗  ██╔██╗ ██║   ██║  █████╗╚███╔╝ ', c: 'banner' },
+        { t: '██╔══██║██║   ██║██╔══╝  ██║╚██╗██║   ██║  ╚════╝██╔██╗ ', c: 'banner' },
+        { t: '██║  ██║╚██████╔╝███████╗██║ ╚████║   ██║       ██╔╝ ██╗', c: 'banner' },
+        { t: '╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝       ╚═╝  ╚═╝', c: 'banner' },
+        { t: '                                              v0.8.0', c: 'banner' },
+        { t: '', c: '' },
+        { t: '  Welcome back, Operator.', c: 'info' },
+        { t: '', c: '' },
+        { t: '  SYSTEM', c: 'heading' },
+        { t: '  ✓ Provider     configured', c: 'success' },
+        { t: '  ✓ Model        ready', c: 'success' },
+        { t: '  ✓ Sessions     0', c: 'success' },
+        { t: '  ✓ Crew         4900', c: 'success' },
+        { t: '', c: '' },
+        { t: '  CAPABILITIES', c: 'heading' },
+        { t: '  183 tools · 18 providers · 22 MCP servers', c: 'dim' },
+        { t: '  6 channels · Multi-agent mesh · Persistent memory', c: 'dim' },
+        { t: '  AES-256-GCM encrypted storage · Self-destruct tamper protection', c: 'dim' },
+        { t: '', c: '' },
+        { t: '  Ready to launch. All systems nominal.', c: 'info' },
+      ];
+
+      const bannerArt = lines.filter(l => l.c === 'banner').map(l => l.t).join('\n');
+      const bodyLines = lines.filter(l => l.c !== 'banner');
+      let step = 0;
+
+      const pre = document.createElement('pre');
+      pre.className = 'docking-line docking-banner-art';
+      pre.textContent = bannerArt;
+      body.appendChild(pre);
+      setTimeout(() => pre.classList.add('show'), 80 * step++);
+
+      bodyLines.forEach((line) => {
+        const div = document.createElement('div');
+        div.className = 'docking-line' + (line.c ? ' ' + line.c : '');
+        div.textContent = line.t;
+        body.appendChild(div);
+        setTimeout(() => div.classList.add('show'), 80 * step++);
+      });
+    })();
+
+    // ===== Modes carousel =====
+    (function() {
+      const heroSlides = document.querySelectorAll('.mode-hero-slide');
+      const bodySlides = document.querySelectorAll('.mode-body-slide');
+      const tabs = document.querySelectorAll('.modes-tab');
+      const clearanceLines = document.querySelectorAll('.modes-clearance-line');
+      const glassCard = document.getElementById('modesGlassCard');
+      const glassModes = ['modes-glass-card--plan', 'modes-glass-card--agent', 'modes-glass-card--hyper'];
+      if (!heroSlides.length) return;
+      let current = 0;
+      let timer;
+
+      function retriggerHeroAnim(slide) {
+        const codename = slide.querySelector('.mode-banner-codename');
+        const title = slide.querySelector('.mode-banner-title');
+        if (!codename || !title) return;
+        codename.style.animation = 'none';
+        title.style.animation = 'none';
+        void slide.offsetWidth;
+        codename.style.animation = '';
+        title.style.animation = '';
+      }
+
+      function retriggerBodyAnim(slide) {
+        slide.querySelectorAll('.mode-banner-desc, .mode-banner-specs').forEach(el => {
+          el.style.animation = 'none';
+          void el.offsetWidth;
+          el.style.animation = '';
+        });
+      }
+
+      function goTo(idx) {
+        current = ((idx % heroSlides.length) + heroSlides.length) % heroSlides.length;
+        heroSlides.forEach((s, i) => {
+          const on = i === current;
+          if (on && !s.classList.contains('active')) retriggerHeroAnim(s);
+          s.classList.toggle('active', on);
+        });
+        bodySlides.forEach((s, i) => {
+          const on = i === current;
+          if (on && !s.classList.contains('active')) retriggerBodyAnim(s);
+          s.classList.toggle('active', on);
+        });
+        tabs.forEach((t, i) => {
+          t.classList.toggle('active', i === current);
+          t.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        });
+        clearanceLines.forEach((l, i) => l.classList.toggle('active', i === current));
+        if (glassCard) {
+          glassCard.classList.remove(...glassModes);
+          glassCard.classList.add(glassModes[current]);
+        }
+      }
+
+      function next() { goTo(current + 1); }
+
+      function startAuto() {
+        clearInterval(timer);
+        timer = setInterval(next, 5500);
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          goTo(parseInt(this.dataset.mode, 10));
+          startAuto();
+        });
+      });
+
+      goTo(0);
+      startAuto();
+    })();
+
+    // ===== Section nav active state =====
+    (function() {
+      const nav = document.getElementById('sectionNav');
+      if (!nav) return;
+      const links = nav.querySelectorAll('a[href^="#"]');
+      const sections = Array.from(links).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+      const obs = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = '#' + entry.target.id;
+            links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === id));
+          }
+        });
+      }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+      sections.forEach(s => obs.observe(s));
+    })();
+
+    // ===== Docking LAUNCH → Mission Control =====
+    (function() {
+      const btn = document.getElementById('dockingLaunchBtn');
+      if (!btn) return;
+      btn.addEventListener('click', function() {
+        const target = document.getElementById('web-ui');
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
     })();
 
     // ===== Terminal Demo — Coordinated Chat + Terminal =====
