@@ -23,10 +23,18 @@ No cloud accounts. No subscriptions. Bring your own API keys and launch.
 
 ## Installation
 
-**macOS / Linux:**
+**macOS / Linux (desktop app):**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash
 ```
+
+**macOS / Linux (server — headless Web UI):**
+```bash
+curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install-server.sh | bash
+agentx start
+```
+
+Or choose option **3) Server** when running the main installer interactively.
 
 **Windows (PowerShell):**
 ```powershell
@@ -125,6 +133,8 @@ agentx stop       # terminate the daemon
 ```
 
 The Web-UI is available at `http://localhost:3333` whenever the daemon is running — no separate setup needed.
+
+On server installs, the Web UI is also reachable at `http://<your-server-ip>:3333` (binds to `0.0.0.0` by default). Override with `AGENTX_HOST` and `AGENTX_PUBLIC_URL` if needed.
 
 Optional bridges (Telegram, Discord, Slack, Email) can be configured after startup via the Web-UI Channels panel or in-terminal commands.
 
