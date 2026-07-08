@@ -10,6 +10,21 @@ echo "  Agent-X Desktop Installer"
 echo "  ========================="
 echo ""
 
+# Stop a running desktop app and remove any previous install.
+if pgrep -x "Agent-X" >/dev/null 2>&1 || pgrep -f "/Applications/Agent-X.app" >/dev/null 2>&1; then
+  echo "  Stopping running Agent-X..."
+  osascript -e 'quit app "Agent-X"' >/dev/null 2>&1 || true
+  sleep 1
+  pkill -x "Agent-X" 2>/dev/null || true
+fi
+
+if [ -d "/Applications/Agent-X.app" ]; then
+  echo "  Removing previous installation..."
+  rm -rf "/Applications/Agent-X.app"
+fi
+
+echo ""
+
 # Resolve latest version
 if [ "$VERSION" = "latest" ]; then
   VERSION=$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" \
@@ -34,7 +49,6 @@ echo "  Installing..."
 MOUNT_POINT=$(hdiutil attach "$TMP_DIR/Agent-X.dmg" -nobrowse 2>/dev/null | tail -1 | awk '{print $NF}')
 
 # Remove existing app and copy new one
-rm -rf /Applications/Agent-X.app
 cp -R "$MOUNT_POINT/Agent-X.app" /Applications/
 
 # Strip quarantine — this is the fix for the "damaged" / "unidentified developer" error

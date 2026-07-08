@@ -6,6 +6,8 @@ $ErrorActionPreference = "Stop"
 $Repo = "SlashpanOrg/agent-x"
 $InstallDir = if ($env:AGENTX_INSTALL_DIR) { $env:AGENTX_INSTALL_DIR } else { "$env:LOCALAPPDATA\agentx" }
 $BinDir = if ($env:AGENTX_BIN_DIR) { $env:AGENTX_BIN_DIR } else { "$env:LOCALAPPDATA\agentx\bin" }
+$RuntimeDataDir = if ($env:AGENTX_DATA_DIR) { $env:AGENTX_DATA_DIR } else { Join-Path $env:USERPROFILE ".local\share\agentx" }
+$CacheDir = Join-Path $env:TEMP "agentx"
 $MinNodeVersion = 20
 
 # ─── Colours ─────────────────────────────────────────────────────────
@@ -146,9 +148,52 @@ function Get-LatestVersion {
 
 # ─── Clean existing ─────────────────────────────────────────────────
 
+function Stop-AgentXProcesses {
+  $stopped = $false
+  foreach ($proc in Get-Process node -ErrorAction SilentlyContinue) {
+    try {
+      $cmd = (Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.Id)" -ErrorAction SilentlyContinue).CommandLine
+      if ($cmd -and ($cmd -match 'agentx|daemon\.js')) {
+        Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+        $stopped = $true
+      }
+    } catch { }
+  }
+  if ($stopped) {
+    Start-Sleep -Seconds 1
+  }
+}
+
 function Remove-Existing {
+  Stop-AgentXProcesses
+
   if (Test-Path $InstallDir) {
     Remove-Item -Recurse -Force $InstallDir
+  }
+
+  $localBin = Join-Path $env:USERPROFILE ".local\bin"
+  foreach ($wrapper in @("$BinDir\agentx.cmd", "$localBin\agentx.cmd", "$localBin\agentx")) {
+    if (Test-Path $wrapper) {
+      Remove-Item -Force $wrapper
+    }
+  }
+
+  if (Test-Path $CacheDir) {
+    Remove-Item -Recurse -Force $CacheDir
+  }
+
+  # Runtime state (brain_db, logs, pid) must not survive across reinstalls.
+  if (Test-Path $RuntimeDataDir) {
+    Remove-Item -Recurse -Force $RuntimeDataDir
+  }
+
+  $npm = Get-Command npm -ErrorAction SilentlyContinue
+  if ($npm) {
+    npm uninstall -g @agentx/cli 2>$null | Out-Null
+  }
+  $pnpm = Get-Command pnpm -ErrorAction SilentlyContinue
+  if ($pnpm) {
+    pnpm remove -g @agentx/cli 2>$null | Out-Null
   }
 }
 
@@ -361,11 +406,11 @@ Run-Step "Running pre-flight diagnostics" {
   Test-NodeVersion
 }
 
-Show-Countdown
-
 Run-Step "Clearing previous installation artifacts" {
   Remove-Existing
 }
+
+Show-Countdown
 
 Install-AgentX
 

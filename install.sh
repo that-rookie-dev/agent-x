@@ -7,6 +7,8 @@ set -euo pipefail
 REPO="SlashpanOrg/agent-x"
 INSTALL_DIR="${AGENTX_INSTALL_DIR:-$HOME/.agentx}"
 BIN_DIR="${AGENTX_BIN_DIR:-$HOME/.local/bin}"
+DATA_DIR="${AGENTX_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/agentx}"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/agentx"
 VERSION="${AGENTX_VERSION:-latest}"
 MIN_NODE_VERSION=20
 LOG_FILE="${INSTALL_DIR}/install.log"
@@ -417,7 +419,44 @@ get_version() {
 
 # ─── Clean existing installation ─────────────────────────────────────
 
+stop_running_agentx() {
+  if [ -f "${DATA_DIR}/agentx.pid" ]; then
+    local pid
+    pid="$(cat "${DATA_DIR}/agentx.pid" 2>/dev/null || true)"
+    if [ -n "$pid" ] && [ "$pid" != "$$" ]; then
+      kill "$pid" 2>/dev/null || true
+      sleep 1
+      kill -9 "$pid" 2>/dev/null || true
+    fi
+    rm -f "${DATA_DIR}/agentx.pid"
+  fi
+
+  local found=false
+  local patterns=("${INSTALL_DIR}/index.js" "${INSTALL_DIR}/agentx")
+
+  for pattern in "${patterns[@]}"; do
+    local pids
+    pids=$(pgrep -f "$pattern" 2>/dev/null || true)
+    if [ -n "$pids" ]; then
+      found=true
+      for pid in $pids; do
+        [ "$pid" = "$$" ] && continue
+        kill "$pid" 2>/dev/null || true
+      done
+    fi
+  done
+
+  if [ "$found" = true ]; then
+    sleep 1
+    for pattern in "${patterns[@]}"; do
+      pkill -9 -f "$pattern" 2>/dev/null || true
+    done
+  fi
+}
+
 clean_existing() {
+  stop_running_agentx
+
   if [ -d "$INSTALL_DIR" ]; then
     rm -rf "$INSTALL_DIR"
   fi
@@ -425,15 +464,17 @@ clean_existing() {
   if [ -e "$BIN_DIR/agentx" ]; then
     rm -f "$BIN_DIR/agentx"
   fi
-
-  local cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/agentx"
-  if [ -d "$cache_dir" ]; then
-    rm -rf "$cache_dir"
+  if [ -e "$BIN_DIR/agentx.cmd" ]; then
+    rm -f "$BIN_DIR/agentx.cmd"
   fi
 
-  local data_dir="${XDG_DATA_HOME:-$HOME/.local/share}/agentx"
-  if [ -d "$data_dir/logs" ]; then
-    rm -rf "$data_dir/logs"
+  if [ -d "$CACHE_DIR" ]; then
+    rm -rf "$CACHE_DIR"
+  fi
+
+  # Runtime state (brain_db, logs, pid) must not survive across reinstalls.
+  if [ -d "$DATA_DIR" ]; then
+    rm -rf "$DATA_DIR"
   fi
 
   if check_command agentx; then
@@ -791,11 +832,12 @@ main() {
   printf "  ${DIM}Telemetry:${NC} ${CYAN}%s${NC} • ${CYAN}Node %s${NC} • ${CYAN}%s${NC}\n\n" "$PLATFORM" "$(node -v)" "$VERSION"
   printf "  ${DIM}Payload:${NC} ${CYAN}Server (headless Web UI)${NC}\n"
 
+  run_step "Clearing previous installation artifacts" clean_existing
+
   countdown
 
   printf "\n"
 
-  run_step "Clearing previous installation artifacts" clean_existing
   download_and_install
   run_step "Assembling native modules" rebuild_native
   run_step "Locking navigation coordinates" create_symlink
