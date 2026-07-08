@@ -1,223 +1,176 @@
 <p align="center">
-  <br/>
-  <strong>AGENT-X</strong>
-  <br/>
-  <em>Your AI Wingman</em>
-  <br/><br/>
-  Multi-provider AI agent in your terminal. 80+ tools. Session persistence. Crew-based sub-agents.
-  <br/>
-  One command to launch. Zero configuration required.
-  <br/><br/>
-  <a href="#installation">Install</a> · <a href="#features">Features</a> · <a href="#commands">Commands</a> · <a href="#providers">Providers</a>
+  <a href="https://agentx.slashpan.com/">
+    <img src="assets/social_preview.png" alt="AGENT-X — Your AI wingman. On your machine." width="100%" />
+  </a>
+</p>
+
+<p align="center">
+  <strong>AGENT-X</strong> — a free, local-first autonomous AI agent for your machine.<br/>
+  218 built-in tools · 4,900 crew specialists · 18 LLM providers · no cloud required
+</p>
+
+<p align="center">
+  <a href="https://agentx.slashpan.com/">Website</a> ·
+  <a href="https://github.com/SlashpanOrg/agent-x/releases/latest">Downloads</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#server-cli">Server CLI</a> ·
+  <a href="#repository">For developers</a>
 </p>
 
 ---
 
-## Overview
+## What is Agent-X?
 
-Agent-X is an autonomous AI agent that lives in your terminal. It connects to multiple AI providers, wields 80+ built-in tools, remembers context across sessions, and supports crew-based sub-agents for delegated expertise — all wrapped in a deep-space-themed interface that makes every interaction feel like commanding a starship.
+Agent-X runs on your hardware with your API keys. Use it as a **desktop app** (macOS, Windows, Linux) or as a **headless server** with a browser-based Web UI — ideal for VPS, Docker, and remote machines.
 
-No cloud accounts. No subscriptions. Bring your own API keys and launch.
+- **Local-first** — sessions, memory, and config stay on your machine
+- **Provider-agnostic** — OpenAI, Anthropic, Google, Ollama, LM Studio, and more
+- **Tool-rich** — filesystem, shell, git, browser, Docker, MCP, and 200+ other capabilities
+- **Crews** — delegate to thousands of pre-built specialist personas
+- **No account** — no telemetry, no vendor lock-in
+
+Full feature overview: [agentx.slashpan.com](https://agentx.slashpan.com/)
 
 ---
 
-## Installation
+## Install
 
-**macOS / Linux (server — headless Web UI):**
+### Desktop app
+
+Download the installer for your platform from **[Releases](https://github.com/SlashpanOrg/agent-x/releases/latest)**:
+
+| Platform | Package |
+|----------|---------|
+| macOS (Apple Silicon) | `Agent-X-*-arm64.dmg` |
+| macOS (Intel) | `Agent-X-*-x64.dmg` |
+| Windows | `Agent-X Setup *.exe` |
+| Linux | `.AppImage` or `.deb` |
+
+**macOS (Apple Silicon) one-liner** — downloads the DMG and installs to `/Applications`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install-desktop.sh | bash
+```
+
+### Headless server (Web UI)
+
+Requires **Node.js 20+**. Installs to `~/.agentx` and adds `agentx` to `~/.local/bin`.
+
+**macOS / Linux:**
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install-server.sh | bash
+export PATH="$HOME/.local/bin:$PATH"   # required when using curl | bash
 agentx start
 ```
-
-The `install-server.sh` and `install.sh` scripts both install the server package. Desktop app users should use `install-desktop.sh` instead.
 
 **Windows (PowerShell):**
+
 ```powershell
-powershell -c "irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.ps1 | iex"
+irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.ps1 | iex
 agentx start
 ```
 
-**Requirements:** Node.js >= 20 (the only prerequisite). The installer handles everything else.
+Open the Web UI at **http://127.0.0.1:3333** (or `http://<server-ip>:3333` on a remote host).
 
-After installation:
+> `install-server.sh` is a thin wrapper around `install.sh`. Both install the server package (`agentx-<platform>-server.tar.gz`).
+
+---
+
+## Server CLI
+
+| Command | Description |
+|---------|-------------|
+| `agentx start` | Start the headless server and Web UI |
+| `agentx status` | Check process and HTTP health |
+| `agentx stop` | Stop the server |
+| `agentx help` | Show usage |
+
+**Paths**
+
+| Item | Default |
+|------|---------|
+| Install dir | `~/.agentx` |
+| CLI binary | `~/.local/bin/agentx` |
+| Data / logs | `~/.local/share/agentx` |
+
+**Environment variables**
+
+| Variable | Description |
+|----------|-------------|
+| `AGENTX_VERSION` | Pin release tag (default: `latest`) |
+| `AGENTX_INSTALL_DIR` | Override install directory |
+| `AGENTX_BIN_DIR` | Override CLI symlink location |
+| `AGENTX_PORT` | HTTP port (default: `3333`) |
+| `AGENTX_HOST` | Bind address (default: `0.0.0.0` in server mode) |
+| `AGENTX_PUBLIC_URL` | Public URL for OAuth redirects |
+
+**Pin a version:**
 
 ```bash
-agentx start    # start headless server + Web UI
-agentx status   # check health
+AGENTX_VERSION=v0.8.7 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash
 ```
 
-Open the Web UI at http://127.0.0.1:3333 (or your server IP).
+---
+
+## Supported platforms
+
+| | macOS | Linux | Windows |
+|---|:---:|:---:|:---:|
+| **Desktop app** | arm64, x64 | x64, arm64 | x64 |
+| **Headless server** | arm64, x64 | x64, arm64 | x64 |
+
+Server binaries: `agentx-<platform>-server.tar.gz` on the [Releases](https://github.com/SlashpanOrg/agent-x/releases/latest) page.
 
 ---
 
 ## Uninstall
 
+**macOS / Linux:**
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.sh | bash
 ```
 
----
+**Windows:**
 
-## Features
-
-### Multi-Provider AI
-
-Switch between providers mid-conversation. No restart needed.
-
-| Provider | Models |
-|----------|--------|
-| OpenAI | GPT-4o, o1, o3 |
-| Anthropic | Claude 3.5, Claude 4 |
-| Google | Gemini |
-| Ollama | Any local model |
-| LM Studio | Any local model |
-
-### 80+ Built-in Tools
-
-Agent-X does not just talk — it acts. Tools are organized by domain:
-
-- **Filesystem** — read, write, move, delete, search files and directories
-- **Shell** — execute commands, manage background processes
-- **Git** — status, diff, log, commit, branch, stash, blame
-- **Code Intelligence** — search symbols, find definitions, replace, refactor
-- **Packages** — install, remove, list, outdated, run scripts
-- **Testing** — run suites, watch mode, coverage, generate tests
-- **Web / HTTP** — GET, POST, scrape, search the web
-- **Browser Automation** — open pages, click elements, screenshots, evaluate JS
-- **Containers** — Docker lifecycle, compose, logs, exec
-- **Database** — query, inspect schema, export data
-- **GitHub** — issues, PRs, repos, workflows, releases
-- **System** — disk, ports, env, processes, security audit
-- **MCP** — connect to any Model Context Protocol server for extended capabilities
-
-### Permission System
-
-Every tool action passes through a clearance gate:
-
-- Scope-based path validation
-- Risk-level assessment per tool
-- Interactive prompts — allow once, allow always, or deny
-- Full audit trail of approved actions
-
-### Session Persistence
-
-- Auto-save on every turn
-- Crash recovery — pick up exactly where you left off
-- Token tracking and context management
-- Session compaction when context grows large
-
-### Crews (Sub-Agents)
-
-Define specialized crew members with distinct personalities, expertise, and system prompts. Agent-X auto-delegates relevant tasks to the right crew member based on the conversation context.
-
-```bash
-/crew list                  # List all crew members
-/crew create                # Create a new crew member
-/crew switch <name>         # Switch active crew
-/crew show <name>           # View crew details
-```
-
-Crews can be @-mentioned by callsign during conversation to direct them explicitly. No default crew — zero crews is valid.
-
-### Daemon Mode & Web-UI
-
-Run Agent-X as a background daemon and interact via your browser or the terminal. The daemon starts without requiring any bridge configuration.
-
-```bash
-agentx start      # launch the background daemon
-agentx status     # check daemon health
-agentx stop       # terminate the daemon
-```
-
-The Web-UI is available at `http://localhost:3333` whenever the daemon is running — no separate setup needed.
-
-On server installs, the Web UI is also reachable at `http://<your-server-ip>:3333` (binds to `0.0.0.0` by default). Override with `AGENTX_HOST` and `AGENTX_PUBLIC_URL` if needed.
-
-Optional bridges (Telegram, Discord, Slack, Email) can be configured after startup via the Web-UI Channels panel or in-terminal commands.
-
----
-
-## Commands
-
-All configuration and control happens inside the Agent-X terminal:
-
-| Command | Description |
-|---------|-------------|
-| `/help` | Show all available commands |
-| `/model <name>` | Switch AI model |
-| `/provider <name>` | Switch provider |
-| `/crew` | Manage crews (sub-agents) |
-| `/tools` | Browse and search available tools |
-| `/permissions` | Review and manage tool permissions |
-| `/sessions` | List saved sessions and restore |
-| `/fork` | Fork the current session into a new one |
-| `/export` | Export session as markdown or JSONL |
-| `/remember` | Save a fact to long-term memory |
-| `/telegram start <token>` | Connect Telegram bot bridge |
-| `/telegram stop` | Disconnect Telegram bridge |
-| `/telegram status` | Check Telegram bridge status |
-| `/schedule` | Manage scheduled/cron tasks |
-| `/plan` | Toggle plan mode (approve steps before execution) |
-| `/search` | Semantic codebase search using RAG |
-| `/clear` | Clear message history |
-| `/theme` | Change or persist UI theme |
-| `/exit` | Exit Agent-X |
-
----
-
-## Providers
-
-Agent-X works with any OpenAI-compatible API. Configure multiple providers and switch between them freely:
-
-```
-/provider openai
-/model gpt-4o
-
-/provider anthropic
-/model claude-sonnet-4-20250514
-
-/provider ollama
-/model llama3
-```
-
-Local models via Ollama and LM Studio require no API key — just a running server.
-
----
-
-## Supported Platforms
-
-| Platform | Architecture |
-|----------|-------------|
-| macOS | Apple Silicon (arm64) |
-| macOS | Intel (x64 via Rosetta) |
-| Linux | x64 |
-| Linux | arm64 |
-| Windows | x64 |
-
----
-
-## Version Pinning
-
-Install a specific version:
-
-```bash
-AGENTX_VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash
+```powershell
+irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.ps1 | iex
 ```
 
 ---
 
-## Philosophy
+## Repository
 
-Agent-X is built on three principles:
+This is the **public distribution repo** for Agent-X. It is separate from the private application source tree.
 
-1. **Autonomy with accountability** — The agent acts independently but never bypasses your clearance. Every destructive or sensitive action requires explicit approval.
+| Location | Contents |
+|----------|----------|
+| `main` branch | Install scripts, landing page, docs |
+| [GitHub Releases](https://github.com/SlashpanOrg/agent-x/releases) | Desktop installers and server tarballs (built by CI) |
+| [agentx.slashpan.com](https://agentx.slashpan.com/) | Marketing site (`index.html` via GitHub Pages) |
 
-2. **Local-first** — Your data stays on your machine. Sessions, memories, and configuration never leave your system. Nothing phones home.
+**Files on `main`**
 
-3. **Provider-agnostic** — No lock-in. Swap between cloud and local models at will. The same tools and workflows work regardless of the AI backend.
+| File | Purpose |
+|------|---------|
+| `install.sh` | Server installer (macOS / Linux) |
+| `install-server.sh` | One-liner alias → `install.sh` |
+| `install-desktop.sh` | macOS Apple Silicon desktop installer |
+| `install.ps1` | Windows server installer |
+| `uninstall.sh` / `uninstall.ps1` | Remove server installation |
+| `index.html` | Landing page (version and download links fetched from GitHub Releases) |
+| `assets/` | Site images (`social_preview.png`, favicon) |
+
+**Release flow (maintainers)**
+
+1. Bump version in the private source repo and push to `main`.
+2. CI builds desktop and server artifacts and publishes them to this repo’s GitHub Releases.
+3. Install scripts on `main` are served via `raw.githubusercontent.com` — update them here when installer behaviour changes.
+4. The landing page pulls the latest tag and asset URLs from the GitHub API at runtime.
 
 ---
 
 <p align="center">
-  <em>Ground control to Major — systems nominal.</em>
+  <sub>Made in India · <a href="https://slashpan.com">Slashpan Technologies</a></sub>
 </p>
