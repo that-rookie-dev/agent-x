@@ -463,12 +463,17 @@ file_size_bytes() {
 
 format_bytes() {
   local bytes="$1"
+  local whole rem
   if [ "$bytes" -ge 1073741824 ]; then
-    printf "%.1f GB" "$(awk "BEGIN {printf \"%.1f\", $bytes/1073741824}")"
+    whole=$((bytes / 1073741824))
+    rem=$(((bytes % 1073741824) * 10 / 1073741824))
+    printf "%d.%d GB" "$whole" "$rem"
   elif [ "$bytes" -ge 1048576 ]; then
-    printf "%.1f MB" "$(awk "BEGIN {printf \"%.1f\", $bytes/1048576}")"
+    whole=$((bytes / 1048576))
+    rem=$(((bytes % 1048576) * 10 / 1048576))
+    printf "%d.%d MB" "$whole" "$rem"
   elif [ "$bytes" -ge 1024 ]; then
-    printf "%.0f KB" "$(awk "BEGIN {printf \"%.0f\", $bytes/1024}")"
+    printf "%d KB" $((bytes / 1024))
   else
     printf "%d B" "$bytes"
   fi
@@ -495,7 +500,7 @@ render_download_progress() {
     for ((i=0; i<filled; i++)); do bar="${bar}${CYAN}█${NC}"; done
     for ((i=0; i<empty; i++)); do bar="${bar}${DIM}░${NC}"; done
     status="$(format_bytes "$current") / $(format_bytes "$total") (${pct}%)"
-    printf "\r  ${DIM}RX:${NC} [${bar}] ${BOLD}%3d%%${NC} ${status}\033[K" "$pct" >&2
+    printf "\r  ${DIM}RX:${NC} [${bar}] ${BOLD}%3d%%${NC} %s\033[K" "$pct" "$status" >&2
   else
     local pulse=$((current / 1048576 % width))
     for ((i=0; i<width; i++)); do
@@ -506,7 +511,7 @@ render_download_progress() {
       fi
     done
     status="$(format_bytes "$current") received"
-    printf "\r  ${DIM}RX:${NC} [${bar}] ${status}\033[K" >&2
+    printf "\r  ${DIM}RX:${NC} [${bar}] %s\033[K" "$status" >&2
   fi
 }
 
