@@ -23,22 +23,18 @@ No cloud accounts. No subscriptions. Bring your own API keys and launch.
 
 ## Installation
 
-**macOS / Linux (desktop app):**
-```bash
-curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash
-```
-
 **macOS / Linux (server — headless Web UI):**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install-server.sh | bash
 agentx start
 ```
 
-Or choose option **3) Server** when running the main installer interactively.
+The `install-server.sh` and `install.sh` scripts both install the server package. Desktop app users should use `install-desktop.sh` instead.
 
 **Windows (PowerShell):**
 ```powershell
 powershell -c "irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.ps1 | iex"
+agentx start
 ```
 
 **Requirements:** Node.js >= 20 (the only prerequisite). The installer handles everything else.
@@ -46,10 +42,11 @@ powershell -c "irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/in
 After installation:
 
 ```bash
-agentx
+agentx start    # start headless server + Web UI
+agentx status   # check health
 ```
 
-A guided setup wizard walks you through root user creation, provider selection, and API key configuration on first run.
+Open the Web UI at http://127.0.0.1:3333 (or your server IP).
 
 ---
 

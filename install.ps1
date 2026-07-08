@@ -152,87 +152,51 @@ function Remove-Existing {
   }
 }
 
-# ─── Installation mode selection ────────────────────────────────────
-
-function Select-InstallMode {
-  Write-Host ""
-  Write-Host "  DEPLOYMENT CONFIGURATION" -ForegroundColor Cyan
-  Write-Host "  --------------------------------------------------" -ForegroundColor DarkGray
-  Write-Host "  1) TUI only     - Terminal interface (lightweight)" -ForegroundColor Cyan
-  Write-Host "  2) TUI + Web-UI - Terminal + browser interface" -ForegroundColor Cyan
-  Write-Host ""
-
-  $choice = ""
-  if ($env:AGENTX_INSTALL_MODE) {
-    $choice = $env:AGENTX_INSTALL_MODE
-  } elseif ($Host.UI.RawUI) {
-    $choice = Read-Host "  Select payload configuration [1/2] (default: 2)"
-  }
-
-  if ($choice -eq "1") {
-    $script:INSTALL_MODE = "tui-only"
-    Write-Host "  Payload: TUI-only (lightweight)" -ForegroundColor DarkGray
-  } else {
-    $script:INSTALL_MODE = "full"
-    Write-Host "  Payload: TUI + Web-UI (full deployment)" -ForegroundColor DarkGray
-  }
-}
-
-# ─── Download ───────────────────────────────────────────────────────
+# ─── Download server payload ────────────────────────────────────────
 
 function Install-AgentX {
   $platform = Get-Platform
+  if ($platform -ne "win-x64") {
+    Write-Err "Server install is only available for win-x64 (found $platform)."
+  }
   $version = Get-LatestVersion
   Write-Ok "Latest release: $version"
   Write-Ground "Telemetry: $platform | Node $(node -v) | $version"
+  Write-Ground "Payload: Server (headless Web UI)"
 
-  $suffix = ""
-  if ($script:INSTALL_MODE -eq "tui-only") {
-    $suffix = "-tui"
-  }
-  $url = "https://github.com/$Repo/releases/download/$version/agentx-$platform$suffix.zip"
-  $tmpFile = Join-Path $env:TEMP "agentx-$platform$suffix.zip"
-  $dlPath = "$InstallDir\agentx-$platform$suffix.zip"
+  $url = "https://github.com/$Repo/releases/download/$version/agentx-$platform-server.tar.gz"
+  $tmpFile = Join-Path $env:TEMP "agentx-$platform-server.tar.gz"
 
   Write-Cmd "Downlinking from: $url"
 
   New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 
-  $progress = 0
-  $phrase = Get-MissionPhrase
   try {
-    Invoke-WebRequest -Uri $url -OutFile $tmpFile -ErrorAction Stop `
-      -UseBasicParsing `
-      -PassThru `
-      | ForEach-Object {
-        $response = $_
-        if ($response.ContentLength -gt 0) {
-          $reader = New-Object System.IO.FileStream $tmpFile, 'Open', 'Read'
-          $totalBytes = $response.ContentLength
-          $readBytes = 0
-          $buffer = New-Object byte[] 8192
-          while (($bytesRead = $reader.Read($buffer, 0, $buffer.Length)) -gt 0) {
-            $readBytes += $bytesRead
-            $percent = [int](($readBytes / $totalBytes) * 100)
-            Write-Progress -Activity "Downlinking payload..." -Status "$(Get-MissionPhrase)" -PercentComplete $percent
-          }
-          $reader.Close()
-        } else {
-          Invoke-WebRequest -Uri $url -OutFile $tmpFile -UseBasicParsing
-        }
-      }
+    Invoke-WebRequest -Uri $url -OutFile $tmpFile -UseBasicParsing -ErrorAction Stop
   } catch {
+    Write-Err "Download failed for $url. Check your internet connection or set AGENTX_VERSION."
+  }
+
+  if (-not (Test-Path $tmpFile) -or (Get-Item $tmpFile).Length -eq 0) {
     Write-Err "Download failed. Check your internet connection."
   }
-  Write-Progress -Activity "Downlinking payload..." -Completed
+
+  $header = Get-Content -Path $tmpFile -Encoding Byte -TotalCount 2
+  if ($header[0] -ne 0x1f -or $header[1] -ne 0x8b) {
+    Write-Err "Downloaded file is not a valid server package (expected gzip). Asset may be missing for $platform in $version."
+  }
 
   Write-Cmd "Unpacking payload..."
-  Expand-Archive -Path $tmpFile -DestinationPath $InstallDir -Force
+  tar -xzf $tmpFile -C $InstallDir
   Remove-Item $tmpFile -Force
 
   New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
-  $cmdContent = "@echo off`r`nnode `"$InstallDir\index.js`" %*"
-  Set-Content -Path "$BinDir\agentx.cmd" -Value $cmdContent -Encoding ASCII
+  if (Test-Path "$InstallDir\agentx.cmd") {
+    Copy-Item "$InstallDir\agentx.cmd" "$BinDir\agentx.cmd" -Force
+  } else {
+    $cmdContent = "@echo off`r`nnode `"$InstallDir\index.js`" %*"
+    Set-Content -Path "$BinDir\agentx.cmd" -Value $cmdContent -Encoding ASCII
+  }
 
   Write-Ok "Payload extracted to $InstallDir"
 }
@@ -323,7 +287,6 @@ Run-Step "Running pre-flight diagnostics" {
   Test-NodeVersion
 }
 
-Select-InstallMode
 Show-Countdown
 
 Run-Step "Clearing previous installation artifacts" {
@@ -346,17 +309,13 @@ Run-Step "Installing auxiliary sensors (OCR)" {
 
 Write-Host ""
 Write-Host "  ** DEPLOYMENT COMPLETE **" -ForegroundColor Green
-Write-Host "  Agent-X is now operational." -ForegroundColor DarkGray
+Write-Host "  Agent-X server is now operational." -ForegroundColor DarkGray
 Write-Host ""
-if ($script:INSTALL_MODE -eq "tui-only") {
-  Write-Host "  Payload:     TUI only" -ForegroundColor Cyan
-  Write-Host ""
-  Write-Host "  Engage:      agentx"
-} else {
-  Write-Host "  Payload:     TUI + Web-UI" -ForegroundColor Cyan
-  Write-Host ""
-  Write-Host "  Engage:      agentx"
-  Write-Host "  Daemon:      agentx start"
-}
+Write-Host "  Payload:     Server (Web UI)" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  Engage:      agentx start"
+Write-Host "  Status:      agentx status"
+Write-Host "  Stop:        agentx stop"
+Write-Host "  Web UI:      http://127.0.0.1:3333"
 Write-Host "  Help:        agentx --help"
 Write-Host ""

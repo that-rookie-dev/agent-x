@@ -225,11 +225,6 @@ detect_platform() {
     *)             die "Unsupported architecture: $arch" ;;
   esac
 
-  if [ "$OS" = "darwin" ] && [ "$ARCH" = "x64" ]; then
-    OS="darwin"
-    ARCH="arm64"
-  fi
-
   PLATFORM="${OS}-${ARCH}"
 }
 
@@ -331,55 +326,17 @@ clean_existing() {
   fi
 }
 
-# ─── Installation mode selection ─────────────────────────────────────
-
-select_install_mode() {
-  echo ""
-  printf "  ${CYAN}DEPLOYMENT CONFIGURATION${NC}\n"
-  printf "  ${DIM}──────────────────────────────────────────────────${NC}\n"
-  printf "  ${BOLD}1${NC}) ${CYAN}TUI only${NC}     ${DIM}— Terminal interface (lightweight)${NC}\n"
-  printf "  ${BOLD}2${NC}) ${CYAN}TUI + Web-UI${NC} ${DIM}— Terminal + browser interface${NC}\n"
-  printf "  ${BOLD}3${NC}) ${CYAN}Server${NC}       ${DIM}— Headless daemon + Web UI (IP:port)${NC}\n"
-  echo ""
-
-  local choice=""
-
-  if [ -n "${AGENTX_INSTALL_MODE:-}" ]; then
-    choice="${AGENTX_INSTALL_MODE}"
-  elif [ -e /dev/tty ]; then
-    printf "  ${DIM}Select payload configuration [1/2/3] (default: 2):${NC} " >&2
-    read -r choice < /dev/tty
-  fi
-
-  if [ "$choice" = "1" ]; then
-    INSTALL_MODE="tui-only"
-    printf "  ${DIM}Payload: TUI-only (lightweight)${NC}\n\n"
-  elif [ "$choice" = "3" ]; then
-    INSTALL_MODE="server"
-    printf "  ${DIM}Payload: Server (headless Web UI)${NC}\n\n"
-  else
-    INSTALL_MODE="full"
-    printf "  ${DIM}Payload: TUI + Web-UI (full deployment)${NC}\n\n"
-  fi
-}
-
-# ─── Download with real progress bar ─────────────────────────────────
+# ─── Download server payload ─────────────────────────────────────────
 
 download_and_install() {
-  local suffix=""
-  if [ "${INSTALL_MODE:-full}" = "tui-only" ]; then
-    suffix="-tui"
-  elif [ "${INSTALL_MODE:-full}" = "server" ]; then
-    suffix="-server"
-  fi
-  local url="https://github.com/${REPO}/releases/download/${VERSION}/agentx-${PLATFORM}${suffix}.tar.gz"
+  local url="https://github.com/${REPO}/releases/download/${VERSION}/agentx-${PLATFORM}-server.tar.gz"
   TMPDIR_INSTALL="$(mktemp -d)"
   trap 'rm -rf "$TMPDIR_INSTALL"' EXIT
 
   printf "  ${DIM}Downlinking from:${NC} ${CYAN}%s${NC}\n" "$url"
   mkdir -p "$INSTALL_DIR"
 
-  curl --progress-bar -SL "$url" -o "${TMPDIR_INSTALL}/agentx.tar.gz" 2>&1 | \
+  if ! curl --progress-bar -fSL "$url" -o "${TMPDIR_INSTALL}/agentx.tar.gz" 2>&1 | \
     while IFS= read -r line; do
       if [[ "$line" =~ ([0-9]+)% ]]; then
         local pct="${BASH_REMATCH[1]}"
@@ -390,10 +347,16 @@ download_and_install() {
         for ((i=0; i<empty; i++)); do bar="${bar}${DIM}░${NC}"; done
         printf "\r  ${DIM}RX:${NC} [${bar}] ${BOLD}%3d%%${NC} %s" "$pct" "$(mission_phrase)" >&2
       fi
-    done
+    done; then
+    die "Download failed for ${url}. Check your internet connection or try AGENTX_VERSION=<tag>."
+  fi
 
-  if [ ! -f "${TMPDIR_INSTALL}/agentx.tar.gz" ]; then
+  if [ ! -s "${TMPDIR_INSTALL}/agentx.tar.gz" ]; then
     die "Download failed. Check your internet connection."
+  fi
+
+  if ! gzip -t "${TMPDIR_INSTALL}/agentx.tar.gz" 2>/dev/null; then
+    die "Downloaded file is not a valid server package (expected gzip). Asset may be missing for ${PLATFORM} in ${VERSION}."
   fi
 
   printf "\r  ${DIM}RX:${NC} [${CYAN}████████████████████${NC}] ${BOLD}100%%${NC} ${GREEN}Payload received${NC}\033[K\n"
@@ -526,8 +489,7 @@ main() {
   get_version
 
   printf "  ${DIM}Telemetry:${NC} ${CYAN}%s${NC} • ${CYAN}Node %s${NC} • ${CYAN}%s${NC}\n\n" "$PLATFORM" "$(node -v)" "$VERSION"
-
-  select_install_mode
+  printf "  ${DIM}Payload:${NC} ${CYAN}Server (headless Web UI)${NC}\n"
 
   countdown
 
@@ -544,29 +506,16 @@ main() {
 
   echo ""
   printf "  ${BOLD}✦  DEPLOYMENT COMPLETE  ✦${NC}\n"
-  printf "  ${DIM}Agent-X is now operational.${NC}\n"
+  printf "  ${DIM}Agent-X server is now operational.${NC}\n"
   echo ""
-  if [ "${INSTALL_MODE:-full}" = "tui-only" ]; then
-    printf "  ${CYAN}Payload:${NC}  ${BOLD}TUI only${NC}\n"
-    echo ""
-    printf "  ${CYAN}Engage:${NC}\n"
-    printf "    ${BOLD}agentx${NC}                             Launch interactive TUI\n"
-  elif [ "${INSTALL_MODE:-full}" = "server" ]; then
-    printf "  ${CYAN}Payload:${NC}  ${BOLD}Server (Web UI)${NC}\n"
-    echo ""
-    printf "  ${CYAN}Engage:${NC}\n"
-    printf "    ${BOLD}agentx start${NC}                       Start server daemon\n"
-    printf "    ${BOLD}agentx status${NC}                      Check server health\n"
-    printf "    ${BOLD}agentx stop${NC}                        Stop server daemon\n"
-    echo ""
-    printf "  ${DIM}Web UI:${NC} http://127.0.0.1:3333 (or your server IP)\n"
-  else
-    printf "  ${CYAN}Payload:${NC}  ${BOLD}TUI + Web-UI${NC}\n"
-    echo ""
-    printf "  ${CYAN}Engage:${NC}\n"
-    printf "    ${BOLD}agentx${NC}                             Launch interactive TUI\n"
-    printf "    ${BOLD}agentx start${NC}                       Start daemon with Web-UI\n"
-  fi
+  printf "  ${CYAN}Payload:${NC}  ${BOLD}Server (Web UI)${NC}\n"
+  echo ""
+  printf "  ${CYAN}Engage:${NC}\n"
+  printf "    ${BOLD}agentx start${NC}                       Start server daemon\n"
+  printf "    ${BOLD}agentx status${NC}                      Check server health\n"
+  printf "    ${BOLD}agentx stop${NC}                        Stop server daemon\n"
+  echo ""
+  printf "  ${DIM}Web UI:${NC} http://127.0.0.1:3333 (or your server IP)\n"
   echo ""
   printf "  ${DIM}Mission control: agentx --help${NC}\n"
   echo ""
