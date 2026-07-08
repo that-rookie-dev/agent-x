@@ -154,6 +154,72 @@ function Remove-Existing {
 
 # ─── Download server payload ────────────────────────────────────────
 
+function Format-Bytes([long]$Bytes) {
+  if ($Bytes -ge 1GB) { return "{0:N1} GB" -f ($Bytes / 1GB) }
+  if ($Bytes -ge 1MB) { return "{0:N1} MB" -f ($Bytes / 1MB) }
+  if ($Bytes -ge 1KB) { return "{0:N0} KB" -f ($Bytes / 1KB) }
+  return "$Bytes B"
+}
+
+function Get-RemoteSize([string]$Url) {
+  try {
+    $response = Invoke-WebRequest -Uri $Url -Method Head -UseBasicParsing -ErrorAction Stop
+    if ($response.Headers['Content-Length']) {
+      return [long]$response.Headers['Content-Length']
+    }
+  } catch {}
+  return 0
+}
+
+function Download-WithProgress([string]$Url, [string]$Destination) {
+  $totalBytes = Get-RemoteSize $Url
+  if ($totalBytes -gt 0) {
+    Write-Ground "Payload size: $(Format-Bytes $totalBytes)"
+  }
+
+  $curl = Get-Command curl.exe -ErrorAction SilentlyContinue
+  if ($curl) {
+    $proc = Start-Process -FilePath $curl.Source -ArgumentList @('-fSL', $Url, '-o', $Destination) -PassThru -NoNewWindow
+    $lastBytes = 0
+    $stalled = 0
+    while (-not $proc.HasExited) {
+      $currentBytes = if (Test-Path $Destination) { (Get-Item $Destination).Length } else { 0 }
+      if ($totalBytes -gt 0) {
+        $pct = [Math]::Min(100, [int](($currentBytes * 100) / $totalBytes))
+        Write-Progress -Activity "Downlinking payload" -Status "$(Format-Bytes $currentBytes) / $(Format-Bytes $totalBytes) ($pct%)" -PercentComplete $pct
+      } else {
+        Write-Progress -Activity "Downlinking payload" -Status "$(Format-Bytes $currentBytes) received" -PercentComplete -1
+      }
+
+      if ($currentBytes -eq $lastBytes) {
+        $stalled++
+        if ($stalled -ge 150) {
+          $proc | Stop-Process -Force -ErrorAction SilentlyContinue
+          Write-Err "Download stalled. Check your internet connection."
+        }
+      } else {
+        $stalled = 0
+        $lastBytes = $currentBytes
+      }
+      Start-Sleep -Milliseconds 200
+    }
+    Write-Progress -Activity "Downlinking payload" -Completed
+    if ($proc.ExitCode -ne 0) {
+      Write-Err "Download failed for $Url. Check your internet connection or set AGENTX_VERSION."
+    }
+    return
+  }
+
+  Write-Progress -Activity "Downlinking payload" -Status $Url -PercentComplete -1
+  try {
+    Invoke-WebRequest -Uri $Url -OutFile $Destination -UseBasicParsing -ErrorAction Stop
+  } catch {
+    Write-Progress -Activity "Downlinking payload" -Completed
+    Write-Err "Download failed for $Url. Check your internet connection or set AGENTX_VERSION."
+  }
+  Write-Progress -Activity "Downlinking payload" -Completed
+}
+
 function Install-AgentX {
   $platform = Get-Platform
   if ($platform -ne "win-x64") {
@@ -171,15 +237,14 @@ function Install-AgentX {
 
   New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 
-  try {
-    Invoke-WebRequest -Uri $url -OutFile $tmpFile -UseBasicParsing -ErrorAction Stop
-  } catch {
-    Write-Err "Download failed for $url. Check your internet connection or set AGENTX_VERSION."
-  }
+  Download-WithProgress -Url $url -Destination $tmpFile
 
   if (-not (Test-Path $tmpFile) -or (Get-Item $tmpFile).Length -eq 0) {
     Write-Err "Download failed. Check your internet connection."
   }
+
+  $finalBytes = (Get-Item $tmpFile).Length
+  Write-Ok "Payload received ($(Format-Bytes $finalBytes))"
 
   $header = Get-Content -Path $tmpFile -Encoding Byte -TotalCount 2
   if ($header[0] -ne 0x1f -or $header[1] -ne 0x8b) {
@@ -204,22 +269,31 @@ function Install-AgentX {
 # ─── PATH management ────────────────────────────────────────────────
 
 function Add-ToPath {
+  if (-not (Test-Path "$BinDir\agentx.cmd")) {
+    Write-Err "CLI wrapper missing at $BinDir\agentx.cmd"
+  }
+
   $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
-  if ($userPath -split ";" | Where-Object { $_ -eq $BinDir }) {
-    return
+  if (-not ($userPath -split ";" | Where-Object { $_ -eq $BinDir })) {
+    [Environment]::SetEnvironmentVariable("PATH", "$BinDir;$userPath", "User")
+    Write-Ok "Added $BinDir to user PATH"
   }
-  Write-Warn "$BinDir is not in your PATH"
-  [Environment]::SetEnvironmentVariable("PATH", "$BinDir;$userPath", "User")
-  $env:PATH = "$BinDir;$env:PATH"
-  Write-Ok "Navigation beacon added to PATH"
-  $shell = (Get-Process -Id $PID).Path
-  if ($shell -like "*powershell*") {
-    Write-Host "  Reloading navigation charts for this session..." -ForegroundColor Cyan
-    $env:PATH = [Environment]::GetEnvironmentVariable("PATH", "User")
-    Write-Host "  If 'agentx' is still not found, restart your terminal or run: `n    `$env:PATH = [Environment]::GetEnvironmentVariable(\"PATH\", \"User\")" -ForegroundColor Yellow
-  } else {
-    Write-Host "  Please restart your terminal to use 'agentx', or run: `n    `$env:PATH = [Environment]::GetEnvironmentVariable(\"PATH\", \"User\")" -ForegroundColor Yellow
-  }
+
+  Write-Ok "CLI available at $BinDir\agentx.cmd"
+}
+
+function Print-ActivationInstructions {
+  Write-Host ""
+  Write-Host "  Activate the agentx command" -ForegroundColor Cyan
+  Write-Host "  --------------------------------------------------" -ForegroundColor DarkGray
+  Write-Host "  Note: If you installed via irm | iex, reload PATH in this window:" -ForegroundColor Yellow
+  Write-Host ""
+  Write-Host "    `$env:PATH = [Environment]::GetEnvironmentVariable('PATH','User')" -ForegroundColor White
+  Write-Host "    # or open a new terminal" -ForegroundColor DarkGray
+  Write-Host ""
+  Write-Host "  Or run directly without updating PATH:" -ForegroundColor DarkGray
+  Write-Host "    $BinDir\agentx.cmd start" -ForegroundColor White
+  Write-Host ""
 }
 
 # ─── Verify ─────────────────────────────────────────────────────────
@@ -306,6 +380,8 @@ Run-Step "Running payload integrity check" {
 Run-Step "Installing auxiliary sensors (OCR)" {
   Install-OptionalDeps
 }
+
+Print-ActivationInstructions
 
 Write-Host ""
 Write-Host "  ** DEPLOYMENT COMPLETE **" -ForegroundColor Green

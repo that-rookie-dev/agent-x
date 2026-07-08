@@ -192,9 +192,74 @@ countdown() {
   sleep 0.5
 }
 
-# ─── Errors ──────────────────────────────────────────────────────────
+# ─── Errors / interrupts ─────────────────────────────────────────────
+
+INSTALL_COMPLETE=0
+INSTALL_ABORT_REASON=""
+TMPDIR_INSTALL=""
+CURL_PID=""
+
+cleanup_animations() {
+  stop_spinner "false" "" 2>/dev/null || true
+  stop_progress "false" "" 2>/dev/null || true
+}
+
+ignore_failure_unless_interrupted() {
+  local rc=$?
+  if [ "$rc" -eq 130 ] || [ "$rc" -eq 143 ]; then
+    exit "$rc"
+  fi
+  return 0
+}
+
+handle_interrupt() {
+  INSTALL_ABORT_REASON="interrupt"
+  cleanup_animations
+  if [ -n "$CURL_PID" ]; then
+    kill "$CURL_PID" 2>/dev/null || true
+  fi
+  exit 130
+}
+
+handle_exit() {
+  local code=$?
+  cleanup_animations
+
+  if [ -n "$CURL_PID" ]; then
+    kill "$CURL_PID" 2>/dev/null || true
+    wait "$CURL_PID" 2>/dev/null || true
+    CURL_PID=""
+  fi
+
+  if [ -n "$TMPDIR_INSTALL" ]; then
+    rm -rf "$TMPDIR_INSTALL" 2>/dev/null || true
+  fi
+
+  if [ "$INSTALL_COMPLETE" -eq 1 ]; then
+    return 0
+  fi
+
+  if [ "$INSTALL_ABORT_REASON" = "error" ]; then
+    return "$code"
+  fi
+
+  if [ "$INSTALL_ABORT_REASON" = "interrupt" ] || [ "$code" -eq 130 ] || [ "$code" -eq 143 ]; then
+    printf "\n  ${YELLOW}⚠  DEPLOYMENT INTERRUPTED${NC}\n" >&2
+    printf "  ${DIM}Installation was cancelled before completion.${NC}\n" >&2
+    if [ -f "$LOG_FILE" ]; then
+      printf "  ${DIM}Telemetry log: %s${NC}\n" "$LOG_FILE" >&2
+    fi
+    printf "  ${DIM}Re-run the installer to try again.${NC}\n\n" >&2
+  fi
+
+  return "$code"
+}
+
+trap handle_interrupt INT TERM
+trap handle_exit EXIT
 
 die() {
+  INSTALL_ABORT_REASON="error"
   stop_spinner "false" "$1" 2>/dev/null || true
   stop_progress "false" "$1" 2>/dev/null || true
   printf "\n  ${RED}⚠  MISSION ABORT${NC}\n" >&2
@@ -245,11 +310,27 @@ check_node() {
       fi
     elif [ "$OS" = "linux" ]; then
       if check_command apt-get; then
-        sudo apt-get update && sudo apt-get install -y nodejs npm && installed=true
+        if can_sudo_noninteractive; then
+          sudo -n apt-get update && sudo -n apt-get install -y nodejs npm && installed=true
+        elif has_install_tty; then
+          prompt_sudo_password "Node.js installation"
+          sudo apt-get update </dev/tty >/dev/tty 2>&1 && \
+            sudo apt-get install -y nodejs npm </dev/tty >/dev/tty 2>&1 && installed=true
+        fi
       elif check_command dnf; then
-        sudo dnf install -y nodejs && installed=true
+        if can_sudo_noninteractive; then
+          sudo -n dnf install -y nodejs && installed=true
+        elif has_install_tty; then
+          prompt_sudo_password "Node.js installation"
+          sudo dnf install -y nodejs </dev/tty >/dev/tty 2>&1 && installed=true
+        fi
       elif check_command pacman; then
-        sudo pacman -S nodejs npm && installed=true
+        if can_sudo_noninteractive; then
+          sudo -n pacman -S --noconfirm nodejs npm && installed=true
+        elif has_install_tty; then
+          prompt_sudo_password "Node.js installation"
+          sudo pacman -S --noconfirm nodejs npm </dev/tty >/dev/tty 2>&1 && installed=true
+        fi
       fi
     fi
     if ! $installed && ! check_command node; then
@@ -279,6 +360,45 @@ check_curl() {
   if ! check_command curl; then
     die "curl is required. Install curl first."
   fi
+}
+
+# ─── Privileged command helpers ───────────────────────────────────────
+
+has_install_tty() {
+  [ -e /dev/tty ]
+}
+
+can_sudo_noninteractive() {
+  command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null
+}
+
+prompt_sudo_password() {
+  local description="$1"
+  printf "\n" >&2
+  printf "  ${YELLOW}Administrator access required${NC} — %s\n" "$description" >&2
+  printf "  ${DIM}Enter your password when prompted below.${NC}\n" >&2
+  printf "\n" >&2
+}
+
+run_with_sudo() {
+  local description="$1"
+  shift
+
+  if ! command -v sudo >/dev/null 2>&1; then
+    return 1
+  fi
+
+  if can_sudo_noninteractive; then
+    sudo -n "$@"
+    return $?
+  fi
+
+  if ! has_install_tty; then
+    return 1
+  fi
+
+  prompt_sudo_password "$description"
+  sudo "$@" </dev/tty >/dev/tty 2>&1
 }
 
 # ─── Version resolution ──────────────────────────────────────────────
@@ -328,40 +448,135 @@ clean_existing() {
 
 # ─── Download server payload ─────────────────────────────────────────
 
+file_size_bytes() {
+  local path="$1"
+  if [ ! -f "$path" ]; then
+    echo 0
+    return
+  fi
+  if stat -c%s "$path" >/dev/null 2>&1; then
+    stat -c%s "$path"
+  else
+    stat -f%z "$path"
+  fi
+}
+
+format_bytes() {
+  local bytes="$1"
+  if [ "$bytes" -ge 1073741824 ]; then
+    printf "%.1f GB" "$(awk "BEGIN {printf \"%.1f\", $bytes/1073741824}")"
+  elif [ "$bytes" -ge 1048576 ]; then
+    printf "%.1f MB" "$(awk "BEGIN {printf \"%.1f\", $bytes/1048576}")"
+  elif [ "$bytes" -ge 1024 ]; then
+    printf "%.0f KB" "$(awk "BEGIN {printf \"%.0f\", $bytes/1024}")"
+  else
+    printf "%d B" "$bytes"
+  fi
+}
+
+get_remote_size() {
+  local url="$1"
+  curl -fsSLI "$url" 2>/dev/null \
+    | awk 'tolower($1)=="content-length:" {size=$2} END {gsub(/\r/, "", size); print size+0}'
+}
+
+render_download_progress() {
+  local current="$1"
+  local total="$2"
+  local width=20
+  local bar=""
+  local status=""
+
+  if [ "$total" -gt 0 ] 2>/dev/null; then
+    local pct=$((current * 100 / total))
+    if [ "$pct" -gt 100 ]; then pct=100; fi
+    local filled=$((pct * width / 100))
+    local empty=$((width - filled))
+    for ((i=0; i<filled; i++)); do bar="${bar}${CYAN}█${NC}"; done
+    for ((i=0; i<empty; i++)); do bar="${bar}${DIM}░${NC}"; done
+    status="$(format_bytes "$current") / $(format_bytes "$total") (${pct}%)"
+    printf "\r  ${DIM}RX:${NC} [${bar}] ${BOLD}%3d%%${NC} ${status}\033[K" "$pct" >&2
+  else
+    local pulse=$((current / 1048576 % width))
+    for ((i=0; i<width; i++)); do
+      if [ "$i" -eq "$pulse" ]; then
+        bar="${bar}${CYAN}█${NC}"
+      else
+        bar="${bar}${DIM}░${NC}"
+      fi
+    done
+    status="$(format_bytes "$current") received"
+    printf "\r  ${DIM}RX:${NC} [${bar}] ${status}\033[K" >&2
+  fi
+}
+
 download_and_install() {
   local url="https://github.com/${REPO}/releases/download/${VERSION}/agentx-${PLATFORM}-server.tar.gz"
+  local dest_file=""
   TMPDIR_INSTALL="$(mktemp -d)"
-  trap 'rm -rf "$TMPDIR_INSTALL"' EXIT
+  dest_file="${TMPDIR_INSTALL}/agentx.tar.gz"
 
   printf "  ${DIM}Downlinking from:${NC} ${CYAN}%s${NC}\n" "$url"
   mkdir -p "$INSTALL_DIR"
 
-  if ! curl --progress-bar -fSL "$url" -o "${TMPDIR_INSTALL}/agentx.tar.gz" 2>&1 | \
-    while IFS= read -r line; do
-      if [[ "$line" =~ ([0-9]+)% ]]; then
-        local pct="${BASH_REMATCH[1]}"
-        local filled=$((pct / 5))
-        local empty=$((20 - filled))
-        local bar=""
-        for ((i=0; i<filled; i++)); do bar="${bar}${CYAN}█${NC}"; done
-        for ((i=0; i<empty; i++)); do bar="${bar}${DIM}░${NC}"; done
-        printf "\r  ${DIM}RX:${NC} [${bar}] ${BOLD}%3d%%${NC} %s" "$pct" "$(mission_phrase)" >&2
-      fi
-    done; then
-    die "Download failed for ${url}. Check your internet connection or try AGENTX_VERSION=<tag>."
+  local total_bytes
+  total_bytes="$(get_remote_size "$url")"
+  if [ "$total_bytes" -gt 0 ] 2>/dev/null; then
+    printf "  ${DIM}Payload size:${NC} $(format_bytes "$total_bytes")\n"
   fi
 
-  if [ ! -s "${TMPDIR_INSTALL}/agentx.tar.gz" ]; then
+  curl -fSL "$url" -o "$dest_file" >/dev/null 2>&1 &
+  CURL_PID=$!
+  local curl_pid=$CURL_PID
+  local last_bytes=0
+  local stalled=0
+
+  while kill -0 "$curl_pid" 2>/dev/null; do
+    local current_bytes
+    current_bytes="$(file_size_bytes "$dest_file")"
+    render_download_progress "$current_bytes" "$total_bytes"
+
+    if [ "$current_bytes" -eq "$last_bytes" ]; then
+      stalled=$((stalled + 1))
+    else
+      stalled=0
+      last_bytes="$current_bytes"
+    fi
+
+    if [ "$stalled" -ge 150 ]; then
+      kill "$curl_pid" 2>/dev/null || true
+      wait "$curl_pid" 2>/dev/null || true
+      CURL_PID=""
+      printf "\n" >&2
+      die "Download stalled. Check your internet connection."
+    fi
+
+    sleep 0.2
+  done
+
+  if ! wait "$curl_pid"; then
+    CURL_PID=""
+    printf "\n" >&2
+    die "Download failed for ${url}. Check your internet connection or try AGENTX_VERSION=<tag>."
+  fi
+  CURL_PID=""
+
+  local final_bytes
+  final_bytes="$(file_size_bytes "$dest_file")"
+  render_download_progress "$final_bytes" "$total_bytes"
+  printf "\n" >&2
+
+  if [ ! -s "$dest_file" ]; then
     die "Download failed. Check your internet connection."
   fi
 
-  if ! gzip -t "${TMPDIR_INSTALL}/agentx.tar.gz" 2>/dev/null; then
+  if ! gzip -t "$dest_file" 2>/dev/null; then
     die "Downloaded file is not a valid server package (expected gzip). Asset may be missing for ${PLATFORM} in ${VERSION}."
   fi
 
-  printf "\r  ${DIM}RX:${NC} [${CYAN}████████████████████${NC}] ${BOLD}100%%${NC} ${GREEN}Payload received${NC}\033[K\n"
+  printf "  ${GREEN}✓${NC} ${DIM}RX:${NC} [${CYAN}████████████████████${NC}] ${BOLD}100%%${NC} ${GREEN}Payload received${NC} ($(format_bytes "$final_bytes"))\n"
   printf "  ${DIM}Unpacking payload...${NC}\n"
-  tar -xzf "${TMPDIR_INSTALL}/agentx.tar.gz" -C "$INSTALL_DIR"
+  tar -xzf "$dest_file" -C "$INSTALL_DIR"
   printf "  ${GREEN}✓${NC} Payload extracted to ${CYAN}%s${NC}\n" "$INSTALL_DIR"
 }
 
@@ -371,9 +586,9 @@ rebuild_native() {
   mkdir -p "$(dirname "$LOG_FILE")"
   cd "$INSTALL_DIR"
   if [ -f package.json ] && grep -q 'better-sqlite3' package.json 2>/dev/null; then
-    npm install --omit=dev --ignore-scripts >> "$LOG_FILE" 2>&1 || true
+    npm install --omit=dev --ignore-scripts >> "$LOG_FILE" 2>&1 || ignore_failure_unless_interrupted
     npx --yes node-gyp rebuild --directory=node_modules/better-sqlite3 >> "$LOG_FILE" 2>&1 || \
-      npm rebuild better-sqlite3 >> "$LOG_FILE" 2>&1 || true
+      npm rebuild better-sqlite3 >> "$LOG_FILE" 2>&1 || ignore_failure_unless_interrupted
     if [ -f node_modules/better-sqlite3/build/Release/better_sqlite3.node ]; then
       mkdir -p build/Release
       cp node_modules/better-sqlite3/build/Release/better_sqlite3.node build/Release/
@@ -395,41 +610,87 @@ EOF
   chmod +x "$BIN_DIR/agentx"
 }
 
-ensure_path() {
-  if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
-    export PATH="$BIN_DIR:$PATH"
-    printf "  ${DIM}Navigation beacon locked for this session${NC}\n"
-  fi
-
-  local shell_rc=""
+shell_profile_for_path() {
   case "$(basename "${SHELL:-bash}")" in
-    zsh)  shell_rc="$HOME/.zshrc" ;;
-    bash) shell_rc="$HOME/.bashrc" ;;
-    fish) shell_rc="$HOME/.config/fish/config.fish" ;;
+    zsh)  printf '%s\n' "$HOME/.zshrc" ;;
+    bash) printf '%s\n' "$HOME/.bashrc" "$HOME/.profile" ;;
+    fish) printf '%s\n' "$HOME/.config/fish/config.fish" ;;
+    *)    printf '%s\n' "$HOME/.profile" ;;
   esac
+}
 
-  if [ -n "$shell_rc" ] && [ -f "$shell_rc" ]; then
-    if ! grep -q "# Agent-X" "$shell_rc" 2>/dev/null; then
-      printf '\n# Agent-X\nexport PATH="%s:$PATH"\n' "$BIN_DIR" >> "$shell_rc"
-      printf "  ${DIM}Permanent navigation beacon added to %s${NC}\n" "$shell_rc"
-      if [[ $- == *i* ]]; then
-        # shellcheck disable=SC1090
-        . "$shell_rc" 2>/dev/null || true
-      fi
-    fi
-    printf "  ${DIM}To use in new terminals: source %s${NC}\n" "$shell_rc"
-  else
-    echo ""
-    printf "  ${DIM}Add this to your shell profile for persistence across sessions:${NC}\n"
-    printf "  ${CYAN}export PATH=\"%s:\$PATH\"${NC}\n" "$BIN_DIR"
+append_path_to_profile() {
+  local profile="$1"
+  [ -n "$profile" ] || return 0
+  if [ ! -f "$profile" ]; then
+    touch "$profile"
   fi
+  if grep -q "# Agent-X" "$profile" 2>/dev/null; then
+    return 0
+  fi
+
+  case "$(basename "$profile")" in
+    config.fish)
+      {
+        printf '\n# Agent-X\n'
+        printf 'fish_add_path "%s"\n' "$BIN_DIR"
+      } >> "$profile"
+      ;;
+    *)
+      {
+        printf '\n# Agent-X\n'
+        printf 'export PATH="%s:$PATH"\n' "$BIN_DIR"
+      } >> "$profile"
+      ;;
+  esac
+  printf "  ${DIM}Added %s to PATH via %s${NC}\n" "$BIN_DIR" "$profile"
+}
+
+is_piped_install() {
+  [ ! -t 1 ]
+}
+
+ensure_path() {
+  if [ ! -x "$BIN_DIR/agentx" ]; then
+    die "CLI wrapper missing at $BIN_DIR/agentx"
+  fi
+
+  local profile
+  while IFS= read -r profile; do
+    append_path_to_profile "$profile"
+  done < <(shell_profile_for_path)
+
+  printf "  ${GREEN}✓${NC} CLI available at ${CYAN}%s${NC}\n" "$BIN_DIR/agentx"
+}
+
+print_activation_instructions() {
+  echo ""
+  printf "  ${CYAN}Activate the agentx command${NC}\n"
+  printf "  ${DIM}──────────────────────────────────────────────────${NC}\n"
+
+  if is_piped_install; then
+    printf "  ${YELLOW}Note:${NC} This installer ran via ${DIM}curl | bash${NC}, so your current shell\n"
+    printf "  was not updated automatically. Run one of the following:\n"
+    echo ""
+  fi
+
+  printf "    ${BOLD}export PATH=\"%s:\$PATH\"${NC}\n" "$BIN_DIR"
+  printf "    ${DIM}# or${NC}\n"
+  printf "    ${BOLD}source ~/.bashrc${NC}   ${DIM}(if you use bash)${NC}\n"
+  echo ""
+  printf "  ${DIM}You can also run the CLI directly without updating PATH:${NC}\n"
+  printf "    ${BOLD}%s/agentx start${NC}\n" "$BIN_DIR"
+  echo ""
 }
 
 # ─── Verify ──────────────────────────────────────────────────────────
 
 verify_install() {
-  if [ ! -f "$INSTALL_DIR/index.js" ] || [ ! -f "$INSTALL_DIR/agentx" ]; then
+  if [ ! -f "$INSTALL_DIR/index.js" ] || [ ! -x "$INSTALL_DIR/agentx" ]; then
     die "Installation failed — payload integrity check failed in $INSTALL_DIR"
+  fi
+  if [ ! -x "$BIN_DIR/agentx" ]; then
+    die "Installation failed — CLI wrapper missing at $BIN_DIR/agentx"
   fi
 }
 
@@ -441,22 +702,32 @@ install_optional_deps() {
   fi
 
   if [ "$OS" = "darwin" ]; then
-    if check_command brew; then
-      brew install tesseract >/dev/null 2>&1 || true
-    fi
-  elif [ "$OS" = "linux" ]; then
+    # Homebrew auto-update can hang for minutes with no output; OCR is optional for
+    # server installs, so do not block deployment on brew install tesseract.
+    printf "  ${DIM}Optional OCR skipped on macOS (install manually if needed: brew install tesseract)${NC}\n"
+    return 0
+  fi
+
+  if [ "$OS" = "linux" ]; then
     if check_command apt-get; then
-      sudo apt-get install -y tesseract-ocr >/dev/null 2>&1 || true
+      run_with_sudo "Tesseract OCR (tesseract-ocr)" apt-get install -y tesseract-ocr || ignore_failure_unless_interrupted
     elif check_command dnf; then
-      sudo dnf install -y tesseract >/dev/null 2>&1 || true
+      run_with_sudo "Tesseract OCR" dnf install -y tesseract || ignore_failure_unless_interrupted
     elif check_command pacman; then
-      sudo pacman -S --noconfirm tesseract >/dev/null 2>&1 || true
+      run_with_sudo "Tesseract OCR" pacman -S --noconfirm tesseract || ignore_failure_unless_interrupted
     fi
   fi
 
-  if ! check_command tesseract; then
-    printf "  ${YELLOW}⚠${NC}  Tesseract OCR not installed (needed for image text extraction)\n"
-    printf "  ${DIM}  Install manually: brew install tesseract (macOS) or sudo apt install tesseract-ocr (Ubuntu)${NC}\n"
+  if check_command tesseract; then
+    printf "  ${GREEN}✓${NC} Tesseract OCR installed\n"
+    return 0
+  fi
+
+  printf "  ${YELLOW}⚠${NC}  Tesseract OCR not installed (needed for image text extraction)\n"
+  if can_sudo_noninteractive || has_install_tty; then
+    printf "  ${DIM}  Install manually: sudo apt install tesseract-ocr (Ubuntu)${NC}\n"
+  else
+    printf "  ${DIM}  Re-run in an interactive terminal, or install manually: sudo apt install tesseract-ocr${NC}\n"
   fi
   return 0
 }
@@ -466,12 +737,36 @@ install_optional_deps() {
 run_step() {
   local msg="$1"
   shift
+  local interactive=false
+  if [ "${1:-}" = "--interactive" ]; then
+    interactive=true
+    shift
+  fi
+
+  if $interactive; then
+    printf "  ${CYAN}⟡${NC} %s\n" "$msg" >&2
+    if "$@"; then
+      printf "  ${GREEN}✓${NC} %s\n" "$msg" >&2
+    else
+      local rc=$?
+      if [ "$rc" -eq 130 ] || [ "$rc" -eq 143 ]; then
+        exit "$rc"
+      fi
+      die "$msg failed"
+    fi
+    return
+  fi
+
   mission_phrase > /dev/null
   start_progress "$msg"
   if "$@"; then
     stop_progress "true" "$msg"
   else
+    local rc=$?
     stop_progress "false" "$msg"
+    if [ "$rc" -eq 130 ] || [ "$rc" -eq 143 ]; then
+      exit "$rc"
+    fi
     die "$msg failed"
   fi
 }
@@ -500,9 +795,12 @@ main() {
   run_step "Assembling native modules" rebuild_native
   run_step "Locking navigation coordinates" create_symlink
   run_step "Running payload integrity check" verify_install
-  run_step "Installing auxiliary sensors (OCR)" install_optional_deps
+  run_step "Installing auxiliary sensors (OCR)" --interactive install_optional_deps
 
   ensure_path
+  print_activation_instructions
+
+  INSTALL_COMPLETE=1
 
   echo ""
   printf "  ${BOLD}✦  DEPLOYMENT COMPLETE  ✦${NC}\n"
@@ -514,10 +812,9 @@ main() {
   printf "    ${BOLD}agentx start${NC}                       Start server daemon\n"
   printf "    ${BOLD}agentx status${NC}                      Check server health\n"
   printf "    ${BOLD}agentx stop${NC}                        Stop server daemon\n"
+  printf "    ${BOLD}agentx --help${NC}                      Show CLI help\n"
   echo ""
   printf "  ${DIM}Web UI:${NC} http://127.0.0.1:3333 (or your server IP)\n"
-  echo ""
-  printf "  ${DIM}Mission control: agentx --help${NC}\n"
   echo ""
 }
 

@@ -567,7 +567,7 @@
   <div class="hero-badges rv">
     <div class="hero-badge">
       <span class="pulse"></span>
-      <span id="verBadge">v0.8.7</span>&nbsp;·&nbsp; Free &amp; local-first<span class="badge-extra">&nbsp;·&nbsp; No account, no cloud, no telemetry</span>
+      <span id="verBadge">latest</span>&nbsp;·&nbsp; Free &amp; local-first<span class="badge-extra">&nbsp;·&nbsp; No account, no cloud, no telemetry</span>
     </div>
     <div class="hero-badge india-badge">
       <svg width="17" height="11" viewBox="0 0 20 13" aria-label="Indian flag" role="img"><rect width="20" height="4.33" fill="#FF9933"/><rect y="4.33" width="20" height="4.34" fill="#FFF"/><rect y="8.67" width="20" height="4.33" fill="#138808"/><circle cx="10" cy="6.5" r="1.8" fill="none" stroke="#000080" stroke-width="0.35"/></svg>
@@ -1301,6 +1301,24 @@ function copyCmd(btn) {
 
 /* ══════════ OS / arch detection + release assets ══════════ */
 var currentOS = 'macos', currentArch = 'arm64', _assets = null;
+function formatReleaseVersion(tag) {
+  if (!tag) return '';
+  return tag.charAt(0) === 'v' ? tag : 'v' + tag;
+}
+function applyReleaseVersion(tag) {
+  var version = formatReleaseVersion(tag);
+  if (!version) return;
+  var badge = document.getElementById('verBadge');
+  if (badge) badge.textContent = version;
+  var ld = document.querySelector('script[type="application/ld+json"]');
+  if (ld) {
+    try {
+      var data = JSON.parse(ld.textContent);
+      data.softwareVersion = version.replace(/^v/, '');
+      ld.textContent = JSON.stringify(data);
+    } catch (e) { /* keep static schema */ }
+  }
+}
 function detectOS() {
   var p = (navigator.platform || '') + ' ' + navigator.userAgent;
   if (/Win/i.test(p)) return 'windows';
@@ -1390,7 +1408,7 @@ function setAssetLinks() {
     .then(function (d) {
       if (!d) return;
       if (d.assets) { _assets = d.assets; updateDownload(); }
-      if (d.tag_name) document.getElementById('verBadge').textContent = d.tag_name;
+      applyReleaseVersion(d.tag_name);
     })
     .catch(function () { /* keep releases/latest link */ });
     })();
