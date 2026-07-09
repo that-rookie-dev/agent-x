@@ -624,6 +624,54 @@ download_and_install() {
   printf "  ${DIM}Unpacking payload...${NC}\n"
   tar -xzf "$dest_file" -C "$INSTALL_DIR"
   printf "  ${GREEN}✓${NC} Payload extracted to ${CYAN}%s${NC}\n" "$INSTALL_DIR"
+  repair_bundled_python_symlinks
+}
+
+# Older release tarballs shipped absolute CI symlinks for python3 → /Users/runner/...
+# Rewrite them to relative links against the real python3.12 binary in the same bin/.
+repair_bundled_python_symlinks() {
+  local bin_dir="${INSTALL_DIR}/resources/python/bin"
+  local real_py=""
+  local name tgt
+
+  [ -d "$bin_dir" ] || return 0
+
+  if [ -x "${bin_dir}/python3.12" ]; then
+    real_py="python3.12"
+  elif [ -x "${bin_dir}/python3.11" ]; then
+    real_py="python3.11"
+  elif [ -x "${bin_dir}/python3.13" ]; then
+    real_py="python3.13"
+  else
+    return 0
+  fi
+
+  for name in python python3 python3-config 2to3 idle3 pydoc3; do
+    if [ -L "${bin_dir}/${name}" ]; then
+      tgt="$(readlink "${bin_dir}/${name}" 2>/dev/null || true)"
+      case "$tgt" in
+        /*)
+          rm -f "${bin_dir}/${name}"
+          ;;
+      esac
+    fi
+  done
+
+  if [ ! -e "${bin_dir}/python3" ]; then
+    ln -sf "$real_py" "${bin_dir}/python3"
+  fi
+  if [ ! -e "${bin_dir}/python" ]; then
+    ln -sf "$real_py" "${bin_dir}/python"
+  fi
+  if [ -e "${bin_dir}/${real_py}-config" ] && [ ! -e "${bin_dir}/python3-config" ]; then
+    ln -sf "${real_py}-config" "${bin_dir}/python3-config"
+  fi
+
+  if "${bin_dir}/python3" --version >/dev/null 2>&1; then
+    printf "  ${GREEN}✓${NC} Bundled Python ready (${CYAN}%s${NC})\n" "$("${bin_dir}/python3" --version 2>&1 | tr -d '\r')"
+  else
+    printf "  ${YELLOW}⚠${NC}  Bundled Python present but not executable — voice setup may need a system python3\n"
+  fi
 }
 
 # ─── Rebuild native modules ──────────────────────────────────────────
