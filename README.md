@@ -124,7 +124,15 @@ Server binaries: `agentx-<platform>-server.tar.gz` on the [Releases](https://git
 
 ---
 
+## Upgrade / reinstall
+
+Re-running `install.sh` / `install.ps1` replaces the application under `~/.agentx` (or your `AGENTX_INSTALL_DIR`) with the latest release, including bundled runtimes such as Python and ffmpeg.
+
+**User data is kept:** config, auth, brain DB, and logs under `~/.local/share/agentx` (or `AGENTX_DATA_DIR`) are not deleted on reinstall.
+
 ## Uninstall
+
+Uninstall removes the app. Choose **Delete All** if you also want config, auth, brain DB, and logs cleared.
 
 **macOS / Linux:**
 

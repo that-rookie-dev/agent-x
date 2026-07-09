@@ -182,9 +182,11 @@ function Remove-Existing {
     Remove-Item -Recurse -Force $CacheDir
   }
 
-  # Runtime state (brain_db, logs, pid) must not survive across reinstalls.
-  if (Test-Path $RuntimeDataDir) {
-    Remove-Item -Recurse -Force $RuntimeDataDir
+  # Replace the application install only. User data (config, auth, brain DB, logs)
+  # under RuntimeDataDir is preserved across upgrades/reinstalls. Use uninstall.ps1 to wipe.
+  $pidFile = Join-Path $RuntimeDataDir 'agentx.pid'
+  if (Test-Path $pidFile) {
+    Remove-Item -Force $pidFile -ErrorAction SilentlyContinue
   }
 
   $npm = Get-Command npm -ErrorAction SilentlyContinue

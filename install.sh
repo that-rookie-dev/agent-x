@@ -457,6 +457,8 @@ stop_running_agentx() {
 clean_existing() {
   stop_running_agentx
 
+  # Replace the application install only. User data (config, auth, brain DB, logs)
+  # under DATA_DIR is preserved across upgrades/reinstalls. Use uninstall.sh for a wipe.
   if [ -d "$INSTALL_DIR" ]; then
     rm -rf "$INSTALL_DIR"
   fi
@@ -472,10 +474,8 @@ clean_existing() {
     rm -rf "$CACHE_DIR"
   fi
 
-  # Runtime state (brain_db, logs, pid) must not survive across reinstalls.
-  if [ -d "$DATA_DIR" ]; then
-    rm -rf "$DATA_DIR"
-  fi
+  # Drop a stale pid file if present; leave the rest of DATA_DIR intact.
+  rm -f "${DATA_DIR}/agentx.pid" 2>/dev/null || true
 
   if check_command agentx; then
     local existing_path
