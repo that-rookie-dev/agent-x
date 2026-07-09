@@ -1,9 +1,9 @@
 # Agent-X Installer for Windows — Ground Control Edition
-# Usage: irm https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/install.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/that-rookie-dev/agent-x/main/install.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 
-$Repo = "sivaprakash-rajendran/agent-x"
+$Repo = "that-rookie-dev/agent-x"
 $InstallDir = if ($env:AGENTX_INSTALL_DIR) { $env:AGENTX_INSTALL_DIR } else { "$env:LOCALAPPDATA\agentx" }
 $BinDir = if ($env:AGENTX_BIN_DIR) { $env:AGENTX_BIN_DIR } else { "$env:LOCALAPPDATA\agentx\bin" }
 $RuntimeDataDir = if ($env:AGENTX_DATA_DIR) { $env:AGENTX_DATA_DIR } else { Join-Path $env:USERPROFILE ".local\share\agentx" }
