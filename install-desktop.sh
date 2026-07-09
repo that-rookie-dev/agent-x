@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="SlashpanOrg/agent-x"
+REPO="sivaprakash-rajendran/agent-x"
 VERSION="${AGENTX_VERSION:-latest}"
 ARCH="arm64"
 

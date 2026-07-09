@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://agentx.slashpan.com/">
+  <a href="https://sivaprakash-rajendran.github.io/agent-x/">
     <img src="assets/social_preview.png" alt="AGENT-X — Your AI wingman. On your machine." width="100%" />
   </a>
 </p>
@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://agentx.slashpan.com/">Website</a> ·
-  <a href="https://github.com/SlashpanOrg/agent-x/releases/latest">Downloads</a> ·
+  <a href="https://sivaprakash-rajendran.github.io/agent-x/">Website</a> ·
+  <a href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest">Downloads</a> ·
   <a href="#install">Install</a> ·
   <a href="#server-cli">Server CLI</a> ·
   <a href="#repository">For developers</a>
@@ -29,7 +29,7 @@ Agent-X runs on your hardware with your API keys. Use it as a **desktop app** (m
 - **Crews** — delegate to thousands of pre-built specialist personas
 - **No account** — no telemetry, no vendor lock-in
 
-Full feature overview: [agentx.slashpan.com](https://agentx.slashpan.com/)
+Full feature overview: [sivaprakash-rajendran.github.io/agent-x](https://sivaprakash-rajendran.github.io/agent-x/)
 
 ---
 
@@ -37,7 +37,7 @@ Full feature overview: [agentx.slashpan.com](https://agentx.slashpan.com/)
 
 ### Desktop app
 
-Download the installer for your platform from **[Releases](https://github.com/SlashpanOrg/agent-x/releases/latest)**:
+Download the installer for your platform from **[Releases](https://github.com/sivaprakash-rajendran/agent-x/releases/latest)**:
 
 | Platform | Package |
 |----------|---------|
@@ -49,7 +49,7 @@ Download the installer for your platform from **[Releases](https://github.com/Sl
 **macOS (Apple Silicon) one-liner** — downloads the DMG and installs to `/Applications`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install-desktop.sh | bash
+curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/install-desktop.sh | bash
 ```
 
 ### Headless server (Web UI)
@@ -59,7 +59,7 @@ Requires **Node.js 20+**. Installs to `~/.agentx` and adds `agentx` to `~/.local
 **macOS / Linux:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install-server.sh | bash
+curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/install-server.sh | bash
 export PATH="$HOME/.local/bin:$PATH"   # required when using curl | bash
 agentx start
 ```
@@ -67,7 +67,7 @@ agentx start
 **Windows (PowerShell):**
 
 ```powershell
-irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/install.ps1 | iex
 agentx start
 ```
 
@@ -108,7 +108,7 @@ Open the Web UI at **http://127.0.0.1:3333** (or `http://<server-ip>:3333` on a 
 **Pin a version:**
 
 ```bash
-AGENTX_VERSION=v0.8.7 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash
+AGENTX_VERSION=v0.8.7 curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/install.sh | bash
 ```
 
 ---
@@ -120,7 +120,7 @@ AGENTX_VERSION=v0.8.7 curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/a
 | **Desktop app** | arm64, x64 | x64, arm64 | x64 |
 | **Headless server** | arm64, x64 | x64, arm64 | x64 |
 
-Server binaries: `agentx-<platform>-server.tar.gz` on the [Releases](https://github.com/SlashpanOrg/agent-x/releases/latest) page.
+Server binaries: `agentx-<platform>-server.tar.gz` on the [Releases](https://github.com/sivaprakash-rajendran/agent-x/releases/latest) page.
 
 ---
 
@@ -129,13 +129,13 @@ Server binaries: `agentx-<platform>-server.tar.gz` on the [Releases](https://git
 **macOS / Linux:**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.sh | bash
+curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/uninstall.sh | bash
 ```
 
 **Windows:**
 
 ```powershell
-irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.ps1 | iex
+irm https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/uninstall.ps1 | iex
 ```
 
 ---
@@ -147,8 +147,8 @@ This is the **public distribution repo** for Agent-X. It is separate from the pr
 | Location | Contents |
 |----------|----------|
 | `main` branch | Install scripts, landing page, docs |
-| [GitHub Releases](https://github.com/SlashpanOrg/agent-x/releases) | Desktop installers and server tarballs (built by CI) |
-| [agentx.slashpan.com](https://agentx.slashpan.com/) | Marketing site (`index.html` via GitHub Pages) |
+| [GitHub Releases](https://github.com/sivaprakash-rajendran/agent-x/releases) | Desktop installers and server tarballs (built by CI) |
+| [sivaprakash-rajendran.github.io/agent-x](https://sivaprakash-rajendran.github.io/agent-x/) | Marketing site (`index.html` via GitHub Pages) |
 
 **Files on `main`**
 
@@ -172,5 +172,5 @@ This is the **public distribution repo** for Agent-X. It is separate from the pr
 ---
 
 <p align="center">
-  <sub>Made in India · <a href="https://slashpan.com">Slashpan Technologies</a></sub>
+  <sub>Made in India · Sivaprakash Rajendran</sub>
 </p>

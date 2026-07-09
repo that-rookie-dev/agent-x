@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # Agent-X Installer — Ground Control Edition
-# Usage: curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/install.sh | bash
 
-REPO="SlashpanOrg/agent-x"
+REPO="sivaprakash-rajendran/agent-x"
 INSTALL_DIR="${AGENTX_INSTALL_DIR:-$HOME/.agentx}"
 BIN_DIR="${AGENTX_BIN_DIR:-$HOME/.local/bin}"
 DATA_DIR="${AGENTX_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/agentx}"

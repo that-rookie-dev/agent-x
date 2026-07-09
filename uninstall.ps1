@@ -1,5 +1,5 @@
 # Agent-X Uninstaller for Windows
-# Usage: irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/uninstall.ps1 | iex
 
 $ErrorActionPreference = "Stop"
 

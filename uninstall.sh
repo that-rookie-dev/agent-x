@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Agent-X Uninstaller — Ground Control Edition
-# Usage: curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/uninstall.sh | bash
 
 INSTALL_DIR="${AGENTX_INSTALL_DIR:-$HOME/.agentx}"
 BIN_DIR="${AGENTX_BIN_DIR:-$HOME/.local/bin}"

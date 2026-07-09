@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AGENT-X — Your AI Wingman | Local-First Autonomous Agent</title>
   <meta name="description" content="A free, local-first autonomous AI agent. 218 built-in tools, 4,900 crew specialists, persistent neural memory, on-device voice, and 18 LLM providers — on your machine, under your control. macOS, Windows, Linux & headless servers." />
-  <link rel="canonical" href="https://agentx.slashpan.com/" />
+  <link rel="canonical" href="https://sivaprakash-rajendran.github.io/agent-x/" />
   <meta name="theme-color" content="#030308" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://agentx.slashpan.com/" />
+  <meta property="og:url" content="https://sivaprakash-rajendran.github.io/agent-x/" />
   <meta property="og:site_name" content="AGENT-X" />
   <meta property="og:title" content="AGENT-X — Your AI Wingman. On Your Machine." />
   <meta property="og:description" content="Free, local-first autonomous agent: 218 tools, 4,900 crew specialists, a living neural memory, on-device voice, and 18 LLM providers. Your machine. Your keys. Your data." />
-  <meta property="og:image" content="https://agentx.slashpan.com/assets/social_preview.png" />
-  <meta property="og:image:secure_url" content="https://agentx.slashpan.com/assets/social_preview.png" />
+  <meta property="og:image" content="https://sivaprakash-rajendran.github.io/agent-x/assets/social_preview.png" />
+  <meta property="og:image:secure_url" content="https://sivaprakash-rajendran.github.io/agent-x/assets/social_preview.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="2400" />
   <meta property="og:image:height" content="1260" />
@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AGENT-X — Your AI Wingman. On Your Machine." />
   <meta name="twitter:description" content="Free, local-first autonomous agent: 218 tools, 4,900 crew specialists, neural memory, on-device voice, 18 LLM providers. No account, no cloud, no telemetry." />
-  <meta name="twitter:image" content="https://agentx.slashpan.com/assets/social_preview.png" />
+  <meta name="twitter:image" content="https://sivaprakash-rajendran.github.io/agent-x/assets/social_preview.png" />
   <meta name="twitter:image:alt" content="AGENT-X — free, local-first AI agent. Made in India." />
 
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
@@ -41,14 +41,14 @@
     "operatingSystem": "macOS, Windows, Linux",
     "applicationCategory": "DeveloperApplication",
     "description": "A free, local-first autonomous AI agent with 218 built-in tools, 4,900 crew specialists, persistent neural memory, on-device voice, and 18 LLM providers.",
-    "url": "https://agentx.slashpan.com/",
-    "downloadUrl": "https://github.com/SlashpanOrg/agent-x/releases/latest",
-    "image": "https://agentx.slashpan.com/assets/social_preview.png",
+    "url": "https://sivaprakash-rajendran.github.io/agent-x/",
+    "downloadUrl": "https://github.com/sivaprakash-rajendran/agent-x/releases/latest",
+    "image": "https://sivaprakash-rajendran.github.io/agent-x/assets/social_preview.png",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "author": {
-      "@type": "Organization",
-      "name": "Slashpan Technologies Private Limited",
-      "url": "https://slashpan.com"
+      "@type": "Person",
+      "name": "Sivaprakash Rajendran",
+      "url": "https://github.com/sivaprakash-rajendran"
     }
   }
   </script>
@@ -113,6 +113,19 @@
       transition: border-color .3s;
     }
     nav.scrolled { border-bottom-color: var(--line); }
+    .announce {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      height: 32px; padding: 0 16px;
+      font-family: var(--mono); font-size: .68rem; font-weight: 500;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--accent);
+      background: linear-gradient(90deg, rgba(125,211,252,.04), rgba(125,211,252,.1), rgba(196,181,253,.06), rgba(125,211,252,.1), rgba(125,211,252,.04));
+      border-bottom: 1px solid rgba(125,211,252,.18);
+    }
+    .announce-dot {
+      width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+      background: var(--accent); box-shadow: 0 0 8px var(--glow);
+    }
     .nav-inner {
       max-width: 1120px; margin: 0 auto; padding: 0 24px;
       height: 64px; display: flex; align-items: center; justify-content: space-between;
@@ -135,7 +148,7 @@
     .hero {
       min-height: 100svh; display: flex; flex-direction: column;
       align-items: center; justify-content: center; text-align: center;
-      padding: 120px 24px 80px; position: relative; z-index: 1;
+      padding: 148px 24px 80px; position: relative; z-index: 1;
     }
     .hero::after {
       content: ''; position: absolute; inset: auto 0 0 0; height: 45%;
@@ -157,7 +170,7 @@
     }
     @media (max-width: 640px) {
       .badge-extra { display: none; }
-      .hero { padding-top: 100px; }
+      .hero { padding-top: 128px; }
       .btn { padding: 14px 22px; font-size: .9rem; }
     }
     .pulse {
@@ -410,6 +423,48 @@
     }
     .os-tab.on { border-color: var(--accent); color: var(--txt); background: rgba(125,211,252,.07); }
 
+    .coming-soon {
+      border: 1px dashed rgba(125,211,252,.28);
+      border-radius: 14px;
+      padding: 36px 28px;
+      text-align: center;
+      background:
+        linear-gradient(160deg, rgba(125,211,252,.05), rgba(255,255,255,.01)),
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 10px,
+          rgba(125,211,252,.025) 10px,
+          rgba(125,211,252,.025) 20px
+        );
+    }
+    .coming-soon-kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
+    }
+    .coming-soon-kicker .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 8px var(--glow);
+      animation: pulse 2.2s infinite;
+    }
+    .coming-soon h4 {
+      font-size: 1.15rem; font-weight: 700; letter-spacing: -.01em;
+      margin-bottom: 10px;
+    }
+    .coming-soon p {
+      color: var(--dim); font-size: .9rem; max-width: 420px; margin: 0 auto;
+      line-height: 1.65;
+    }
+    .coming-soon-note {
+      font-family: var(--mono); font-size: .68rem; color: var(--faint);
+      margin-top: 18px; letter-spacing: .04em;
+    }
+    .coming-soon-note a {
+      color: var(--dim); text-decoration: underline; text-underline-offset: 3px;
+    }
+    .coming-soon-note a:hover { color: var(--txt); }
+
     .cmd {
       position: relative; border: 1px solid var(--line-bright); border-radius: 12px;
       background: rgba(5,6,12,.9); padding: 18px 52px 18px 20px;
@@ -547,6 +602,10 @@
 
 <!-- ═══════════ NAV ═══════════ -->
 <nav id="nav">
+  <div class="announce" role="status">
+    <span class="announce-dot" aria-hidden="true"></span>
+    Still in Beta
+  </div>
   <div class="nav-inner">
     <a href="#" class="nav-logo">AGENT<span class="x">-X</span></a>
     <div class="nav-links">
@@ -554,7 +613,7 @@
       <a href="#features">Features</a>
       <a href="#trust">Security</a>
       <a href="#install">Install</a>
-      <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener" class="nav-gh">
+      <a href="https://github.com/sivaprakash-rajendran/agent-x" target="_blank" rel="noopener" class="nav-gh">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
         <span id="ghStars">★</span>
       </a>
@@ -573,7 +632,7 @@
       <svg width="17" height="11" viewBox="0 0 20 13" aria-label="Indian flag" role="img"><rect width="20" height="4.33" fill="#FF9933"/><rect y="4.33" width="20" height="4.34" fill="#FFF"/><rect y="8.67" width="20" height="4.33" fill="#138808"/><circle cx="10" cy="6.5" r="1.8" fill="none" stroke="#000080" stroke-width="0.35"/></svg>
       Made in India
     </div>
-    </div>
+  </div>
   <h1 class="hero-title rv rv-1">AGENT<span class="dash">-</span>X</h1>
   <p class="hero-tag rv rv-2">Your AI wingman. On your machine.</p>
   <p class="hero-sub rv rv-2">
@@ -582,7 +641,7 @@
   </p>
   <div class="hero-type rv rv-3"><span id="tw"></span><span class="cur"></span></div>
   <div class="hero-cta rv rv-4">
-    <a class="btn btn-primary" id="dlBtn" href="https://github.com/SlashpanOrg/agent-x/releases/latest">
+    <a class="btn btn-primary" id="dlBtn" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest">
       <span>&#x2193;</span> <span id="dlLabel">Download Desktop</span>
     </a>
     <a class="btn btn-ghost" href="#install-server-anchor" onclick="showInstall('server')">
@@ -845,7 +904,7 @@
     <!-- Desktop pane -->
     <div class="inst-pane on" id="paneDesktop">
       <div class="dl-main rv">
-        <a class="btn btn-primary" id="dlBtn2" href="https://github.com/SlashpanOrg/agent-x/releases/latest" style="padding:17px 40px; font-size:1.02rem;">
+        <a class="btn btn-primary" id="dlBtn2" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest" style="padding:17px 40px; font-size:1.02rem;">
           <span>&#x2193;</span> <span id="dlLabel2">Download Desktop</span>
         </a>
         <div class="dl-detected">Auto-detected: <b id="detOS2">—</b> &nbsp;·&nbsp; Signed builds &nbsp;·&nbsp; Auto-updates built in</div>
@@ -853,22 +912,22 @@
       <div class="dl-plats">
         <div class="dl-plat rv">
           <div class="dl-plat-name">macOS</div>
-          <a class="dl-link" id="assetMacArm" href="https://github.com/SlashpanOrg/agent-x/releases/latest" target="_blank" rel="noopener"><span>Apple Silicon</span><span class="ext">.dmg</span></a>
-          <a class="dl-link" id="assetMacX64" href="https://github.com/SlashpanOrg/agent-x/releases/latest" target="_blank" rel="noopener"><span>Intel</span><span class="ext">.dmg</span></a>
+          <a class="dl-link" id="assetMacArm" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest" target="_blank" rel="noopener"><span>Apple Silicon</span><span class="ext">.dmg</span></a>
+          <a class="dl-link" id="assetMacX64" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest" target="_blank" rel="noopener"><span>Intel</span><span class="ext">.dmg</span></a>
             </div>
         <div class="dl-plat rv rv-1">
           <div class="dl-plat-name">Windows</div>
-          <a class="dl-link" id="assetWinSetup" href="https://github.com/SlashpanOrg/agent-x/releases/latest" target="_blank" rel="noopener"><span>Installer</span><span class="ext">.exe</span></a>
-          <a class="dl-link" id="assetWinPortable" href="https://github.com/SlashpanOrg/agent-x/releases/latest" target="_blank" rel="noopener"><span>Portable</span><span class="ext">.exe</span></a>
+          <a class="dl-link" id="assetWinSetup" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest" target="_blank" rel="noopener"><span>Installer</span><span class="ext">.exe</span></a>
+          <a class="dl-link" id="assetWinPortable" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest" target="_blank" rel="noopener"><span>Portable</span><span class="ext">.exe</span></a>
             </div>
         <div class="dl-plat rv rv-2">
           <div class="dl-plat-name">Linux</div>
-          <a class="dl-link" id="assetLinuxAppImage" href="https://github.com/SlashpanOrg/agent-x/releases/latest" target="_blank" rel="noopener"><span>Universal</span><span class="ext">.AppImage</span></a>
-          <a class="dl-link" id="assetLinuxDeb" href="https://github.com/SlashpanOrg/agent-x/releases/latest" target="_blank" rel="noopener"><span>Debian / Ubuntu</span><span class="ext">.deb</span></a>
+          <a class="dl-link" id="assetLinuxAppImage" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest" target="_blank" rel="noopener"><span>Universal</span><span class="ext">.AppImage</span></a>
+          <a class="dl-link" id="assetLinuxDeb" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest" target="_blank" rel="noopener"><span>Debian / Ubuntu</span><span class="ext">.deb</span></a>
             </div>
             </div>
       <div class="dl-note" style="text-align:center; margin-top:22px;">
-        <a href="https://github.com/SlashpanOrg/agent-x/releases" target="_blank" rel="noopener">All releases &amp; checksums &rarr;</a>
+        <a href="https://github.com/sivaprakash-rajendran/agent-x/releases" target="_blank" rel="noopener">All releases &amp; checksums &rarr;</a>
             </div>
           </div>
 
@@ -883,7 +942,7 @@
 
           <div id="srvUnix">
             <div class="cmd"><button class="copy" onclick="copyCmd(this)">COPY</button><span class="c"># One-liner: install headless server (macOS / Linux)</span>
-<span class="p">$</span> curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install-server.sh | bash</div>
+<span class="p">$</span> curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/install-server.sh | bash</div>
 
             <div class="cmd"><button class="copy" onclick="copyCmd(this)">COPY</button><span class="c"># Start the daemon — Web UI comes up on port 3333</span>
 <span class="p">$</span> agentx start
@@ -894,23 +953,25 @@
 <span class="p">$</span> agentx stop      <span class="c"># shut down</span></div>
 
             <div class="cmd"><button class="copy" onclick="copyCmd(this)">COPY</button><span class="c"># Uninstall anytime</span>
-<span class="p">$</span> curl -fsSL https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.sh | bash</div>
+<span class="p">$</span> curl -fsSL https://raw.githubusercontent.com/sivaprakash-rajendran/agent-x/main/uninstall.sh | bash</div>
       </div>
 
           <div id="srvWin" style="display:none;">
-            <div class="cmd"><button class="copy" onclick="copyCmd(this)">COPY</button><span class="c"># Install via PowerShell (Windows)</span>
-<span class="p">&gt;</span> powershell -c "irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/install.ps1 | iex"</div>
-
-            <div class="cmd"><button class="copy" onclick="copyCmd(this)">COPY</button><span class="c"># Start the daemon — Web UI comes up on port 3333</span>
-<span class="p">&gt;</span> agentx start
-<span class="c">&#x25B8; Mission Control &rarr; http://&lt;your-server-ip&gt;:3333</span></div>
-
-            <div class="cmd"><button class="copy" onclick="copyCmd(this)">COPY</button><span class="c"># Manage the daemon</span>
-<span class="p">&gt;</span> agentx status    <span class="c"># health check</span>
-<span class="p">&gt;</span> agentx stop      <span class="c"># shut down</span></div>
-
-            <div class="cmd"><button class="copy" onclick="copyCmd(this)">COPY</button><span class="c"># Uninstall anytime</span>
-<span class="p">&gt;</span> powershell -c "irm https://raw.githubusercontent.com/SlashpanOrg/agent-x/main/uninstall.ps1 | iex"</div>
+            <div class="coming-soon" role="status">
+              <div class="coming-soon-kicker">
+                <span class="dot" aria-hidden="true"></span>
+                Coming soon
+              </div>
+              <h4>Windows server install is paused</h4>
+              <p>
+                Headless server setup for Windows is under construction right now.
+                macOS / Linux server install is available — or grab the Windows desktop app meanwhile.
+              </p>
+              <p class="coming-soon-note">
+                Need the desktop build?
+                <a href="#install" onclick="showInstall('desktop')">Download Windows .exe</a>
+              </p>
+            </div>
           </div>
         </div>
 
@@ -960,8 +1021,8 @@
     <h2 class="h2 rv" style="font-size:clamp(2.2rem,5vw,3.6rem);">Ground control is waiting.</h2>
     <p class="sub rv rv-1" style="margin:0 auto 36px;">Install Agent-X and put a real agent on your machine — free, private, and yours.</p>
     <div class="hero-cta rv rv-2">
-      <a class="btn btn-primary" id="dlBtn3" href="https://github.com/SlashpanOrg/agent-x/releases/latest"><span>&#x2193;</span> <span id="dlLabel3">Download Desktop</span></a>
-      <a class="btn btn-ghost" href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener">Star on GitHub</a>
+      <a class="btn btn-primary" id="dlBtn3" href="https://github.com/sivaprakash-rajendran/agent-x/releases/latest"><span>&#x2193;</span> <span id="dlLabel3">Download Desktop</span></a>
+      <a class="btn btn-ghost" href="https://github.com/sivaprakash-rajendran/agent-x" target="_blank" rel="noopener">Star on GitHub</a>
       </div>
     </div>
   </section>
@@ -991,10 +1052,10 @@
           <li>A link to your best work — GitHub, a project, a PR</li>
           <li>Why this mission matters to you</li>
         </ul>
-        <a class="btn btn-primary jc-btn" href="mailto:sr@slashpan.com?subject=Joining%20the%20AGENT-X%20Crew">
-          <span>&#x2709;</span> Signal your interest
+        <a class="btn btn-primary jc-btn" href="mailto:sivaprakash.rajendran.316@gmail.com?subject=Joining%20the%20AGENT-X%20Crew">
+          Signal your interest
         </a>
-        <div class="jc-freq">Hailing frequency: <a href="mailto:sr@slashpan.com">sr@slashpan.com</a></div>
+        <div class="jc-freq">Hailing frequency: <a href="mailto:sivaprakash.rajendran.316@gmail.com">sivaprakash.rajendran.316@gmail.com</a></div>
       </div>
       </div>
     </div>
@@ -1008,22 +1069,20 @@
         <div class="foot-logo">AGENT<span style="color:var(--accent);">-X</span></div>
         <p>A local-first autonomous AI agent. Your machine. Your keys. Your data.</p>
         <p class="foot-credit">
-          Powered by <a href="https://slashpan.com" target="_blank" rel="noopener">Slashpan Technologies Private Limited</a><br/>
-        Built by Sivaprakash Rajendran &middot; <a href="mailto:sr@slashpan.com">sr@slashpan.com</a>
+          Built by <a href="https://www.linkedin.com/in/sivaprakash-rajendran/" target="_blank" rel="noopener">Sivaprakash Rajendran</a>
         </p>
       </div>
       <div class="foot-links">
         <div class="foot-col">
           <b>Project</b>
-        <a href="https://github.com/SlashpanOrg/agent-x" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://github.com/SlashpanOrg/agent-x/releases" target="_blank" rel="noopener">Releases</a>
-        <a href="https://github.com/SlashpanOrg/agent-x/issues" target="_blank" rel="noopener">Issues</a>
+        <a href="https://github.com/sivaprakash-rajendran/agent-x" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/sivaprakash-rajendran/agent-x/releases" target="_blank" rel="noopener">Releases</a>
+        <a href="https://github.com/sivaprakash-rajendran/agent-x/issues" target="_blank" rel="noopener">Issues</a>
       </div>
         <div class="foot-col">
-          <b>Company</b>
-          <a href="https://slashpan.com" target="_blank" rel="noopener">slashpan.com</a>
+          <b>Connect</b>
           <a href="#join-crew">Join the Crew</a>
-          <a href="mailto:sr@slashpan.com">Contact</a>
+          <a href="mailto:sivaprakash.rajendran.316@gmail.com">Contact</a>
         </div>
       </div>
     </div>
@@ -1033,7 +1092,6 @@
         Made in India
       </span>
       <span>Ground control to Major — systems nominal.</span>
-      <span>&copy; <span id="yr"></span> Slashpan Technologies</span>
       </div>
     </div>
   </footer>
@@ -1403,7 +1461,7 @@ function setAssetLinks() {
   }
   if (os === 'macos') detectMacArch(function (a) { currentArch = a; updateDownload(); });
   else updateDownload();
-      fetch('https://api.github.com/repos/SlashpanOrg/agent-x/releases/latest')
+      fetch('https://api.github.com/repos/sivaprakash-rajendran/agent-x/releases/latest')
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (d) {
       if (!d) return;
@@ -1414,7 +1472,7 @@ function setAssetLinks() {
     })();
 
 /* ══════════ GitHub stars ══════════ */
-fetch('https://api.github.com/repos/SlashpanOrg/agent-x')
+fetch('https://api.github.com/repos/sivaprakash-rajendran/agent-x')
   .then(function (r) { return r.ok ? r.json() : null; })
   .then(function (d) {
     if (!d) return;
@@ -1423,7 +1481,6 @@ fetch('https://api.github.com/repos/SlashpanOrg/agent-x')
   })
   .catch(function () {});
 
-document.getElementById('yr').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
