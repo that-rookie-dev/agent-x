@@ -10,6 +10,10 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/that-rookie-dev/agent-x/releases/latest"><img src="https://img.shields.io/github/v/release/that-rookie-dev/agent-x?label=release" alt="Latest release" /></a>
+</p>
+
+<p align="center">
   <a href="https://that-rookie-dev.github.io/agent-x/">Website</a> ·
   <a href="https://github.com/that-rookie-dev/agent-x/releases/latest">Downloads</a> ·
   <a href="#install">Install</a> ·
@@ -108,7 +112,7 @@ Open the Web UI at **http://127.0.0.1:3333** (or `http://<server-ip>:3333` on a 
 **Pin a version:**
 
 ```bash
-AGENTX_VERSION=v0.8.7 curl -fsSL https://raw.githubusercontent.com/that-rookie-dev/agent-x/main/install.sh | bash
+AGENTX_VERSION=v0.9.3 curl -fsSL https://raw.githubusercontent.com/that-rookie-dev/agent-x/main/install.sh | bash
 ```
 
 ---
@@ -172,7 +176,7 @@ This is the **public distribution repo** for Agent-X. It is separate from the pr
 
 **Release flow (maintainers)**
 
-1. Bump version in the private source repo and push to `main`.
+1. Bump `packages/shared/src/constants/version.ts` in the source repo, run `pnpm version:sync` (updates `package.json` and this README), then push to `main`.
 2. CI builds desktop and server artifacts and publishes them to this repo’s GitHub Releases.
 3. Install scripts on `main` are served via `raw.githubusercontent.com` — update them here when installer behaviour changes.
 4. The landing page pulls the latest tag and asset URLs from the GitHub API at runtime.

@@ -534,6 +534,98 @@
     .principle h3 { font-size: 1.15rem; margin-bottom: 8px; }
     .principle p { color: var(--dim); font-size: .9rem; }
 
+    /* ══════════ Open Source Pact ══════════ */
+    #opensource { padding-top: 40px; }
+    .os-pact {
+      position: relative; overflow: hidden;
+      border: 1px solid rgba(125,211,252,.28); border-radius: 20px; padding: 52px 48px;
+      background:
+        radial-gradient(900px 420px at 85% -10%, rgba(125,211,252,.14), transparent 55%),
+        radial-gradient(700px 320px at 0% 110%, rgba(196,181,253,.08), transparent 50%),
+        linear-gradient(160deg, rgba(255,255,255,.035), rgba(255,255,255,.008));
+      box-shadow: 0 0 80px -40px var(--glow);
+    }
+    .os-pact > * { position: relative; z-index: 1; }
+    @media (max-width: 720px) { .os-pact { padding: 36px 24px; } }
+    .os-badges {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+      margin-bottom: 22px;
+    }
+    .os-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .2em;
+      text-transform: uppercase; color: var(--accent);
+      border: 1px solid rgba(125,211,252,.35); border-radius: 99px;
+      padding: 7px 14px;
+      background: rgba(125,211,252,.06);
+    }
+    .os-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 10px var(--glow);
+      animation: pulse 2.2s infinite;
+    }
+    .os-pact .india-badge {
+      margin-bottom: 0;
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .08em;
+      text-transform: none;
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid rgba(255,153,51,.45); border-radius: 99px;
+      padding: 7px 14px;
+    }
+    .os-pact .h2 { margin-bottom: 12px; max-width: 720px; }
+    .os-pact .sub { margin-bottom: 36px; max-width: 620px; }
+    .os-meter {
+      display: grid; grid-template-columns: 1fr auto; gap: 18px 28px; align-items: end;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 640px) { .os-meter { grid-template-columns: 1fr; gap: 10px; } }
+    .os-counts { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+    .os-now {
+      font-family: var(--mono); font-weight: 700;
+      font-size: clamp(2.4rem, 6vw, 3.6rem); letter-spacing: -.04em;
+      line-height: 1; color: var(--txt);
+      text-shadow: 0 0 40px var(--glow);
+    }
+    .os-goal {
+      font-family: var(--mono); font-size: .95rem; color: var(--faint);
+      letter-spacing: .04em;
+    }
+    .os-goal b { color: var(--accent); font-weight: 600; }
+    .os-pct {
+      font-family: var(--mono); font-size: 1.05rem; color: var(--accent);
+      letter-spacing: .08em; white-space: nowrap;
+    }
+    .os-track {
+      grid-column: 1 / -1; height: 10px; border-radius: 99px;
+      background: rgba(255,255,255,.06); border: 1px solid var(--line-bright);
+      overflow: hidden; position: relative;
+    }
+    .os-fill {
+      height: 100%; width: 0%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 18px var(--glow);
+      transition: width 1.4s cubic-bezier(.2,.6,.2,1);
+      position: relative;
+    }
+    .os-fill::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+      animation: os-sheen 2.8s ease-in-out infinite;
+    }
+    @keyframes os-sheen {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .os-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap; margin-top: 28px;
+    }
+    .os-note {
+      font-family: var(--mono); font-size: .68rem; color: var(--faint);
+      letter-spacing: .06em; line-height: 1.7; max-width: 480px;
+    }
+    .os-note span { color: var(--dim); }
+
     /* ══════════ Join the Crew ══════════ */
     #join-crew { padding-top: 30px; }
     .jc-band {
@@ -1009,6 +1101,46 @@
           </div>
 </section>
 
+<!-- ═══════════ OPEN SOURCE PACT ═══════════ -->
+<section id="opensource">
+  <div class="wrap">
+    <div class="os-pact rv">
+      <div class="os-badges">
+        <div class="os-badge"><span class="dot" aria-hidden="true"></span> Open Source Pact</div>
+        <div class="india-badge">
+          <svg width="17" height="11" viewBox="0 0 20 13" aria-label="Indian flag" role="img"><rect width="20" height="4.33" fill="#FF9933"/><rect y="4.33" width="20" height="4.34" fill="#FFF"/><rect y="8.67" width="20" height="4.33" fill="#138808"/><circle cx="10" cy="6.5" r="1.8" fill="none" stroke="#000080" stroke-width="0.35"/></svg>
+          Made in India
+        </div>
+      </div>
+      <h2 class="h2">Hit the star goal.<br/>Unlock the source.</h2>
+      <p class="sub">
+        Agent-X ships free today. When this repo hits the goal below, the full application
+        source goes open — no paywall, no catch. Every star brings the unlock closer.
+      </p>
+
+      <div class="os-meter" aria-live="polite">
+        <div class="os-counts">
+          <span class="os-now" id="osStarNow">—</span>
+          <span class="os-goal">/ <b id="osStarGoal">—</b> stars</span>
+        </div>
+        <div class="os-pct" id="osStarPct">0%</div>
+        <div class="os-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="osStarBar">
+          <div class="os-fill" id="osStarFill"></div>
+        </div>
+      </div>
+
+      <div class="os-meta">
+        <p class="os-note">
+          Live from GitHub &nbsp;·&nbsp; <span id="osStarLeft">counting…</span>
+        </p>
+        <a class="btn btn-primary" href="https://github.com/that-rookie-dev/agent-x" target="_blank" rel="noopener" id="osStarBtn">
+          ★ Star to unlock
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════ FINAL CTA ═══════════ -->
 <section style="text-align:center; padding-top:20px;">
   <div class="wrap">
@@ -1464,15 +1596,73 @@ function setAssetLinks() {
     .catch(function () { /* keep releases/latest link */ });
     })();
 
-/* ══════════ GitHub stars ══════════ */
+/* ══════════ GitHub stars + open-source pact ══════════ */
+/* Edit this anytime — progress bar & copy scale from it. */
+var OPEN_SOURCE_STAR_GOAL = 1000000;
+
+function formatStarCount(n) {
+  return Math.round(Number(n) || 0).toLocaleString('en-US');
+}
+
+(function initOpenSourceGoal() {
+  var goalEl = document.getElementById('osStarGoal');
+  if (goalEl) goalEl.textContent = formatStarCount(OPEN_SOURCE_STAR_GOAL);
+})();
+
+function animateCount(el, to, ms) {
+  if (!el) return;
+  var start = 0, t0 = null;
+  function frame(t) {
+    if (t0 === null) t0 = t;
+    var p = Math.min(1, (t - t0) / ms);
+    var eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = formatStarCount(Math.round(start + (to - start) * eased));
+    if (p < 1) requestAnimationFrame(frame);
+    else el.textContent = formatStarCount(to);
+  }
+  requestAnimationFrame(frame);
+}
+
+function updateOpenSourcePact(stars) {
+  var goal = OPEN_SOURCE_STAR_GOAL;
+  var pct = goal > 0 ? Math.min(100, (stars / goal) * 100) : 0;
+  var left = Math.max(0, goal - stars);
+  var goalEl = document.getElementById('osStarGoal');
+  var pctEl = document.getElementById('osStarPct');
+  var fill = document.getElementById('osStarFill');
+  var bar = document.getElementById('osStarBar');
+  var leftEl = document.getElementById('osStarLeft');
+  var btn = document.getElementById('osStarBtn');
+  if (goalEl) goalEl.textContent = formatStarCount(goal);
+  if (pctEl) pctEl.textContent = (pct < 0.1 && stars > 0 ? pct.toFixed(3) : pct < 1 ? pct.toFixed(2) : pct.toFixed(1)) + '%';
+  if (fill) fill.style.width = Math.max(pct, stars > 0 ? 0.4 : 0) + '%';
+  if (bar) {
+    bar.setAttribute('aria-valuenow', String(Math.round(pct)));
+    bar.setAttribute('aria-valuemax', '100');
+  }
+  if (leftEl) {
+    leftEl.textContent = left === 0
+      ? 'goal reached — source unlock incoming'
+      : formatStarCount(left) + ' stars to go';
+  }
+  if (btn && left === 0) btn.textContent = '★ Source unlock unlocked';
+  animateCount(document.getElementById('osStarNow'), stars, 1100);
+}
+
 fetch('https://api.github.com/repos/that-rookie-dev/agent-x')
   .then(function (r) { return r.ok ? r.json() : null; })
   .then(function (d) {
-    if (!d) return;
-    var n = d.stargazers_count || 0;
-    document.getElementById('ghStars').textContent = '★ ' + (n >= 1000 ? (n / 1000).toFixed(1) + 'k' : n);
+    var n = (d && d.stargazers_count) || 0;
+    var badge = document.getElementById('ghStars');
+    if (badge) badge.textContent = '★ ' + formatStarCount(n);
+    updateOpenSourcePact(n);
   })
-  .catch(function () {});
+  .catch(function () {
+    var goalEl = document.getElementById('osStarGoal');
+    if (goalEl) goalEl.textContent = formatStarCount(OPEN_SOURCE_STAR_GOAL);
+    var now = document.getElementById('osStarNow');
+    if (now) now.textContent = '—';
+  });
 
   </script>
 </body>
