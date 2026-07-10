@@ -64,6 +64,14 @@ while [ "$attempt" -le "$MAX_DOWNLOAD_RETRIES" ]; do
 done
 echo "  ✓ Payload Received"
 
+# Optional: Tesseract for image OCR (PDFs use bundled pdf.js inside the app)
+if ! command -v tesseract >/dev/null 2>&1 && command -v brew >/dev/null 2>&1; then
+  echo "  Installing Tesseract OCR (image text extraction)…"
+  if HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install tesseract >/dev/null 2>&1; then
+    echo "  ✓ Tesseract OCR installed"
+  fi
+fi
+
 # Mount DMG
 echo "  Installing..."
 MOUNT_POINT=$(hdiutil attach "$DMG_FILE" -nobrowse 2>/dev/null | tail -1 | awk '{print $NF}')
@@ -80,6 +88,12 @@ hdiutil detach "$MOUNT_POINT" -quiet 2>/dev/null || true
 echo ""
 echo "  Agent-X Desktop installed successfully!"
 echo ""
+if ! command -v tesseract >/dev/null 2>&1; then
+  echo "  Note: Tesseract OCR is not installed."
+  echo "  PDFs and text files work without OCR; install Tesseract for image text extraction:"
+  echo "    brew install tesseract"
+  echo ""
+fi
 
 # Launch
 echo "  Launching..."

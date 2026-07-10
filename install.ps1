@@ -388,11 +388,12 @@ function Test-Installation {
   }
 }
 
-# ─── Install optional dependencies (Tesseract for OCR) ──────────────
+# ─── Install Tesseract OCR (image text extraction; PDFs use bundled pdf.js) ──
 
 function Install-OptionalDeps {
   $tesseract = Get-Command tesseract -ErrorAction SilentlyContinue
   if ($tesseract) {
+    Write-Ok "Tesseract OCR already available"
     return
   }
 
@@ -410,7 +411,8 @@ function Install-OptionalDeps {
     if ($?) { Write-Ok "Tesseract OCR installed"; return }
   }
 
-  Write-Warn "Tesseract OCR not installed (needed for image text extraction)"
+  Write-Warn "Tesseract OCR not installed"
+  Write-Host "    PDFs and text files work without OCR; Tesseract is for image text extraction (screenshots, photos, scanned images)." -ForegroundColor DarkGray
   Write-Host "    Install manually: choco install tesseract  OR  winget install UB-Mannheim.TesseractOCR" -ForegroundColor DarkGray
 }
 
@@ -459,7 +461,7 @@ Run-Step "Running payload integrity check" {
   Test-Installation
 }
 
-Run-Step "Installing auxiliary sensors (OCR)" {
+Run-Step "Installing Tesseract OCR (image text extraction)" {
   Install-OptionalDeps
 }
 

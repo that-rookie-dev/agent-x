@@ -837,17 +837,38 @@ verify_install() {
   fi
 }
 
-# ─── Install optional dependencies (Tesseract for OCR) ───────────────
+# ─── Install Tesseract OCR (image text extraction; PDFs use bundled pdf.js) ──
+
+OCR_SCOPE_MSG="PDFs and text files work without OCR; Tesseract is for image text extraction (screenshots, photos, scanned images)."
+
+install_tesseract_macos() {
+  if ! check_command brew; then
+    printf "  ${YELLOW}⚠${NC}  Tesseract OCR not installed (Homebrew not found)\n"
+    printf "  ${DIM}  %s${NC}\n" "$OCR_SCOPE_MSG"
+    printf "  ${DIM}  Install manually: brew install tesseract${NC}\n"
+    return 0
+  fi
+
+  printf "  ${DIM}Installing Tesseract OCR via Homebrew…${NC}\n"
+  if HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install tesseract >>"$LOG_FILE" 2>&1; then
+    printf "  ${GREEN}✓${NC} Tesseract OCR installed\n"
+    return 0
+  fi
+
+  printf "  ${YELLOW}⚠${NC}  Tesseract OCR install via Homebrew did not complete\n"
+  printf "  ${DIM}  %s${NC}\n" "$OCR_SCOPE_MSG"
+  printf "  ${DIM}  Install manually: brew install tesseract${NC}\n"
+  return 0
+}
 
 install_optional_deps() {
   if check_command tesseract; then
+    printf "  ${GREEN}✓${NC} Tesseract OCR already available\n"
     return 0
   fi
 
   if [ "$OS" = "darwin" ]; then
-    # Homebrew auto-update can hang for minutes with no output; OCR is optional for
-    # server installs, so do not block deployment on brew install tesseract.
-    printf "  ${DIM}Optional OCR skipped on macOS (install manually if needed: brew install tesseract)${NC}\n"
+    install_tesseract_macos
     return 0
   fi
 
@@ -866,7 +887,8 @@ install_optional_deps() {
     return 0
   fi
 
-  printf "  ${YELLOW}⚠${NC}  Tesseract OCR not installed (needed for image text extraction)\n"
+  printf "  ${YELLOW}⚠${NC}  Tesseract OCR not installed\n"
+  printf "  ${DIM}  %s${NC}\n" "$OCR_SCOPE_MSG"
   if can_sudo_noninteractive || has_install_tty; then
     printf "  ${DIM}  Install manually: sudo apt install tesseract-ocr (Ubuntu)${NC}\n"
   else
@@ -939,7 +961,7 @@ main() {
   run_step "Assembling native modules" rebuild_native
   run_step "Locking navigation coordinates" create_symlink
   run_step "Running payload integrity check" verify_install
-  run_step "Installing auxiliary sensors (OCR)" --interactive install_optional_deps
+  run_step "Installing Tesseract OCR (image text extraction)" --interactive install_optional_deps
 
   ensure_path
   print_activation_instructions
