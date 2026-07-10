@@ -219,16 +219,47 @@ function Get-RemoteSize([string]$Url) {
 }
 
 function Download-WithProgress([string]$Url, [string]$Destination) {
+  $maxRetries = if ($env:AGENTX_DOWNLOAD_RETRIES) { [int]$env:AGENTX_DOWNLOAD_RETRIES } else { 5 }
   $totalBytes = Get-RemoteSize $Url
   if ($totalBytes -gt 0) {
     Write-Ground "Payload size: $(Format-Bytes $totalBytes)"
   }
 
   $curl = Get-Command curl.exe -ErrorAction SilentlyContinue
-  if ($curl) {
-    $proc = Start-Process -FilePath $curl.Source -ArgumentList @('-fSL', $Url, '-o', $Destination) -PassThru -NoNewWindow
+  if (-not $curl) {
+    for ($attempt = 1; $attempt -le $maxRetries; $attempt++) {
+      if ($attempt -gt 1) {
+        Write-Host "  ⟳ Retry $attempt/$maxRetries" -ForegroundColor Yellow
+        Start-Sleep -Seconds 2
+      }
+      Write-Progress -Activity "Downlinking payload" -Status $Url -PercentComplete -1
+      try {
+        Invoke-WebRequest -Uri $Url -OutFile $Destination -UseBasicParsing -ErrorAction Stop
+        Write-Progress -Activity "Downlinking payload" -Completed
+        return
+      } catch {
+        Write-Progress -Activity "Downlinking payload" -Completed
+        if ($attempt -lt $maxRetries) {
+          Write-Host "  ⚠ Download interrupted — will retry." -ForegroundColor Yellow
+        }
+      }
+    }
+    Write-Err "Download failed after $maxRetries attempts for $Url. Check your internet connection or set AGENTX_VERSION."
+  }
+
+  for ($attempt = 1; $attempt -le $maxRetries; $attempt++) {
+    if ($attempt -gt 1) {
+      $partial = if (Test-Path $Destination) { (Get-Item $Destination).Length } else { 0 }
+      $partialLabel = if ($partial -gt 0) { " — resuming from $(Format-Bytes $partial)" } else { "" }
+      Write-Host "  ⟳ Retry $attempt/$maxRetries$partialLabel" -ForegroundColor Yellow
+      Start-Sleep -Seconds 2
+    }
+
+    $proc = Start-Process -FilePath $curl.Source -ArgumentList @('-fSL', '-C', '-', $Url, '-o', $Destination) -PassThru -NoNewWindow
     $lastBytes = 0
     $stalled = 0
+    $failed = $false
+
     while (-not $proc.HasExited) {
       $currentBytes = if (Test-Path $Destination) { (Get-Item $Destination).Length } else { 0 }
       if ($totalBytes -gt 0) {
@@ -242,7 +273,8 @@ function Download-WithProgress([string]$Url, [string]$Destination) {
         $stalled++
         if ($stalled -ge 150) {
           $proc | Stop-Process -Force -ErrorAction SilentlyContinue
-          Write-Err "Download stalled. Check your internet connection."
+          $failed = $true
+          break
         }
       } else {
         $stalled = 0
@@ -250,21 +282,25 @@ function Download-WithProgress([string]$Url, [string]$Destination) {
       }
       Start-Sleep -Milliseconds 200
     }
+
     Write-Progress -Activity "Downlinking payload" -Completed
-    if ($proc.ExitCode -ne 0) {
-      Write-Err "Download failed for $Url. Check your internet connection or set AGENTX_VERSION."
+
+    if (-not $failed -and $proc.ExitCode -eq 0) {
+      $finalBytes = if (Test-Path $Destination) { (Get-Item $Destination).Length } else { 0 }
+      if ($finalBytes -gt 0 -and ($totalBytes -le 0 -or $finalBytes -ge $totalBytes)) {
+        return
+      }
+      $failed = $true
     }
-    return
+
+    if ($attempt -lt $maxRetries) {
+      if ($failed) {
+        Write-Host "  ⚠ Download interrupted — will resume if connection returns." -ForegroundColor Yellow
+      }
+    }
   }
 
-  Write-Progress -Activity "Downlinking payload" -Status $Url -PercentComplete -1
-  try {
-    Invoke-WebRequest -Uri $Url -OutFile $Destination -UseBasicParsing -ErrorAction Stop
-  } catch {
-    Write-Progress -Activity "Downlinking payload" -Completed
-    Write-Err "Download failed for $Url. Check your internet connection or set AGENTX_VERSION."
-  }
-  Write-Progress -Activity "Downlinking payload" -Completed
+  Write-Err "Download failed after $maxRetries attempts for $Url. Check your internet connection or set AGENTX_VERSION."
 }
 
 function Install-AgentX {
@@ -290,8 +326,7 @@ function Install-AgentX {
     Write-Err "Download failed. Check your internet connection."
   }
 
-  $finalBytes = (Get-Item $tmpFile).Length
-  Write-Ok "Payload received ($(Format-Bytes $finalBytes))"
+  Write-Ok "Payload Received"
 
   $header = Get-Content -Path $tmpFile -Encoding Byte -TotalCount 2
   if ($header[0] -ne 0x1f -or $header[1] -ne 0x8b) {

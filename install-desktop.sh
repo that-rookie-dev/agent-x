@@ -36,17 +36,37 @@ if [ "$VERSION" = "latest" ]; then
   echo "  Latest version: $VERSION"
 fi
 
-# Download DMG
+# Download DMG (resume + retries on flaky links)
 DMG_URL="https://github.com/${REPO}/releases/download/${VERSION}/Agent-X-${VERSION#v}-${ARCH}.dmg"
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
+DMG_FILE="${TMP_DIR}/Agent-X.dmg"
+MAX_DOWNLOAD_RETRIES="${AGENTX_DOWNLOAD_RETRIES:-5}"
 
 echo "  Downloading..."
-curl -fsSL "$DMG_URL" -o "$TMP_DIR/Agent-X.dmg"
+attempt=1
+while [ "$attempt" -le "$MAX_DOWNLOAD_RETRIES" ]; do
+  if [ "$attempt" -gt 1 ]; then
+    partial=0
+    [ -f "$DMG_FILE" ] && partial=$(stat -f%z "$DMG_FILE" 2>/dev/null || stat -c%s "$DMG_FILE" 2>/dev/null || echo 0)
+    echo "  ⟳ Retry ${attempt}/${MAX_DOWNLOAD_RETRIES} — resuming from ${partial} bytes..."
+    sleep 2
+  fi
+  if curl -fSL -C - "$DMG_URL" -o "$DMG_FILE"; then
+    break
+  fi
+  if [ "$attempt" -eq "$MAX_DOWNLOAD_RETRIES" ]; then
+    echo "  Download failed after ${MAX_DOWNLOAD_RETRIES} attempts."
+    exit 1
+  fi
+  echo "  ⚠ Download interrupted — will resume if connection returns."
+  attempt=$((attempt + 1))
+done
+echo "  ✓ Payload Received"
 
 # Mount DMG
 echo "  Installing..."
-MOUNT_POINT=$(hdiutil attach "$TMP_DIR/Agent-X.dmg" -nobrowse 2>/dev/null | tail -1 | awk '{print $NF}')
+MOUNT_POINT=$(hdiutil attach "$DMG_FILE" -nobrowse 2>/dev/null | tail -1 | awk '{print $NF}')
 
 # Remove existing app and copy new one
 cp -R "$MOUNT_POINT/Agent-X.app" /Applications/

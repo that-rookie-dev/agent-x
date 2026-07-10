@@ -556,22 +556,16 @@ render_download_progress() {
   fi
 }
 
-download_and_install() {
-  local url="https://github.com/${REPO}/releases/download/${VERSION}/agentx-${PLATFORM}-server.tar.gz"
-  local dest_file=""
-  TMPDIR_INSTALL="$(mktemp -d)"
-  dest_file="${TMPDIR_INSTALL}/agentx.tar.gz"
+MAX_DOWNLOAD_RETRIES="${AGENTX_DOWNLOAD_RETRIES:-5}"
 
-  printf "  ${DIM}Downlinking from:${NC} ${CYAN}%s${NC}\n" "$url"
-  mkdir -p "$INSTALL_DIR"
+# Download with resume (-C -) and retries when the link drops or stalls.
+run_curl_download() {
+  local url="$1"
+  local dest_file="$2"
+  local total_bytes="$3"
+  local exit_code=0
 
-  local total_bytes
-  total_bytes="$(get_remote_size "$url")"
-  if [ "$total_bytes" -gt 0 ] 2>/dev/null; then
-    printf "  ${DIM}Payload size:${NC} $(format_bytes "$total_bytes")\n"
-  fi
-
-  curl -fSL "$url" -o "$dest_file" >/dev/null 2>&1 &
+  curl -fSL -C - "$url" -o "$dest_file" >/dev/null 2>&1 &
   CURL_PID=$!
   local curl_pid=$CURL_PID
   local last_bytes=0
@@ -594,16 +588,17 @@ download_and_install() {
       wait "$curl_pid" 2>/dev/null || true
       CURL_PID=""
       printf "\n" >&2
-      die "Download stalled. Check your internet connection."
+      return 2
     fi
 
     sleep 0.2
   done
 
   if ! wait "$curl_pid"; then
+    exit_code=$?
     CURL_PID=""
     printf "\n" >&2
-    die "Download failed for ${url}. Check your internet connection or try AGENTX_VERSION=<tag>."
+    return 1
   fi
   CURL_PID=""
 
@@ -613,14 +608,68 @@ download_and_install() {
   printf "\n" >&2
 
   if [ ! -s "$dest_file" ]; then
-    die "Download failed. Check your internet connection."
+    return 1
+  fi
+
+  if [ "$total_bytes" -gt 0 ] 2>/dev/null && [ "$final_bytes" -lt "$total_bytes" ]; then
+    return 1
   fi
 
   if ! gzip -t "$dest_file" 2>/dev/null; then
-    die "Downloaded file is not a valid server package (expected gzip). Asset may be missing for ${PLATFORM} in ${VERSION}."
+    return 1
   fi
 
-  printf "  ${GREEN}✓${NC} ${DIM}RX:${NC} [${CYAN}████████████████████${NC}] ${BOLD}100%%${NC} ${GREEN}Payload received${NC} ($(format_bytes "$final_bytes"))\n"
+  return 0
+}
+
+download_and_install() {
+  local url="https://github.com/${REPO}/releases/download/${VERSION}/agentx-${PLATFORM}-server.tar.gz"
+  local dest_file=""
+  TMPDIR_INSTALL="$(mktemp -d)"
+  dest_file="${TMPDIR_INSTALL}/agentx.tar.gz"
+
+  printf "  ${DIM}Downlinking from:${NC} ${CYAN}%s${NC}\n" "$url"
+  mkdir -p "$INSTALL_DIR"
+
+  local total_bytes
+  total_bytes="$(get_remote_size "$url")"
+  if [ "$total_bytes" -gt 0 ] 2>/dev/null; then
+    printf "  ${DIM}Payload size:${NC} $(format_bytes "$total_bytes")\n"
+  fi
+
+  local attempt=1
+  local rc=1
+  while [ "$attempt" -le "$MAX_DOWNLOAD_RETRIES" ]; do
+    if [ "$attempt" -gt 1 ]; then
+      local partial_bytes
+      partial_bytes="$(file_size_bytes "$dest_file")"
+      printf "  ${YELLOW}⟳${NC} Retry ${attempt}/${MAX_DOWNLOAD_RETRIES}"
+      if [ "$partial_bytes" -gt 0 ] 2>/dev/null; then
+        printf " — resuming from $(format_bytes "$partial_bytes")"
+      fi
+      printf "\n"
+      sleep 2
+    fi
+
+    run_curl_download "$url" "$dest_file" "$total_bytes"
+    rc=$?
+    if [ "$rc" -eq 0 ]; then
+      break
+    fi
+
+    if [ "$rc" -eq 2 ]; then
+      printf "  ${YELLOW}⚠${NC}  Download stalled — will resume if connection returns.\n" >&2
+    else
+      printf "  ${YELLOW}⚠${NC}  Download interrupted — will resume if connection returns.\n" >&2
+    fi
+    attempt=$((attempt + 1))
+  done
+
+  if [ "$rc" -ne 0 ]; then
+    die "Download failed after ${MAX_DOWNLOAD_RETRIES} attempts for ${url}. Check your internet connection or try AGENTX_VERSION=<tag>."
+  fi
+
+  printf "  ${GREEN}✓${NC} ${GREEN}Payload Received${NC}\n"
   printf "  ${DIM}Unpacking payload...${NC}\n"
   tar -xzf "$dest_file" -C "$INSTALL_DIR"
   printf "  ${GREEN}✓${NC} Payload extracted to ${CYAN}%s${NC}\n" "$INSTALL_DIR"
