@@ -674,6 +674,7 @@ download_and_install() {
   tar -xzf "$dest_file" -C "$INSTALL_DIR"
   printf "  ${GREEN}✓${NC} Payload extracted to ${CYAN}%s${NC}\n" "$INSTALL_DIR"
   repair_bundled_python_symlinks
+  repair_embedded_postgres_binaries
 }
 
 # Older release tarballs shipped absolute CI symlinks for python3 → /Users/runner/...
@@ -720,6 +721,81 @@ repair_bundled_python_symlinks() {
     printf "  ${GREEN}✓${NC} Bundled Python ready (${CYAN}%s${NC})\n" "$("${bin_dir}/python3" --version 2>&1 | tr -d '\r')"
   else
     printf "  ${YELLOW}⚠${NC}  Bundled Python present but not executable — voice setup may need a system python3\n"
+  fi
+}
+
+# Some release tarballs shipped incomplete @embedded-postgres trees (initdb without postgres).
+# initdb requires postgres in the same directory — repair in place from a sibling arch tree or npm.
+repair_embedded_postgres_binaries() {
+  local os arch_name pkg donor_pkg bin_dir donor_bin name src dest
+  os="$(uname -s)"
+  arch_name="$(uname -m)"
+  pkg=""
+  donor_pkg=""
+
+  case "${os}-${arch_name}" in
+    Darwin-arm64) pkg="darwin-arm64"; donor_pkg="darwin-x64" ;;
+    Darwin-x86_64) pkg="darwin-x64"; donor_pkg="darwin-arm64" ;;
+    Linux-x86_64|Linux-amd64) pkg="linux-x64" ;;
+    Linux-aarch64|Linux-arm64) pkg="linux-arm64" ;;
+    *) return 0 ;;
+  esac
+
+  bin_dir="${INSTALL_DIR}/node_modules/@embedded-postgres/${pkg}/native/bin"
+  [ -d "$bin_dir" ] || return 0
+
+  if [ -f "${bin_dir}/postgres" ] && [ -f "${bin_dir}/initdb" ] && [ -f "${bin_dir}/pg_ctl" ]; then
+    return 0
+  fi
+
+  printf "  ${YELLOW}⚠${NC}  Incomplete embedded PostgreSQL binaries detected — repairing…\n"
+
+  if [ -n "$donor_pkg" ]; then
+    donor_bin="${INSTALL_DIR}/node_modules/@embedded-postgres/${donor_pkg}/native/bin"
+    for name in postgres initdb pg_ctl; do
+      dest="${bin_dir}/${name}"
+      src="${donor_bin}/${name}"
+      if [ ! -f "$dest" ] && [ -f "$src" ]; then
+        cp -f "$src" "$dest"
+        chmod 755 "$dest" 2>/dev/null || true
+        printf "  ${DIM}  Restored ${name} from ${donor_pkg}${NC}\n"
+      fi
+    done
+  fi
+
+  if [ -f "${bin_dir}/postgres" ] && [ -f "${bin_dir}/initdb" ] && [ -f "${bin_dir}/pg_ctl" ]; then
+    printf "  ${GREEN}✓${NC} Embedded PostgreSQL binaries repaired\n"
+    return 0
+  fi
+
+  # Last resort: re-fetch the platform package from npm into a temp dir and copy bins.
+  if check_command npm; then
+    local tmp_npm
+    tmp_npm="$(mktemp -d "${TMPDIR:-/tmp}/agentx-pg-repair.XXXXXX")"
+    if (
+      cd "$tmp_npm"
+      npm pack "@embedded-postgres/${pkg}@17.5.0-beta.15" --silent >/dev/null 2>&1
+      tar -xzf embedded-postgres-*.tgz 2>/dev/null
+      for name in postgres initdb pg_ctl; do
+        dest="${bin_dir}/${name}"
+        src="package/native/bin/${name}"
+        if [ ! -f "$dest" ] && [ -f "$src" ]; then
+          cp -f "$src" "$dest"
+          chmod 755 "$dest" 2>/dev/null || true
+        fi
+      done
+    ); then
+      :
+    fi
+    rm -rf "$tmp_npm"
+  fi
+
+  if [ -f "${bin_dir}/postgres" ] && [ -f "${bin_dir}/initdb" ] && [ -f "${bin_dir}/pg_ctl" ]; then
+    printf "  ${GREEN}✓${NC} Embedded PostgreSQL binaries restored from npm\n"
+  else
+    printf "  ${YELLOW}⚠${NC}  Could not fully repair embedded PostgreSQL binaries\n"
+    printf "  ${DIM}  Missing files under ${bin_dir}${NC}\n"
+    printf "  ${DIM}  Reinstall Agent-X or use cloud PostgreSQL in the setup wizard${NC}\n"
   fi
 }
 

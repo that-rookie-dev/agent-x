@@ -346,6 +346,47 @@ function Install-AgentX {
   }
 
   Write-Ok "Payload extracted to $InstallDir"
+  Repair-EmbeddedPostgresBinaries
+}
+
+function Repair-EmbeddedPostgresBinaries {
+  $binDir = Join-Path $InstallDir 'node_modules\@embedded-postgres\windows-x64\native\bin'
+  if (-not (Test-Path -LiteralPath $binDir)) { return }
+
+  $required = @('postgres.exe', 'initdb.exe', 'pg_ctl.exe')
+  $missing = @($required | Where-Object { -not (Test-Path -LiteralPath (Join-Path $binDir $_)) })
+  if ($missing.Count -eq 0) { return }
+
+  Write-Warn "Incomplete embedded PostgreSQL binaries detected — repairing…"
+  $tmp = Join-Path $env:TEMP ("agentx-pg-repair-" + [guid]::NewGuid().ToString('N'))
+  New-Item -ItemType Directory -Path $tmp -Force | Out-Null
+  try {
+    Push-Location $tmp
+    npm pack '@embedded-postgres/windows-x64@17.5.0-beta.15' --silent 2>$null | Out-Null
+    $tgz = Get-ChildItem -Filter 'embedded-postgres-*.tgz' | Select-Object -First 1
+    if ($tgz) {
+      tar -xzf $tgz.FullName
+      foreach ($name in $required) {
+        $dest = Join-Path $binDir $name
+        $src = Join-Path $tmp "package\native\bin\$name"
+        if (-not (Test-Path -LiteralPath $dest) -and (Test-Path -LiteralPath $src)) {
+          Copy-Item $src $dest -Force
+        }
+      }
+    }
+  } catch {
+    # best-effort
+  } finally {
+    Pop-Location -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath $tmp -Recurse -Force -ErrorAction SilentlyContinue
+  }
+
+  $stillMissing = @($required | Where-Object { -not (Test-Path -LiteralPath (Join-Path $binDir $_)) })
+  if ($stillMissing.Count -eq 0) {
+    Write-Ok "Embedded PostgreSQL binaries repaired"
+  } else {
+    Write-Warn "Could not fully repair embedded PostgreSQL binaries ($($stillMissing -join ', '))"
+  }
 }
 
 # ─── PATH management ────────────────────────────────────────────────
