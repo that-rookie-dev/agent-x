@@ -1,11 +1,11 @@
 <p align="center">
   <a href="https://that-rookie-dev.github.io/agent-x/">
-    <img src="assets/social_preview.png" alt="AGENT-X — Your AI wingman. On your machine." width="100%" />
+    <img src="assets/social_preview.png" alt="AGENT-X · Your AI wingman. On your machine." width="100%" />
   </a>
 </p>
 
 <p align="center">
-  <strong>AGENT-X</strong> — a free, local-first autonomous AI agent for your machine.<br/>
+  <strong>AGENT-X</strong> · a free, local-first autonomous AI agent for your machine.<br/>
   218 built-in tools · 4,900 crew specialists · 18 LLM providers · no cloud required
 </p>
 
@@ -25,13 +25,13 @@
 
 ## What is Agent-X?
 
-Agent-X runs on your hardware with your API keys. Use it as a **desktop app** (macOS, Windows, Linux) or as a **headless server** with a browser-based Web UI — ideal for VPS, Docker, and remote machines.
+Agent-X runs on your hardware with your API keys. Use it as a **desktop app** (macOS, Windows, Linux) or as a **headless server** with a browser-based Web UI, ideal for VPS, Docker, and remote machines.
 
-- **Local-first** — sessions, memory, and config stay on your machine
-- **Provider-agnostic** — OpenAI, Anthropic, Google, Ollama, LM Studio, and more
-- **Tool-rich** — filesystem, shell, git, browser, Docker, MCP, and 200+ other capabilities
-- **Crews** — delegate to thousands of pre-built specialist personas
-- **No account** — no telemetry, no vendor lock-in
+- **Local-first:** sessions, memory, and config stay on your machine
+- **Provider-agnostic:** OpenAI, Anthropic, Google, Ollama, LM Studio, and more
+- **Tool-rich:** filesystem, shell, git, browser, Docker, MCP, and 200+ other capabilities
+- **Crews:** delegate to thousands of pre-built specialist personas
+- **No account:** no telemetry, no vendor lock-in
 
 Full feature overview: [that-rookie-dev.github.io/agent-x](https://that-rookie-dev.github.io/agent-x/)
 
@@ -50,7 +50,7 @@ Download the installer for your platform from **[Releases](https://github.com/th
 | Windows | `Agent-X Setup *.exe` |
 | Linux | `.AppImage` or `.deb` |
 
-**macOS (Apple Silicon) one-liner** — downloads the DMG and installs to `/Applications`:
+**macOS (Apple Silicon) one-liner:** downloads the DMG and installs to `/Applications`:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/that-rookie-dev/agent-x/main/install-desktop.sh | bash
@@ -178,7 +178,7 @@ This is the **public distribution repo** for Agent-X. It is separate from the pr
 
 1. Bump `packages/shared/src/constants/version.ts` in the source repo, run `pnpm version:sync` (updates `package.json` and this README), then push to `main`.
 2. CI builds desktop and server artifacts and publishes them to this repo’s GitHub Releases.
-3. Install scripts on `main` are served via `raw.githubusercontent.com` — update them here when installer behaviour changes.
+3. Install scripts on `main` are served via `raw.githubusercontent.com`. Update them here when installer behaviour changes.
 4. The landing page pulls the latest tag and asset URLs from the GitHub API at runtime.
 
 ---
