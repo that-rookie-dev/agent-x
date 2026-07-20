@@ -112,7 +112,7 @@ Open the Web UI at **http://127.0.0.1:3333** (or `http://<server-ip>:3333` on a 
 **Pin a version:**
 
 ```bash
-AGENTX_VERSION=v0.9.11 curl -fsSL https://raw.githubusercontent.com/that-rookie-dev/agent-x/main/install.sh | bash
+AGENTX_VERSION=v0.9.12 curl -fsSL https://raw.githubusercontent.com/that-rookie-dev/agent-x/main/install.sh | bash
 ```
 
 ---

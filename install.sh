@@ -308,7 +308,7 @@ check_node() {
     local installed=false
     if [ "$OS" = "darwin" ]; then
       if check_command brew; then
-        brew install node && installed=true
+        run_brew_install node "Node.js" && installed=true
       fi
     elif [ "$OS" = "linux" ]; then
       if check_command apt-get; then
@@ -368,6 +368,92 @@ check_curl() {
 
 has_install_tty() {
   [ -e /dev/tty ]
+}
+
+is_stdin_piped() {
+  [ ! -t 0 ]
+}
+
+# Last non-empty line from a log file, stripped of ANSI and truncated for display.
+brew_log_status_line() {
+  local log="$1"
+  local line=""
+  [ -f "$log" ] || return 0
+  line=$(tail -n 30 "$log" 2>/dev/null | sed '/^[[:space:]]*$/d' | tail -1)
+  line=$(printf '%s' "$line" | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g')
+  if [ "${#line}" -gt 72 ]; then
+    line="${line:0:69}..."
+  fi
+  printf '%s' "$line"
+}
+
+# Run `brew install` with a compact status line; full output goes to the install log.
+# curl | bash leaves stdin as a pipe; brew reads prompts from /dev/tty instead.
+run_brew_install() {
+  local pkg="$1"
+  local description="${2:-$pkg}"
+
+  if ! check_command brew; then
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$LOG_FILE")"
+
+  local -a brew_env=(
+    HOMEBREW_NO_AUTO_UPDATE=1
+    HOMEBREW_NO_INSTALL_CLEANUP=1
+    HOMEBREW_NO_ENV_HINTS=1
+  )
+
+  if is_stdin_piped; then
+    brew_env+=(CI=1 NONINTERACTIVE=1)
+  fi
+
+  printf "  ${DIM}Installing %s via Homebrew (first install can take several minutes)…${NC}\n" "$description" >&2
+  printf "  ${DIM}Full log: %s${NC}\n" "$LOG_FILE" >&2
+  if is_stdin_piped && has_install_tty; then
+    printf "  ${DIM}If Homebrew needs admin access, type your password when prompted (input is hidden).${NC}\n" >&2
+  fi
+
+  local brew_pid rc=0
+  if has_install_tty; then
+    (
+      env "${brew_env[@]}" brew install "$pkg"
+    ) </dev/tty >>"$LOG_FILE" 2>&1 &
+  else
+    env "${brew_env[@]}" brew install "$pkg" >>"$LOG_FILE" 2>&1 &
+  fi
+  brew_pid=$!
+
+  local frame_idx=0 password_notified=false status_line=""
+  while kill -0 "$brew_pid" 2>/dev/null; do
+    if [ "$password_notified" = false ] && grep -q "Password:" "$LOG_FILE" 2>/dev/null; then
+      printf "\r  ${YELLOW}Password required for Homebrew — enter it in this terminal (hidden).${NC}\033[K\n" >&2
+      password_notified=true
+    fi
+
+    status_line=$(brew_log_status_line "$LOG_FILE")
+    local spinner_char="${SPINNER_FRAMES[$((frame_idx % ${#SPINNER_FRAMES[@]}))]}"
+    frame_idx=$((frame_idx + 1))
+
+    if [ -n "$status_line" ]; then
+      printf "\r  ${CYAN}${spinner_char}${NC} ${description}: ${DIM}%s${NC}\033[K" "$status_line" >&2
+    else
+      printf "\r  ${CYAN}${spinner_char}${NC} ${description}…\033[K" >&2
+    fi
+    sleep 0.25
+  done
+
+  if ! wait "$brew_pid"; then
+    rc=$?
+  fi
+
+  printf "\r\033[K" >&2
+  if [ "$rc" -eq 0 ]; then
+    printf "  ${GREEN}✓${NC} ${description} installed\n" >&2
+  fi
+
+  return "$rc"
 }
 
 can_sudo_noninteractive() {
@@ -925,15 +1011,17 @@ install_tesseract_macos() {
     return 0
   fi
 
-  printf "  ${DIM}Installing Tesseract OCR via Homebrew…${NC}\n"
-  if HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install tesseract >>"$LOG_FILE" 2>&1; then
-    printf "  ${GREEN}✓${NC} Tesseract OCR installed\n"
+  if run_brew_install tesseract "Tesseract OCR"; then
     return 0
   fi
 
   printf "  ${YELLOW}⚠${NC}  Tesseract OCR install via Homebrew did not complete\n"
   printf "  ${DIM}  %s${NC}\n" "$OCR_SCOPE_MSG"
-  printf "  ${DIM}  Install manually: brew install tesseract${NC}\n"
+  if is_stdin_piped; then
+    printf "  ${DIM}  Re-run in a terminal (not curl | bash) or install manually: brew install tesseract${NC}\n"
+  else
+    printf "  ${DIM}  Install manually: brew install tesseract${NC}\n"
+  fi
   return 0
 }
 

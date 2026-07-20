@@ -67,7 +67,43 @@ echo "  ✓ Payload Received"
 # Optional: Tesseract for image OCR (PDFs use bundled pdf.js inside the app)
 if ! command -v tesseract >/dev/null 2>&1 && command -v brew >/dev/null 2>&1; then
   echo "  Installing Tesseract OCR (image text extraction)…"
-  if HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_INSTALL_CLEANUP=1 brew install tesseract >/dev/null 2>&1; then
+  BREW_LOG=$(mktemp "${TMPDIR:-/tmp}/agentx-brew.XXXXXX")
+  brew_rc=0
+  brew_env=(
+    HOMEBREW_NO_AUTO_UPDATE=1
+    HOMEBREW_NO_INSTALL_CLEANUP=1
+    HOMEBREW_NO_ENV_HINTS=1
+  )
+  if [ ! -t 0 ]; then
+    brew_env+=(CI=1 NONINTERACTIVE=1)
+    echo "  If Homebrew needs admin access, type your password when prompted (input is hidden)."
+  fi
+  if [ -e /dev/tty ]; then
+    ( env "${brew_env[@]}" brew install tesseract ) </dev/tty >>"$BREW_LOG" 2>&1 &
+  else
+    env "${brew_env[@]}" brew install tesseract >>"$BREW_LOG" 2>&1 &
+  fi
+  brew_pid=$!
+  frame_idx=0
+  while kill -0 "$brew_pid" 2>/dev/null; do
+    status_line=$(tail -n 30 "$BREW_LOG" 2>/dev/null | sed '/^[[:space:]]*$/d' | tail -1 | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g')
+    if [ "${#status_line}" -gt 72 ]; then
+      status_line="${status_line:0:69}..."
+    fi
+    spinner=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+    spin="${spinner[$((frame_idx % ${#spinner[@]}))]}"
+    frame_idx=$((frame_idx + 1))
+    if [ -n "$status_line" ]; then
+      printf "\r  %s Tesseract OCR: %s\033[K" "$spin" "$status_line"
+    else
+      printf "\r  %s Tesseract OCR…\033[K" "$spin"
+    fi
+    sleep 0.25
+  done
+  wait "$brew_pid" || brew_rc=$?
+  printf "\r\033[K"
+  rm -f "$BREW_LOG"
+  if [ "$brew_rc" -eq 0 ]; then
     echo "  ✓ Tesseract OCR installed"
   fi
 fi
