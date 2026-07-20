@@ -9,6 +9,7 @@ $BinDir = if ($env:AGENTX_BIN_DIR) { $env:AGENTX_BIN_DIR } else { "$env:LOCALAPP
 $RuntimeDataDir = if ($env:AGENTX_DATA_DIR) { $env:AGENTX_DATA_DIR } else { Join-Path $env:USERPROFILE ".local\share\agentx" }
 $CacheDir = Join-Path $env:TEMP "agentx"
 $MinNodeVersion = 20
+$InstallLogFile = Join-Path $InstallDir "install.log"
 
 # ─── Colours ─────────────────────────────────────────────────────────
 
@@ -91,6 +92,80 @@ function Show-Countdown {
   Start-Sleep -Milliseconds 500
 }
 
+# ─── Package install helpers (compact status; full output in install.log) ──
+
+function Get-InstallLogStatusLine {
+  if (-not (Test-Path $InstallLogFile)) { return "" }
+  $line = Get-Content $InstallLogFile -Tail 30 -ErrorAction SilentlyContinue |
+    Where-Object { $_.Trim().Length -gt 0 } |
+    Select-Object -Last 1
+  if (-not $line) { return "" }
+  $line = $line -replace '\x1b\[[0-9;]*[a-zA-Z]', ''
+  if ($line.Length -gt 72) { return $line.Substring(0, 69) + "..." }
+  return $line
+}
+
+function Invoke-PackageInstallWithStatus {
+  param(
+    [Parameter(Mandatory = $true)][string]$Description,
+    [Parameter(Mandatory = $true)][string]$Command,
+    [Parameter()][string[]]$Arguments = @()
+  )
+
+  $resolved = Get-Command $Command -ErrorAction SilentlyContinue
+  if (-not $resolved) { return $false }
+  $commandPath = $resolved.Source
+
+  $logDir = Split-Path $InstallLogFile -Parent
+  if (-not (Test-Path $logDir)) {
+    New-Item -ItemType Directory -Force -Path $logDir | Out-Null
+  }
+
+  Write-Ground "Installing $Description (may take several minutes)..."
+  Write-Ground "Full log: $InstallLogFile"
+  if ($Host.Name -eq 'ServerRemoteHost' -or [Console]::IsInputRedirected) {
+    Write-Ground "Package manager runs non-interactively; approve any UAC prompts if they appear."
+  }
+
+  $spinner = @('⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏')
+  $frame = 0
+
+  $job = Start-Job -ArgumentList $commandPath, $Arguments, $InstallLogFile -ScriptBlock {
+    param($cmdPath, $argList, $logPath)
+    try {
+      & $cmdPath @argList *>> $logPath
+      if ($null -ne $LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    } catch {
+      $_ | Out-File -FilePath $logPath -Append -Encoding utf8
+      exit 1
+    }
+  }
+
+  while ((Get-Job -Id $job.Id -ErrorAction SilentlyContinue).State -eq 'Running') {
+    $status = Get-InstallLogStatusLine
+    $spin = $spinner[$frame % $spinner.Length]
+    $frame++
+    if ($status) {
+      Write-Host ("`r  $spin ${Description}: $status").PadRight(90) -NoNewline -ForegroundColor DarkGray
+    } else {
+      Write-Host ("`r  $spin ${Description}...").PadRight(90) -NoNewline
+    }
+    Start-Sleep -Milliseconds 250
+  }
+
+  Write-Host ""
+  Wait-Job $job | Out-Null
+  $jobState = (Get-Job -Id $job.Id).State
+  Receive-Job $job -ErrorAction SilentlyContinue | Out-Null
+  Remove-Job $job -Force -ErrorAction SilentlyContinue
+
+  if ($jobState -eq 'Completed') {
+    Write-Ok "$Description installed"
+    return $true
+  }
+  return $false
+}
+
 # ─── Platform detection ─────────────────────────────────────────────
 
 function Get-Platform {
@@ -112,16 +187,19 @@ function Test-NodeVersion {
     $winget = Get-Command winget -ErrorAction SilentlyContinue
     $nodeInstalled = $false
     if ($choco) {
-      Write-Info "Installing Node.js via Chocolatey..."
-      choco install nodejs-lts -y
-      $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
-      if ($nodeCmd) { $nodeInstalled = $true }
+      if (Invoke-PackageInstallWithStatus -Description "Node.js" -Command "choco" -Arguments @("install", "nodejs-lts", "-y")) {
+        $nodeInstalled = $true
+      }
     } elseif ($winget) {
-      Write-Info "Installing Node.js via winget..."
-      winget install OpenJS.NodeJS.LTS
-      $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
-      if ($nodeCmd) { $nodeInstalled = $true }
+      if (Invoke-PackageInstallWithStatus -Description "Node.js" -Command "winget" -Arguments @(
+          "install", "OpenJS.NodeJS.LTS",
+          "--accept-package-agreements", "--accept-source-agreements", "--silent"
+        )) {
+        $nodeInstalled = $true
+      }
     }
+    $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
+    if ($nodeCmd) { $nodeInstalled = $true }
     if (-not $nodeInstalled) {
       Write-Err "Node.js could not be installed automatically. Please install Node.js >= $MinNodeVersion manually:"
       Write-Host "    choco install nodejs-lts" -ForegroundColor Cyan
@@ -442,14 +520,17 @@ function Install-OptionalDeps {
   $winget = Get-Command winget -ErrorAction SilentlyContinue
 
   if ($choco) {
-    Write-Info "Installing Tesseract OCR via Chocolatey..."
-    choco install tesseract -y 2>$null | Out-Null
-    if ($?) { Write-Ok "Tesseract OCR installed"; return }
+    if (Invoke-PackageInstallWithStatus -Description "Tesseract OCR" -Command "choco" -Arguments @("install", "tesseract", "-y")) {
+      if (Get-Command tesseract -ErrorAction SilentlyContinue) { return }
+    }
   }
   if ($winget) {
-    Write-Info "Installing Tesseract OCR via winget..."
-    winget install UB-Mannheim.TesseractOCR --silent 2>$null | Out-Null
-    if ($?) { Write-Ok "Tesseract OCR installed"; return }
+    if (Invoke-PackageInstallWithStatus -Description "Tesseract OCR" -Command "winget" -Arguments @(
+        "install", "UB-Mannheim.TesseractOCR",
+        "--accept-package-agreements", "--accept-source-agreements", "--silent"
+      )) {
+      if (Get-Command tesseract -ErrorAction SilentlyContinue) { return }
+    }
   }
 
   Write-Warn "Tesseract OCR not installed"

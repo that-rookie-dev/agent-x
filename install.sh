@@ -312,27 +312,11 @@ check_node() {
       fi
     elif [ "$OS" = "linux" ]; then
       if check_command apt-get; then
-        if can_sudo_noninteractive; then
-          sudo -n apt-get update && sudo -n apt-get install -y nodejs npm && installed=true
-        elif has_install_tty; then
-          prompt_sudo_password "Node.js installation"
-          sudo apt-get update </dev/tty >/dev/tty 2>&1 && \
-            sudo apt-get install -y nodejs npm </dev/tty >/dev/tty 2>&1 && installed=true
-        fi
+        run_sudo_pkg_install "Node.js" bash -c 'apt-get update && apt-get install -y nodejs npm' && installed=true
       elif check_command dnf; then
-        if can_sudo_noninteractive; then
-          sudo -n dnf install -y nodejs && installed=true
-        elif has_install_tty; then
-          prompt_sudo_password "Node.js installation"
-          sudo dnf install -y nodejs </dev/tty >/dev/tty 2>&1 && installed=true
-        fi
+        run_sudo_pkg_install "Node.js" dnf install -y nodejs && installed=true
       elif check_command pacman; then
-        if can_sudo_noninteractive; then
-          sudo -n pacman -S --noconfirm nodejs npm && installed=true
-        elif has_install_tty; then
-          prompt_sudo_password "Node.js installation"
-          sudo pacman -S --noconfirm nodejs npm </dev/tty >/dev/tty 2>&1 && installed=true
-        fi
+        run_sudo_pkg_install "Node.js" pacman -S --noconfirm nodejs npm && installed=true
       fi
     fi
     if ! $installed && ! check_command node; then
@@ -375,7 +359,7 @@ is_stdin_piped() {
 }
 
 # Last non-empty line from a log file, stripped of ANSI and truncated for display.
-brew_log_status_line() {
+install_log_status_line() {
   local log="$1"
   local line=""
   [ -f "$log" ] || return 0
@@ -385,6 +369,38 @@ brew_log_status_line() {
     line="${line:0:69}..."
   fi
   printf '%s' "$line"
+}
+
+# Poll a background install job; show spinner + last log line on stderr.
+watch_install_job() {
+  local description="$1"
+  local job_pid="$2"
+  local frame_idx=0 password_notified=false status_line=""
+  local rc=0
+
+  while kill -0 "$job_pid" 2>/dev/null; do
+    if [ "$password_notified" = false ] && grep -qE '\[sudo\] password for|Password:' "$LOG_FILE" 2>/dev/null; then
+      printf "\r  ${YELLOW}Administrator password required — enter it in this terminal (hidden).${NC}\033[K\n" >&2
+      password_notified=true
+    fi
+
+    status_line=$(install_log_status_line "$LOG_FILE")
+    local spinner_char="${SPINNER_FRAMES[$((frame_idx % ${#SPINNER_FRAMES[@]}))]}"
+    frame_idx=$((frame_idx + 1))
+
+    if [ -n "$status_line" ]; then
+      printf "\r  ${CYAN}${spinner_char}${NC} ${description}: ${DIM}%s${NC}\033[K" "$status_line" >&2
+    else
+      printf "\r  ${CYAN}${spinner_char}${NC} ${description}…\033[K" >&2
+    fi
+    sleep 0.25
+  done
+
+  if ! wait "$job_pid"; then
+    rc=$?
+  fi
+
+  return "$rc"
 }
 
 # Run `brew install` with a compact status line; full output goes to the install log.
@@ -425,28 +441,52 @@ run_brew_install() {
   fi
   brew_pid=$!
 
-  local frame_idx=0 password_notified=false status_line=""
-  while kill -0 "$brew_pid" 2>/dev/null; do
-    if [ "$password_notified" = false ] && grep -q "Password:" "$LOG_FILE" 2>/dev/null; then
-      printf "\r  ${YELLOW}Password required for Homebrew — enter it in this terminal (hidden).${NC}\033[K\n" >&2
-      password_notified=true
-    fi
+  watch_install_job "$description" "$brew_pid" || rc=$?
 
-    status_line=$(brew_log_status_line "$LOG_FILE")
-    local spinner_char="${SPINNER_FRAMES[$((frame_idx % ${#SPINNER_FRAMES[@]}))]}"
-    frame_idx=$((frame_idx + 1))
-
-    if [ -n "$status_line" ]; then
-      printf "\r  ${CYAN}${spinner_char}${NC} ${description}: ${DIM}%s${NC}\033[K" "$status_line" >&2
-    else
-      printf "\r  ${CYAN}${spinner_char}${NC} ${description}…\033[K" >&2
-    fi
-    sleep 0.25
-  done
-
-  if ! wait "$brew_pid"; then
-    rc=$?
+  printf "\r\033[K" >&2
+  if [ "$rc" -eq 0 ]; then
+    printf "  ${GREEN}✓${NC} ${description} installed\n" >&2
   fi
+
+  return "$rc"
+}
+
+# Run a privileged package-manager command with compact status (apt/dnf/pacman).
+run_sudo_pkg_install() {
+  local description="$1"
+  shift
+
+  if ! command -v sudo >/dev/null 2>&1; then
+    return 1
+  fi
+
+  mkdir -p "$(dirname "$LOG_FILE")"
+
+  printf "  ${DIM}Installing %s (may take several minutes)…${NC}\n" "$description" >&2
+  printf "  ${DIM}Full log: %s${NC}\n" "$LOG_FILE" >&2
+
+  if is_stdin_piped && has_install_tty && ! can_sudo_noninteractive; then
+    printf "  ${DIM}If prompted, type your sudo password (input is hidden).${NC}\n" >&2
+  elif ! is_stdin_piped && has_install_tty && ! can_sudo_noninteractive; then
+    prompt_sudo_password "$description"
+  fi
+
+  local -a cmd_env=(DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a)
+  local job_pid rc=0
+
+  if can_sudo_noninteractive; then
+    env "${cmd_env[@]}" sudo -n "$@" >>"$LOG_FILE" 2>&1 &
+    job_pid=$!
+  elif has_install_tty; then
+    (
+      env "${cmd_env[@]}" sudo "$@"
+    ) </dev/tty >>"$LOG_FILE" 2>&1 &
+    job_pid=$!
+  else
+    return 1
+  fi
+
+  watch_install_job "$description" "$job_pid" || rc=$?
 
   printf "\r\033[K" >&2
   if [ "$rc" -eq 0 ]; then
@@ -1038,16 +1078,15 @@ install_optional_deps() {
 
   if [ "$OS" = "linux" ]; then
     if check_command apt-get; then
-      run_with_sudo "Tesseract OCR (tesseract-ocr)" apt-get install -y tesseract-ocr || ignore_failure_unless_interrupted
+      run_sudo_pkg_install "Tesseract OCR" apt-get install -y tesseract-ocr || ignore_failure_unless_interrupted
     elif check_command dnf; then
-      run_with_sudo "Tesseract OCR" dnf install -y tesseract || ignore_failure_unless_interrupted
+      run_sudo_pkg_install "Tesseract OCR" dnf install -y tesseract || ignore_failure_unless_interrupted
     elif check_command pacman; then
-      run_with_sudo "Tesseract OCR" pacman -S --noconfirm tesseract || ignore_failure_unless_interrupted
+      run_sudo_pkg_install "Tesseract OCR" pacman -S --noconfirm tesseract || ignore_failure_unless_interrupted
     fi
   fi
 
   if check_command tesseract; then
-    printf "  ${GREEN}✓${NC} Tesseract OCR installed\n"
     return 0
   fi
 
