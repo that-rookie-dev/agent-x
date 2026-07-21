@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://that-rookie-dev.github.io/agent-x/">
-    <img src="assets/social_preview.png" alt="AGENT-X · Your AI wingman. On your machine." width="100%" />
+  <a href="https://agent-x.in/">
+    <img src="assets/social_preview.jpg" alt="AGENT-X · Your AI wingman. On your machine." width="100%" />
   </a>
 </p>
 
@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://that-rookie-dev.github.io/agent-x/">Website</a> ·
+  <a href="https://agent-x.in/">Website</a> ·
   <a href="https://github.com/that-rookie-dev/agent-x/releases/latest">Downloads</a> ·
   <a href="#install">Install</a> ·
   <a href="#server-cli">Server CLI</a> ·
@@ -33,7 +33,7 @@ Agent-X runs on your hardware with your API keys. Use it as a **desktop app** (m
 - **Crews:** delegate to thousands of pre-built specialist personas
 - **No account:** no telemetry, no vendor lock-in
 
-Full feature overview: [that-rookie-dev.github.io/agent-x](https://that-rookie-dev.github.io/agent-x/)
+Full feature overview: [agent-x.in](https://agent-x.in/)
 
 ---
 
@@ -160,7 +160,7 @@ This is the **public distribution repo** for Agent-X. It is separate from the pr
 |----------|----------|
 | `main` branch | Install scripts, landing page, docs |
 | [GitHub Releases](https://github.com/that-rookie-dev/agent-x/releases) | Desktop installers and server tarballs (built by CI) |
-| [that-rookie-dev.github.io/agent-x](https://that-rookie-dev.github.io/agent-x/) | Marketing site (`index.html` via GitHub Pages) |
+| [agent-x.in](https://agent-x.in/) | Marketing site (`index.html` via GitHub Pages + custom domain) |
 
 **Files on `main`**
 
@@ -172,7 +172,7 @@ This is the **public distribution repo** for Agent-X. It is separate from the pr
 | `install.ps1` | Windows server installer |
 | `uninstall.sh` / `uninstall.ps1` | Remove server installation |
 | `index.html` | Landing page (version and download links fetched from GitHub Releases) |
-| `assets/` | Site images (`social_preview.png`, favicon) |
+| `assets/` | Site images (`social_preview.jpg`, favicon) |
 
 **Release flow (maintainers)**
 
